@@ -39,7 +39,7 @@ Checklist :
 
 Plugin en développement actif.
 
-Version cible Market : `1.0.0`.
+Version cible Market : `1.0.2`.
 
 ## Note
 
