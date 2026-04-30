@@ -77,7 +77,7 @@ class postitdesign extends eqLogic {
             . 'overflow:visible !important;'
             . 'transform:rotate(' . $rotate . 'deg) !important;'
             . 'transform-origin:center center !important;'
-            . 'pointer-events:none !important;';
+            . 'pointer-events:auto !important;';
 
         $noteStyle = ''
             . 'display:block !important;'
@@ -94,7 +94,8 @@ class postitdesign extends eqLogic {
             . 'color:#2b2b2b !important;'
             . 'font-family:Arial, sans-serif !important;'
             . 'overflow:hidden !important;'
-            . 'pointer-events:none !important;';
+            . 'pointer-events:auto !important;'
+            . 'cursor:pointer !important;';
 
         $titleStyle = ''
             . 'display:block !important;'
@@ -123,7 +124,7 @@ class postitdesign extends eqLogic {
             . 'border:0 !important;';
 
         $footerStyle = ''
-            . 'display:flex !important;'
+            . 'display:none !important;'
             . 'gap:6px !important;'
             . 'justify-content:flex-end !important;'
             . 'align-items:center !important;'
@@ -152,6 +153,24 @@ class postitdesign extends eqLogic {
         $deleteBtnStyle = $btnStyle . 'background:#d9534f !important;';
 
         $placerUrl = '/plugins/postitdesign/postitdesign_placer.php?id=' . $this->getId();
+
+        $toggleOptionsJs = "event.stopPropagation();"
+            . "var f=this.querySelector('.postitdesign-footer-force');"
+            . "var st=this.querySelector('.postitdesign-status-force');"
+            . "if(!f){return false;}"
+            . "var isOpen=f.getAttribute('data-open')==='1';"
+            . "if(isOpen){"
+            . "f.setAttribute('data-open','0');"
+            . "f.style.setProperty('display','none','important');"
+            . "if(st){st.style.setProperty('display','none','important');}"
+            . "}else{"
+            . "f.setAttribute('data-open','1');"
+            . "f.style.setProperty('display','flex','important');"
+            . "if(st){st.style.setProperty('display','block','important');st.textContent='Options du post-it';}"
+            . "}"
+            . "return false;";
+
+        $toggleOptionsJsAttr = htmlspecialchars($toggleOptionsJs, ENT_QUOTES, 'UTF-8');
 
         $directMoveJs = "event.preventDefault();event.stopPropagation();"
             . "(function(btn){"
@@ -215,17 +234,17 @@ class postitdesign extends eqLogic {
         $html .= 'data-version="' . $_version . '" ';
         $html .= 'style="' . $outerStyle . '">';
 
-        $html .= '<div class="postitdesign-note-force" style="' . $noteStyle . '">';
+        $html .= '<div class="postitdesign-note-force" onclick="' . $toggleOptionsJsAttr . '" style="' . $noteStyle . '">';
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
 
-        $html .= '<div class="postitdesign-footer-force" style="' . $footerStyle . '">';
+        $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
         $html .= '<button type="button" onclick="' . $directMoveJsAttr . '" style="' . $btnStyle . '">↔ Déplacer direct</button>';
         $html .= '<a href="' . $placerUrl . '" target="_blank" onclick="event.stopPropagation();" style="' . $placerBtnStyle . '">🧭 Page</a>';
         $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '">✕ Décoller</button>';
         $html .= '</div>';
 
-        $html .= '<div class="postitdesign-status-force" style="font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;"></div>';
+        $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;"></div>';
 
         $html .= '</div>';
         $html .= '</div>';
