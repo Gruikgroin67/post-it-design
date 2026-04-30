@@ -9,8 +9,8 @@
   "hasDependency": false,
   "hasOwnDeamon": false,
   "maxDependancyInstallTime": 0,
-  "changelog": "docs/fr_FR/changelog.md",
-  "documentation": "docs/fr_FR/index.md",
+  "changelog": "https://gruikgroin67.github.io/post-it-design/#language#/changelog",
+  "documentation": "https://gruikgroin67.github.io/post-it-design/#language#/",
   "language": [
     "fr_FR"
   ],
