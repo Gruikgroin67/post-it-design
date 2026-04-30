@@ -191,6 +191,77 @@ try {
         ));
     }
 
+
+    if (init('action') == 'savePositionFromDesign') {
+        if (!isConnect('admin')) {
+            throw new Exception('{{401 - Accès non autorisé}}');
+        }
+
+        $eqLogic_id = intval(init('eqLogic_id'));
+        $planHeader_id = intval(init('planHeader_id'));
+        $x = intval(init('x'));
+        $y = intval(init('y'));
+
+        if ($eqLogic_id <= 0) {
+            throw new Exception('{{Post-it invalide}}');
+        }
+
+        $eqLogic = eqLogic::byId($eqLogic_id);
+        if (!is_object($eqLogic)) {
+            throw new Exception('{{Post-it introuvable}}');
+        }
+
+        if ($eqLogic->getEqType_name() != 'postitdesign') {
+            throw new Exception('{{Equipement invalide pour Post-it Design}}');
+        }
+
+        if ($planHeader_id <= 0) {
+            $planHeader_id = intval($eqLogic->getConfiguration('target_planHeader_id', 0));
+        }
+
+        if ($planHeader_id <= 0) {
+            throw new Exception('{{Design cible introuvable}}');
+        }
+
+        $planHeader = planHeader::byId($planHeader_id);
+        if (!is_object($planHeader)) {
+            throw new Exception('{{Design cible introuvable}}');
+        }
+
+        if (method_exists($planHeader, 'hasRight') && !$planHeader->hasRight('w')) {
+            throw new Exception('{{Vous n’avez pas le droit de modifier ce Design}}');
+        }
+
+        if ($x < 0) { $x = 0; }
+        if ($y < 0) { $y = 0; }
+
+        $plan = plan::byLinkTypeLinkIdPlanHeaderId('eqLogic', $eqLogic->getId(), $planHeader->getId());
+        if (!is_object($plan)) {
+            $plan = new plan();
+            $plan->setPlanHeader_id($planHeader->getId());
+            $plan->setLink_type('eqLogic');
+            $plan->setLink_id($eqLogic->getId());
+        }
+
+        $plan->setPosition('left', $x);
+        $plan->setPosition('top', $y);
+        $plan->setDisplay('name', 0);
+        $plan->save();
+
+        $eqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
+        $eqLogic->setConfiguration('target_x', $x);
+        $eqLogic->setConfiguration('target_y', $y);
+        $eqLogic->save();
+
+        ajax::success(array(
+            'ok' => true,
+            'eqLogic_id' => $eqLogic->getId(),
+            'planHeader_id' => $planHeader->getId(),
+            'x' => $x,
+            'y' => $y
+        ));
+    }
+
     throw new Exception('{{Aucune méthode correspondante à}} : ' . init('action'));
 
 } catch (Exception $e) {

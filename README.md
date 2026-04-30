@@ -1,17 +1,17 @@
 # Post-it Design
 
-Plugin Jeedom permettant de créer des post-it affichables sur les Designs Jeedom.
+Plugin Jeedom pour afficher des post-it sur les Designs Jeedom.
 
-Fonctions :
-- créer un équipement par post-it ;
-- définir titre, message, couleur, largeur, hauteur et rotation ;
-- aperçu dynamique redimensionnable ;
-- rotation visuelle ;
-- choisir un Design cible depuis le post-it ;
-- coller automatiquement le post-it sur le Design ;
-- placement dynamique isolé dans une page dédiée pour éviter les conflits JavaScript avec l’interface Jeedom.
+Fonctions actuelles :
+- création d’un post-it comme équipement Jeedom ;
+- titre, message, couleur, largeur, hauteur, rotation ;
+- aperçu dynamique redimensionnable dans la page plugin ;
+- placement dynamique dans une page isolée ;
+- collage automatique sur un Design ;
+- déplacement direct depuis le Design avec sauvegarde automatique au relâchement de la souris ;
+- bouton Décoller pour retirer le post-it du Design sans supprimer l’équipement.
 
-Pas de dépendance. Pas de démon.
-
-- bouton `↔ Déplacer` directement dans le post-it sur le Design ;
-- bouton `✕ Décoller` pour retirer le post-it du Design sans supprimer l’équipement.
+Règle UX :
+- le post-it ne bloque pas le Design en permanence ;
+- seuls les boutons du bas capturent les clics ;
+- le mode déplacement direct s’active uniquement quand on clique sur `↔ Déplacer direct`.

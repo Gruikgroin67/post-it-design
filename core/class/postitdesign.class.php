@@ -46,6 +46,7 @@ class postitdesign extends eqLogic {
         $width = intval($this->cfg('postit_width', 220));
         $height = intval($this->cfg('postit_height', 160));
         $rotate = intval($this->cfg('postit_rotate', -1));
+        $targetPlanHeaderId = intval($this->cfg('target_planHeader_id', 0));
 
         if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
             $color = '#fff475';
@@ -75,7 +76,8 @@ class postitdesign extends eqLogic {
             . 'margin:0 !important;'
             . 'overflow:visible !important;'
             . 'transform:rotate(' . $rotate . 'deg) !important;'
-            . 'transform-origin:center center !important;';
+            . 'transform-origin:center center !important;'
+            . 'pointer-events:none !important;';
 
         $noteStyle = ''
             . 'display:block !important;'
@@ -91,7 +93,8 @@ class postitdesign extends eqLogic {
             . 'box-shadow:0 8px 18px rgba(0,0,0,.28) !important;'
             . 'color:#2b2b2b !important;'
             . 'font-family:Arial, sans-serif !important;'
-            . 'overflow:hidden !important;';
+            . 'overflow:hidden !important;'
+            . 'pointer-events:none !important;';
 
         $titleStyle = ''
             . 'display:block !important;'
@@ -119,7 +122,6 @@ class postitdesign extends eqLogic {
             . 'padding:0 !important;'
             . 'border:0 !important;';
 
-        // POSTITDESIGN_DECOLLER_BUTTON
         $footerStyle = ''
             . 'display:flex !important;'
             . 'gap:6px !important;'
@@ -128,7 +130,8 @@ class postitdesign extends eqLogic {
             . 'margin-top:12px !important;'
             . 'padding-top:7px !important;'
             . 'border-top:1px solid rgba(0,0,0,.12) !important;'
-            . 'background:transparent !important;';
+            . 'background:transparent !important;'
+            . 'pointer-events:auto !important;';
 
         $btnStyle = ''
             . 'display:inline-block !important;'
@@ -142,13 +145,48 @@ class postitdesign extends eqLogic {
             . 'cursor:pointer !important;'
             . 'background:#2f80ed !important;'
             . 'color:#ffffff !important;'
-            . 'font-family:Arial, sans-serif !important;';
+            . 'font-family:Arial, sans-serif !important;'
+            . 'pointer-events:auto !important;';
 
-        $deleteBtnStyle = $btnStyle
-            . 'background:#d9534f !important;'
-            . 'color:#ffffff !important;';
+        $placerBtnStyle = $btnStyle . 'background:#555 !important;';
+        $deleteBtnStyle = $btnStyle . 'background:#d9534f !important;';
 
         $placerUrl = '/plugins/postitdesign/postitdesign_placer.php?id=' . $this->getId();
+
+        $directMoveJs = "event.preventDefault();event.stopPropagation();"
+            . "(function(btn){"
+            . "var widget=btn.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var note=widget.querySelector('.postitdesign-note-force');"
+            . "var status=widget.querySelector('.postitdesign-status-force');"
+            . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var p=new URLSearchParams(window.location.search);"
+            . "var planHeaderId=p.get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
+            . "var moveEl=widget;"
+            . "var parent=widget.parentElement;"
+            . "for(var i=0;i<6 && parent && parent!==document.body;i++){"
+            . "var cs=window.getComputedStyle(parent);"
+            . "if(cs.position==='absolute'||parent.style.left||parent.style.top||parent.getAttribute('data-plan_id')){moveEl=parent;break;}"
+            . "parent=parent.parentElement;"
+            . "}"
+            . "widget.style.setProperty('pointer-events','auto','important');"
+            . "note.style.setProperty('pointer-events','auto','important');"
+            . "note.style.outline='2px dashed #2f80ed';"
+            . "note.style.cursor='move';"
+            . "btn.textContent='Déplacement actif';"
+            . "if(status){status.textContent='Déplace le post-it, puis relâche la souris.';}"
+            . "var active=false,sx=0,sy=0,sl=0,st=0;"
+            . "function clamp(n,min,max){n=parseInt(n,10);if(isNaN(n)){n=min;}return Math.max(min,Math.min(max,n));}"
+            . "function down(e){active=true;sx=e.clientX;sy=e.clientY;sl=parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0;st=parseInt(moveEl.style.top||moveEl.offsetTop||0,10)||0;try{note.setPointerCapture(e.pointerId);}catch(err){}e.preventDefault();e.stopPropagation();}"
+            . "function move(e){if(!active){return;}var dx=e.clientX-sx;var dy=e.clientY-sy;var box=moveEl.offsetParent||moveEl.parentElement;var maxX=box?Math.max(0,box.clientWidth-moveEl.offsetWidth):5000;var maxY=box?Math.max(0,box.clientHeight-moveEl.offsetHeight):5000;var nx=clamp(Math.round(sl+dx),0,maxX);var ny=clamp(Math.round(st+dy),0,maxY);moveEl.style.left=nx+'px';moveEl.style.top=ny+'px';e.preventDefault();e.stopPropagation();}"
+            . "function up(e){if(!active){return;}active=false;var x=parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0;var y=parseInt(moveEl.style.top||moveEl.offsetTop||0,10)||0;try{note.releasePointerCapture(e.pointerId);}catch(err){}note.removeEventListener('pointerdown',down);note.removeEventListener('pointermove',move);note.removeEventListener('pointerup',up);note.removeEventListener('pointercancel',up);widget.style.setProperty('pointer-events','none','important');note.style.setProperty('pointer-events','none','important');note.style.outline='';note.style.cursor='default';btn.textContent='↔ Déplacer direct';if(status){status.textContent='Sauvegarde position...';}"
+            . "var body=new URLSearchParams();body.append('action','savePositionFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',planHeaderId);body.append('x',x);body.append('y',y);"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
+            . ".then(function(r){return r.json();}).then(function(d){if(d.state==='ok'){if(status){status.textContent='OK position enregistrée X='+x+', Y='+y;}}else{alert(d.result||'Erreur sauvegarde position');if(status){status.textContent='Erreur sauvegarde';}}})"
+            . ".catch(function(err){alert(err.message||err);if(status){status.textContent='Erreur sauvegarde';}});"
+            . "e.preventDefault();e.stopPropagation();}"
+            . "note.addEventListener('pointerdown',down);note.addEventListener('pointermove',move);note.addEventListener('pointerup',up);note.addEventListener('pointercancel',up);"
+            . "})(this);return false;";
 
         $decollerJs = "event.preventDefault();"
             . "event.stopPropagation();"
@@ -166,12 +204,13 @@ class postitdesign extends eqLogic {
             . ".catch(function(e){alert(e.message||e);});"
             . "return false;";
 
+        $directMoveJsAttr = htmlspecialchars($directMoveJs, ENT_QUOTES, 'UTF-8');
         $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
-
 
         $html = '';
         $html .= '<div class="eqLogic-widget eqLogic allowResize allowReorderCmd postitdesign-widget" ';
         $html .= 'data-eqLogic_id="' . $this->getId() . '" ';
+        $html .= 'data-target-planheader="' . $targetPlanHeaderId . '" ';
         $html .= 'data-eqLogic_uid="#uid#" ';
         $html .= 'data-version="' . $_version . '" ';
         $html .= 'style="' . $outerStyle . '">';
@@ -179,12 +218,16 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-note-force" style="' . $noteStyle . '">';
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
+
         $html .= '<div class="postitdesign-footer-force" style="' . $footerStyle . '">';
-        $html .= '<a href="' . $placerUrl . '" target="_blank" onclick="event.stopPropagation();" style="' . $btnStyle . '">↔ Déplacer</a>';
+        $html .= '<button type="button" onclick="' . $directMoveJsAttr . '" style="' . $btnStyle . '">↔ Déplacer direct</button>';
+        $html .= '<a href="' . $placerUrl . '" target="_blank" onclick="event.stopPropagation();" style="' . $placerBtnStyle . '">🧭 Page</a>';
         $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '">✕ Décoller</button>';
         $html .= '</div>';
-        $html .= '</div>';
 
+        $html .= '<div class="postitdesign-status-force" style="font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;"></div>';
+
+        $html .= '</div>';
         $html .= '</div>';
 
         return $this->postToHtml($_version, $html);
