@@ -12,3 +12,6 @@ Fonctions :
 - placement dynamique isolé dans une page dédiée pour éviter les conflits JavaScript avec l’interface Jeedom.
 
 Pas de dépendance. Pas de démon.
+
+- bouton `↔ Déplacer` directement dans le post-it sur le Design ;
+- bouton `✕ Décoller` pour retirer le post-it du Design sans supprimer l’équipement.

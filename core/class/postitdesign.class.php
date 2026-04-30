@@ -119,6 +119,56 @@ class postitdesign extends eqLogic {
             . 'padding:0 !important;'
             . 'border:0 !important;';
 
+        // POSTITDESIGN_DECOLLER_BUTTON
+        $footerStyle = ''
+            . 'display:flex !important;'
+            . 'gap:6px !important;'
+            . 'justify-content:flex-end !important;'
+            . 'align-items:center !important;'
+            . 'margin-top:12px !important;'
+            . 'padding-top:7px !important;'
+            . 'border-top:1px solid rgba(0,0,0,.12) !important;'
+            . 'background:transparent !important;';
+
+        $btnStyle = ''
+            . 'display:inline-block !important;'
+            . 'font-size:11px !important;'
+            . 'font-weight:700 !important;'
+            . 'line-height:1 !important;'
+            . 'padding:6px 7px !important;'
+            . 'border-radius:4px !important;'
+            . 'border:0 !important;'
+            . 'text-decoration:none !important;'
+            . 'cursor:pointer !important;'
+            . 'background:#2f80ed !important;'
+            . 'color:#ffffff !important;'
+            . 'font-family:Arial, sans-serif !important;';
+
+        $deleteBtnStyle = $btnStyle
+            . 'background:#d9534f !important;'
+            . 'color:#ffffff !important;';
+
+        $placerUrl = '/plugins/postitdesign/postitdesign_placer.php?id=' . $this->getId();
+
+        $decollerJs = "event.preventDefault();"
+            . "event.stopPropagation();"
+            . "if(!confirm('Décoller ce post-it du Design ?')){return false;}"
+            . "var p=new URLSearchParams(window.location.search);"
+            . "var pid=p.get('plan_id')||'';"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{"
+            . "method:'POST',"
+            . "credentials:'same-origin',"
+            . "headers:{'Content-Type':'application/x-www-form-urlencoded'},"
+            . "body:'action=removeFromDesign&eqLogic_id=" . $this->getId() . "&planHeader_id='+encodeURIComponent(pid)"
+            . "})"
+            . ".then(function(r){return r.json();})"
+            . ".then(function(d){if(d.state==='ok'){window.location.reload();}else{alert(d.result||'Erreur');}})"
+            . ".catch(function(e){alert(e.message||e);});"
+            . "return false;";
+
+        $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
+
+
         $html = '';
         $html .= '<div class="eqLogic-widget eqLogic allowResize allowReorderCmd postitdesign-widget" ';
         $html .= 'data-eqLogic_id="' . $this->getId() . '" ';
@@ -129,6 +179,10 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-note-force" style="' . $noteStyle . '">';
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
+        $html .= '<div class="postitdesign-footer-force" style="' . $footerStyle . '">';
+        $html .= '<a href="' . $placerUrl . '" target="_blank" onclick="event.stopPropagation();" style="' . $btnStyle . '">↔ Déplacer</a>';
+        $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '">✕ Décoller</button>';
+        $html .= '</div>';
         $html .= '</div>';
 
         $html .= '</div>';
