@@ -271,6 +271,9 @@ $planHeaders = planHeader::all();
                         <div class="form-group">
                             <label class="col-sm-3 control-label"></label>
                             <div class="col-sm-7">
+                                <a class="btn btn-primary btn-lg" id="bt_postitdesign_open_placer">
+                                    <i class="fas fa-mouse-pointer"></i> {{Placement dynamique}}
+                                </a>
                                 <a class="btn btn-success btn-lg" id="bt_postitdesign_stick_design">
                                     <i class="fas fa-thumbtack"></i> {{Coller sur ce Design}}
                                 </a>

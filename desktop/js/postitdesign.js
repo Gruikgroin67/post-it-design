@@ -335,3 +335,19 @@ setTimeout(function () {
 setTimeout(function () {
     postitdesignRefreshUi();
 }, 500);
+
+$(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').on('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer', function () {
+    var eqLogicId = '';
+    try {
+        eqLogicId = $('.eqLogicAttr[data-l1key=id]').value();
+    } catch (e) {
+        eqLogicId = $('.eqLogicAttr[data-l1key=id]').val();
+    }
+
+    if (!eqLogicId) {
+        alert('Sauvegarde d’abord le post-it avant d’ouvrir le placement dynamique.');
+        return;
+    }
+
+    window.open('/plugins/postitdesign/desktop/php/postitdesign_placer.php?id=' + encodeURIComponent(eqLogicId), '_blank');
+});
