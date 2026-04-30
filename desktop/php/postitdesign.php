@@ -181,7 +181,20 @@ $planHeaders = planHeader::all();
                         </div>
 
                         <div class="alert alert-info">
-                            {{Sauvegarde le post-it, puis va dans l’onglet Collage Design pour le coller automatiquement sur un Design Jeedom.}}
+                            {{Aperçu dynamique en dessous : tu peux redimensionner le post-it directement par les coins. La largeur et la hauteur se mettent à jour automatiquement.}}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Aperçu dynamique}}</label>
+                            <div class="col-sm-8">
+                                <div class="postitdesign-preview-wrap">
+                                    <div id="postitdesign_live_preview" class="postitdesign-live-preview">
+                                        <div class="postitdesign-live-preview-title">Titre</div>
+                                        <div class="postitdesign-live-preview-message">Ton message ici</div>
+                                    </div>
+                                </div>
+                                <div class="help-block">{{Prends le post-it par un coin pour le redimensionner.}}</div>
+                            </div>
                         </div>
                     </fieldset>
                 </form>

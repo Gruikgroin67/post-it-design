@@ -5,7 +5,7 @@ function postitdesignValue(selector, fallback) {
     }
     var v = '';
     try {
-        v = el.value();
+        v = (typeof el.value === 'function') ? el.value() : el.val();
     } catch (e) {
         v = el.val();
     }
@@ -21,20 +21,124 @@ function postitdesignSetValue(selector, value) {
         return;
     }
     try {
-        el.value(value);
+        if (typeof el.value === 'function') {
+            el.value(value);
+        } else {
+            el.val(value);
+        }
     } catch (e) {
         el.val(value);
     }
+}
+
+function postitdesignEscapeHtml(text) {
+    return $('<div>').text(text || '').html();
+}
+
+function postitdesignNl2br(text) {
+    return postitdesignEscapeHtml(text || '').replace(/\n/g, '<br>');
 }
 
 function postitdesignShowResult(message) {
     $('#postitdesign_design_result').show().text(message);
 }
 
+function postitdesignNormalizeInt(value, fallback, minValue, maxValue) {
+    var n = parseInt(value, 10);
+    if (isNaN(n)) {
+        n = fallback;
+    }
+    if (typeof minValue !== 'undefined' && n < minValue) {
+        n = minValue;
+    }
+    if (typeof maxValue !== 'undefined' && n > maxValue) {
+        n = maxValue;
+    }
+    return n;
+}
+
+function postitdesignUpdatePreview() {
+    var title = postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_title]', 'Titre');
+    var message = postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_message]', 'Ton message ici');
+    var color = postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_color]', '#fff475');
+    var width = postitdesignNormalizeInt(postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_width]', '220'), 220, 120, 1200);
+    var height = postitdesignNormalizeInt(postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_height]', '160'), 160, 80, 1200);
+    var rotate = postitdesignNormalizeInt(postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_rotate]', '-1'), -1, -15, 15);
+
+    var $preview = $('#postitdesign_live_preview');
+    if (!$preview.length) {
+        return;
+    }
+
+    $preview.css({
+        width: width + 'px',
+        minHeight: height + 'px',
+        background: color,
+        transform: 'rotate(' + rotate + 'deg)'
+    });
+
+    $preview.find('.postitdesign-live-preview-title').text(title || 'Titre');
+    $preview.find('.postitdesign-live-preview-message').html(postitdesignNl2br(message || 'Ton message ici'));
+
+    if ($preview.data('ui-resizable')) {
+        $preview.resizable('option', 'minWidth', 120);
+        $preview.resizable('option', 'minHeight', 80);
+    }
+}
+
+function postitdesignInitResizablePreview() {
+    var $preview = $('#postitdesign_live_preview');
+    if (!$preview.length) {
+        return;
+    }
+
+    if (typeof $preview.resizable !== 'function') {
+        return;
+    }
+
+    if ($preview.data('postitdesign-resizable-init')) {
+        return;
+    }
+
+    $preview.resizable({
+        handles: 'n,e,s,w,se,sw,ne,nw',
+        minWidth: 120,
+        minHeight: 80,
+        start: function() {
+            $preview.addClass('postitdesign-resizing');
+        },
+        stop: function(event, ui) {
+            $preview.removeClass('postitdesign-resizing');
+            postitdesignSetValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_width]', Math.round(ui.size.width));
+            postitdesignSetValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_height]', Math.round(ui.size.height));
+            modifyWithoutSave = true;
+            postitdesignUpdatePreview();
+        },
+        resize: function(event, ui) {
+            postitdesignSetValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_width]', Math.round(ui.size.width));
+            postitdesignSetValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_height]', Math.round(ui.size.height));
+        }
+    });
+
+    $preview.data('postitdesign-resizable-init', 1);
+}
+
+function postitdesignRefreshUi() {
+    postitdesignInitResizablePreview();
+    postitdesignUpdatePreview();
+}
+
+$(document).off('input.postitdesign change.postitdesign', '.eqLogicAttr[data-l1key=configuration][data-l2key=postit_title], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_message], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_color], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_width], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_height], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_rotate]')
+.on('input.postitdesign change.postitdesign', '.eqLogicAttr[data-l1key=configuration][data-l2key=postit_title], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_message], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_color], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_width], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_height], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_rotate]', function () {
+    modifyWithoutSave = true;
+    postitdesignUpdatePreview();
+});
+
 $('.postitColor').off('click').on('click', function () {
     var color = $(this).attr('data-color');
     postitdesignSetValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_color]', color);
     modifyWithoutSave = true;
+    postitdesignUpdatePreview();
 });
 
 $('#bt_postitdesign_create_design').off('click').on('click', function () {
@@ -132,3 +236,23 @@ $('#bt_postitdesign_stick_design').off('click').on('click', function () {
         }
     });
 });
+
+$('a[href="#postittab"]').off('shown.bs.tab.postitdesign').on('shown.bs.tab.postitdesign', function () {
+    setTimeout(function () {
+        postitdesignRefreshUi();
+    }, 50);
+});
+
+$('.eqLogicDisplayCard, .eqLogicAction[data-action="add"]').off('click.postitdesign').on('click.postitdesign', function () {
+    setTimeout(function () {
+        postitdesignRefreshUi();
+    }, 250);
+});
+
+setTimeout(function () {
+    postitdesignRefreshUi();
+}, 100);
+
+setTimeout(function () {
+    postitdesignRefreshUi();
+}, 500);
