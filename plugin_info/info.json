@@ -9,8 +9,8 @@
   "hasDependency": false,
   "hasOwnDeamon": false,
   "maxDependancyInstallTime": 0,
-  "changelog": "",
-  "documentation": "",
+  "changelog": "docs/fr_FR/changelog.md",
+  "documentation": "docs/fr_FR/index.md",
   "language": [
     "fr_FR"
   ],
