@@ -1,0 +1,8 @@
+_patch_backups/
+*.bak
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+vendor/
+node_modules/

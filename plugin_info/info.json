@@ -1,0 +1,25 @@
+{
+  "id": "postitdesign",
+  "name": "Post-it Design",
+  "description": "Affiche des post-it sur les designs Jeedom.",
+  "licence": "AGPL",
+  "author": "Emmanuel",
+  "require": "4.4",
+  "category": "communication",
+  "hasDependency": false,
+  "hasOwnDeamon": false,
+  "maxDependancyInstallTime": 0,
+  "changelog": "",
+  "documentation": "",
+  "language": [
+    "fr_FR"
+  ],
+  "compatibility": [
+    "miniplus",
+    "smart",
+    "rpi",
+    "docker",
+    "diy",
+    "v4"
+  ]
+}
