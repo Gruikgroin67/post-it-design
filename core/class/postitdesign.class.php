@@ -93,7 +93,7 @@ class postitdesign extends eqLogic {
             . 'box-shadow:0 8px 18px rgba(0,0,0,.28) !important;'
             . 'color:#2b2b2b !important;'
             . 'font-family:Arial, sans-serif !important;'
-            . 'overflow:hidden !important;'
+            . 'overflow:visible !important;'
             . 'pointer-events:auto !important;'
             . 'cursor:pointer !important;';
 
@@ -125,21 +125,24 @@ class postitdesign extends eqLogic {
 
         $footerStyle = ''
             . 'display:none !important;'
-            . 'gap:6px !important;'
-            . 'justify-content:flex-end !important;'
+            . 'gap:4px !important;'
+            . 'justify-content:flex-start !important;'
             . 'align-items:center !important;'
-            . 'margin-top:12px !important;'
+            . 'flex-wrap:wrap !important;'
+            . 'margin-top:10px !important;'
             . 'padding-top:7px !important;'
             . 'border-top:1px solid rgba(0,0,0,.12) !important;'
             . 'background:transparent !important;'
-            . 'pointer-events:auto !important;';
+            . 'pointer-events:auto !important;'
+            . 'max-width:100% !important;'
+            . 'overflow:visible !important;';
 
         $btnStyle = ''
             . 'display:inline-block !important;'
-            . 'font-size:11px !important;'
+            . 'font-size:10px !important;'
             . 'font-weight:700 !important;'
             . 'line-height:1 !important;'
-            . 'padding:6px 7px !important;'
+            . 'padding:5px 6px !important;'
             . 'border-radius:4px !important;'
             . 'border:0 !important;'
             . 'text-decoration:none !important;'
@@ -147,7 +150,9 @@ class postitdesign extends eqLogic {
             . 'background:#2f80ed !important;'
             . 'color:#ffffff !important;'
             . 'font-family:Arial, sans-serif !important;'
-            . 'pointer-events:auto !important;';
+            . 'pointer-events:auto !important;'
+            . 'white-space:nowrap !important;'
+            . 'max-width:100% !important;';
 
         $placerBtnStyle = $btnStyle . 'background:#555 !important;';
         $deleteBtnStyle = $btnStyle . 'background:#d9534f !important;';
@@ -272,13 +277,13 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
 
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
-        $html .= '<button type="button" onclick="' . $directMoveJsAttr . '" style="' . $btnStyle . '">↔ Déplacer direct</button>';
-        $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎ Compléter</button>';
-        $html .= '<a href="' . $placerUrl . '" target="_blank" onclick="event.stopPropagation();" style="' . $placerBtnStyle . '">🧭 Page</a>';
-        $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '">✕ Décoller</button>';
+        $html .= '<button type="button" onclick="' . $directMoveJsAttr . '" style="' . $btnStyle . '" title="Déplacer directement sur le design">↔</button>';
+        $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
+        $html .= '<a href="' . $placerUrl . '" target="_blank" onclick="event.stopPropagation();" style="' . $placerBtnStyle . '" title="Placement dynamique dans une page séparée">🧭</a>';
+        $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
 
-        $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;"></div>';
+        $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;line-height:1.2 !important;word-break:break-word !important;"></div>';
 
         $html .= '</div>';
         $html .= '</div>';
