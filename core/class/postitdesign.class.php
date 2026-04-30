@@ -30,7 +30,38 @@ class postitdesign extends eqLogic {
         $height = intval($this->cfg('postit_height', 160));
         $rotate = intval($this->cfg('postit_rotate', -1));
 
+        
+        // INLINE_WIDGET_STYLE_FIX
         if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
+            $color = '#fff475';
+        }
+        if ($width < 80) {
+            $width = 220;
+        }
+        if ($height < 60) {
+            $height = 160;
+        }
+
+        $noteStyle = 'background:' . $color . ';'
+            . 'width:' . $width . 'px;'
+            . 'min-height:' . $height . 'px;'
+            . 'padding:14px 16px;'
+            . 'border-radius:4px;'
+            . 'box-shadow:0 8px 18px rgba(0,0,0,.28);'
+            . 'color:#2b2b2b;'
+            . 'overflow:hidden;'
+            . 'box-sizing:border-box;';
+        $titleStyle = 'font-weight:700;'
+            . 'font-size:16px;'
+            . 'line-height:1.2;'
+            . 'margin-bottom:10px;'
+            . 'border-bottom:1px solid rgba(0,0,0,.18);'
+            . 'padding-bottom:6px;';
+        $messageStyle = 'font-size:15px;'
+            . 'line-height:1.35;'
+            . 'white-space:pre-wrap;'
+            . 'word-wrap:break-word;';
+if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
             $color = '#fff475';
         }
 
@@ -54,7 +85,7 @@ class postitdesign extends eqLogic {
         $html .= $title;
         $html .= '</div>';
 
-        $html .= '<div class="postitdesign-message" style="font-size:15px; line-height:1.35; white-space:normal; word-wrap:break-word;">';
+        $html .= '<div class="postitdesign-message" style="<?php echo $messageStyle; ?>" style="font-size:15px; line-height:1.35; white-space:normal; word-wrap:break-word;">';
         $html .= $messageHtml;
         $html .= '</div>';
 
