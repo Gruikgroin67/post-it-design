@@ -57,6 +57,73 @@ function postitdesignNormalizeInt(value, fallback, minValue, maxValue) {
     return n;
 }
 
+function postitdesignSetRotate(value) {
+    var rotate = postitdesignNormalizeInt(value, -1, -15, 15);
+    postitdesignSetValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_rotate]', rotate);
+    $('#postitdesign_rotate_range').val(rotate);
+    modifyWithoutSave = true;
+    postitdesignUpdatePreview();
+}
+
+function postitdesignSyncRotateRange() {
+    var rotate = postitdesignNormalizeInt(
+        postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_rotate]', '-1'),
+        -1,
+        -15,
+        15
+    );
+    $('#postitdesign_rotate_range').val(rotate);
+}
+
+function postitdesignInitRotateHandle() {
+    var $preview = $('#postitdesign_live_preview');
+    var $handle = $preview.find('.postitdesign-rotate-handle');
+
+    if (!$preview.length || !$handle.length) {
+        return;
+    }
+
+    if ($handle.data('postitdesign-rotate-init')) {
+        return;
+    }
+
+    function angleFromEvent(e) {
+        var ev = e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length ? e.originalEvent.touches[0] : e;
+        var offset = $preview.offset();
+        var cx = offset.left + ($preview.outerWidth() / 2);
+        var cy = offset.top + ($preview.outerHeight() / 2);
+        var dx = ev.pageX - cx;
+        var dy = ev.pageY - cy;
+        var deg = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+        deg = Math.round(deg);
+        if (deg < -15) {
+            deg = -15;
+        }
+        if (deg > 15) {
+            deg = 15;
+        }
+        return deg;
+    }
+
+    $handle.on('mousedown.postitdesign touchstart.postitdesign', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $preview.addClass('postitdesign-rotating');
+
+        $(document).on('mousemove.postitdesignRotate touchmove.postitdesignRotate', function(ev) {
+            ev.preventDefault();
+            postitdesignSetRotate(angleFromEvent(ev));
+        });
+
+        $(document).on('mouseup.postitdesignRotate touchend.postitdesignRotate touchcancel.postitdesignRotate', function() {
+            $preview.removeClass('postitdesign-rotating');
+            $(document).off('.postitdesignRotate');
+        });
+    });
+
+    $handle.data('postitdesign-rotate-init', 1);
+}
+
 function postitdesignUpdatePreview() {
     var title = postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_title]', 'Titre');
     var message = postitdesignValue('.eqLogicAttr[data-l1key=configuration][data-l2key=postit_message]', 'Ton message ici');
@@ -79,6 +146,7 @@ function postitdesignUpdatePreview() {
 
     $preview.find('.postitdesign-live-preview-title').text(title || 'Titre');
     $preview.find('.postitdesign-live-preview-message').html(postitdesignNl2br(message || 'Ton message ici'));
+    postitdesignSyncRotateRange();
 
     if ($preview.data('ui-resizable')) {
         $preview.resizable('option', 'minWidth', 120);
@@ -125,6 +193,7 @@ function postitdesignInitResizablePreview() {
 
 function postitdesignRefreshUi() {
     postitdesignInitResizablePreview();
+    postitdesignInitRotateHandle();
     postitdesignUpdatePreview();
 }
 
@@ -132,6 +201,16 @@ $(document).off('input.postitdesign change.postitdesign', '.eqLogicAttr[data-l1k
 .on('input.postitdesign change.postitdesign', '.eqLogicAttr[data-l1key=configuration][data-l2key=postit_title], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_message], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_color], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_width], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_height], .eqLogicAttr[data-l1key=configuration][data-l2key=postit_rotate]', function () {
     modifyWithoutSave = true;
     postitdesignUpdatePreview();
+});
+
+
+$(document).off('input.postitdesignRotateRange change.postitdesignRotateRange', '#postitdesign_rotate_range')
+.on('input.postitdesignRotateRange change.postitdesignRotateRange', '#postitdesign_rotate_range', function () {
+    postitdesignSetRotate($(this).val());
+});
+
+$('.postitdesignRotateQuick').off('click').on('click', function () {
+    postitdesignSetRotate($(this).attr('data-rotate'));
 });
 
 $('.postitColor').off('click').on('click', function () {

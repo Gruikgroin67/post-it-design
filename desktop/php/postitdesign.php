@@ -180,8 +180,20 @@ $planHeaders = planHeader::all();
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Rotation visuelle}}</label>
+                            <div class="col-sm-5">
+                                <input type="range" id="postitdesign_rotate_range" class="form-control" min="-15" max="15" step="1" value="-1">
+                            </div>
+                            <div class="col-sm-3">
+                                <a class="btn btn-default btn-sm postitdesignRotateQuick" data-rotate="-5">-5°</a>
+                                <a class="btn btn-default btn-sm postitdesignRotateQuick" data-rotate="0">0°</a>
+                                <a class="btn btn-default btn-sm postitdesignRotateQuick" data-rotate="5">+5°</a>
+                            </div>
+                        </div>
+
                         <div class="alert alert-info">
-                            {{Aperçu dynamique en dessous : tu peux redimensionner le post-it directement par les coins. La largeur et la hauteur se mettent à jour automatiquement.}}
+                            {{Aperçu dynamique en dessous : tu peux redimensionner le post-it par les coins et le faire tourner avec la poignée au-dessus.}}
                         </div>
 
                         <div class="form-group">
@@ -189,6 +201,7 @@ $planHeaders = planHeader::all();
                             <div class="col-sm-8">
                                 <div class="postitdesign-preview-wrap">
                                     <div id="postitdesign_live_preview" class="postitdesign-live-preview">
+                                        <div class="postitdesign-rotate-handle" title="{{Tourner le post-it}}"></div>
                                         <div class="postitdesign-live-preview-title">Titre</div>
                                         <div class="postitdesign-live-preview-message">Ton message ici</div>
                                     </div>

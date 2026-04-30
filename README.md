@@ -18,3 +18,4 @@ Version actuelle :
 - collage automatique du post-it sur un Design Jeedom ;
 - pas de dépendance ;
 - pas de démon.
+\n- rotation visuelle par curseur, boutons rapides et poignée au-dessus de l’aperçu.\n

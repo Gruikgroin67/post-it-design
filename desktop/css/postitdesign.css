@@ -106,3 +106,35 @@
 .postitdesign-live-preview.postitdesign-resizing {
     box-shadow: 0 10px 22px rgba(0,0,0,.38);
 }
+
+
+.postitdesign-rotate-handle {
+    position: absolute;
+    top: -24px;
+    left: calc(50% - 10px);
+    width: 20px;
+    height: 20px;
+    background: rgba(0,0,0,.45);
+    border: 2px solid rgba(255,255,255,.95);
+    border-radius: 50%;
+    cursor: grab;
+    z-index: 30;
+}
+
+.postitdesign-rotate-handle:before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 18px;
+    width: 2px;
+    height: 18px;
+    background: rgba(0,0,0,.35);
+}
+
+.postitdesign-live-preview.postitdesign-rotating {
+    box-shadow: 0 12px 26px rgba(0,0,0,.45);
+}
+
+.postitdesign-live-preview.postitdesign-rotating .postitdesign-rotate-handle {
+    cursor: grabbing;
+}
