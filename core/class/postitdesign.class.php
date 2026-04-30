@@ -223,6 +223,39 @@ class postitdesign extends eqLogic {
             . ".catch(function(e){alert(e.message||e);});"
             . "return false;";
 
+        $completeJs = "event.preventDefault();event.stopPropagation();"
+            . "var widget=this.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var msgEl=widget.querySelector('.postitdesign-message-force');"
+            . "var st=widget.querySelector('.postitdesign-status-force');"
+            . "var txt=prompt('Texte à ajouter au post-it :');"
+            . "if(txt===null){return false;}"
+            . "txt=(txt||'').trim();"
+            . "if(!txt){return false;}"
+            . "if(st){st.style.setProperty('display','block','important');st.textContent='Ajout du texte...';}"
+            . "var body=new URLSearchParams();"
+            . "body.append('action','completeFromDesign');"
+            . "body.append('eqLogic_id',eqId);"
+            . "body.append('text',txt);"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{"
+            . "method:'POST',"
+            . "credentials:'same-origin',"
+            . "headers:{'Content-Type':'application/x-www-form-urlencoded'},"
+            . "body:body.toString()"
+            . "})"
+            . ".then(function(r){return r.json();})"
+            . ".then(function(d){"
+            . "if(d.state==='ok'){"
+            . "if(msgEl){msgEl.innerHTML=d.result.message_html;}"
+            . "if(st){st.textContent='OK texte ajouté';}"
+            . "}else{alert(d.result||'Erreur ajout texte');if(st){st.textContent='Erreur ajout texte';}}"
+            . "})"
+            . ".catch(function(err){alert(err.message||err);if(st){st.textContent='Erreur ajout texte';}});"
+            . "return false;";
+
+        $completeJsAttr = htmlspecialchars($completeJs, ENT_QUOTES, 'UTF-8');
+
         $directMoveJsAttr = htmlspecialchars($directMoveJs, ENT_QUOTES, 'UTF-8');
         $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
 
@@ -240,6 +273,7 @@ class postitdesign extends eqLogic {
 
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
         $html .= '<button type="button" onclick="' . $directMoveJsAttr . '" style="' . $btnStyle . '">↔ Déplacer direct</button>';
+        $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎ Compléter</button>';
         $html .= '<a href="' . $placerUrl . '" target="_blank" onclick="event.stopPropagation();" style="' . $placerBtnStyle . '">🧭 Page</a>';
         $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '">✕ Décoller</button>';
         $html .= '</div>';

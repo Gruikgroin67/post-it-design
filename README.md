@@ -15,3 +15,5 @@ Règle UX :
 - le post-it ne bloque pas le Design en permanence ;
 - seuls les boutons du bas capturent les clics ;
 - le mode déplacement direct s’active uniquement quand on clique sur `↔ Déplacer direct`.
+
+- bouton `✎ Compléter` dans les options du post-it pour ajouter du texte directement depuis le Design.

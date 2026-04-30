@@ -262,6 +262,52 @@ try {
         ));
     }
 
+
+    if (init('action') == 'completeFromDesign') {
+        if (!isConnect('admin')) {
+            throw new Exception('{{401 - Accès non autorisé}}');
+        }
+
+        $eqLogic_id = intval(init('eqLogic_id'));
+        $text = trim(init('text'));
+
+        if ($eqLogic_id <= 0) {
+            throw new Exception('{{Post-it invalide}}');
+        }
+
+        if ($text == '') {
+            throw new Exception('{{Texte vide}}');
+        }
+
+        $eqLogic = eqLogic::byId($eqLogic_id);
+        if (!is_object($eqLogic)) {
+            throw new Exception('{{Post-it introuvable}}');
+        }
+
+        if ($eqLogic->getEqType_name() != 'postitdesign') {
+            throw new Exception('{{Equipement invalide pour Post-it Design}}');
+        }
+
+        $current = trim((string) $eqLogic->getConfiguration('postit_message', ''));
+        if ($current == '') {
+            $newMessage = $text;
+        } else {
+            $newMessage = $current . "\n" . $text;
+        }
+
+        $eqLogic->setConfiguration('postit_message', $newMessage);
+        $eqLogic->save();
+
+        $messageHtml = nl2br(htmlspecialchars($newMessage, ENT_QUOTES, 'UTF-8'));
+
+        ajax::success(array(
+            'ok' => true,
+            'eqLogic_id' => $eqLogic->getId(),
+            'message' => $newMessage,
+            'message_html' => $messageHtml
+        ));
+    }
+
     throw new Exception('{{Aucune méthode correspondante à}} : ' . init('action'));
 
 } catch (Exception $e) {
