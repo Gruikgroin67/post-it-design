@@ -5,6 +5,7 @@ if (!isConnect('admin')) {
 
 sendVarToJS('eqType', 'postitdesign');
 $eqLogics = eqLogic::byType('postitdesign');
+$planHeaders = planHeader::all();
 ?>
 
 <div class="row row-overflow">
@@ -68,6 +69,11 @@ $eqLogics = eqLogic::byType('postitdesign');
                     <i class="fas fa-sticky-note"></i> {{Post-it}}
                 </a>
             </li>
+            <li role="presentation">
+                <a href="#designtab" aria-controls="profile" role="tab" data-toggle="tab">
+                    <i class="fas fa-thumbtack"></i> {{Collage Design}}
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -75,6 +81,8 @@ $eqLogics = eqLogic::byType('postitdesign');
                 <br>
                 <form class="form-horizontal">
                     <fieldset>
+                        <input type="hidden" class="eqLogicAttr" data-l1key="id">
+
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Nom}}</label>
                             <div class="col-sm-3">
@@ -173,8 +181,81 @@ $eqLogics = eqLogic::byType('postitdesign');
                         </div>
 
                         <div class="alert alert-info">
-                            {{Après sauvegarde, ajoute cet équipement sur un Design Jeedom comme n’importe quel widget.}}
+                            {{Sauvegarde le post-it, puis va dans l’onglet Collage Design pour le coller automatiquement sur un Design Jeedom.}}
                         </div>
+                    </fieldset>
+                </form>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="designtab">
+                <br>
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend><i class="fas fa-thumbtack"></i> {{Coller ce post-it sur un Design}}</legend>
+
+                        <?php if (count($planHeaders) == 0) { ?>
+                            <div class="alert alert-warning">
+                                {{Aucun Design Jeedom n’existe encore. Crée un Design ici, puis colle le post-it dessus.}}
+                            </div>
+                        <?php } ?>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Créer un Design}}</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="postitdesign_new_design_name" class="form-control" placeholder="{{Exemple : Frigo, Cuisine, Tablette}}">
+                            </div>
+                            <div class="col-sm-3">
+                                <a class="btn btn-primary" id="bt_postitdesign_create_design">
+                                    <i class="fas fa-plus-circle"></i> {{Créer}}
+                                </a>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Design cible}}</label>
+                            <div class="col-sm-5">
+                                <select class="eqLogicAttr form-control" id="postitdesign_target_planHeader_id" data-l1key="configuration" data-l2key="target_planHeader_id">
+                                    <option value="">{{Choisir un Design}}</option>
+                                    <?php
+                                    foreach ($planHeaders as $planHeader) {
+                                        if (method_exists($planHeader, 'hasRight') && !$planHeader->hasRight('r')) {
+                                            continue;
+                                        }
+                                        echo '<option value="' . $planHeader->getId() . '">' . $planHeader->getName() . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Position X}}</label>
+                            <div class="col-sm-2">
+                                <input type="number" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="target_x" value="30">
+                            </div>
+
+                            <label class="col-sm-1 control-label">{{Position Y}}</label>
+                            <div class="col-sm-2">
+                                <input type="number" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="target_y" value="30">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-sm-7">
+                                <a class="btn btn-success btn-lg" id="bt_postitdesign_stick_design">
+                                    <i class="fas fa-thumbtack"></i> {{Coller sur ce Design}}
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            {{Utilisation simple : écris ton post-it, sauvegarde, choisis le Design, puis clique sur Coller.}}
+                        </div>
+
+                        <pre id="postitdesign_design_result" style="margin-top:15px;display:none;"></pre>
                     </fieldset>
                 </form>
             </div>
