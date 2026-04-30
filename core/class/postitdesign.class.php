@@ -154,7 +154,6 @@ class postitdesign extends eqLogic {
             . 'white-space:nowrap !important;'
             . 'max-width:100% !important;';
 
-        $placerBtnStyle = $btnStyle . 'background:#555 !important;';
         $deleteBtnStyle = $btnStyle . 'background:#d9534f !important;';
 
         $placerUrl = '/plugins/postitdesign/postitdesign_placer.php?id=' . $this->getId();
@@ -279,7 +278,6 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
         $html .= '<button type="button" onclick="' . $directMoveJsAttr . '" style="' . $btnStyle . '" title="Déplacer directement sur le design">↔</button>';
         $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
-        $html .= '<a href="' . $placerUrl . '" target="_blank" onclick="event.stopPropagation();" style="' . $placerBtnStyle . '" title="Placement dynamique dans une page séparée">🧭</a>';
         $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
 
