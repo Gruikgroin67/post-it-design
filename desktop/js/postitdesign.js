@@ -349,5 +349,5 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
         return;
     }
 
-    window.open('/plugins/postitdesign/desktop/php/postitdesign_placer.php?id=' + encodeURIComponent(eqLogicId), '_blank');
+    window.open('/plugins/postitdesign/postitdesign_placer.php?id=' + encodeURIComponent(eqLogicId), '_blank');
 });
