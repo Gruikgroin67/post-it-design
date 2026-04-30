@@ -213,7 +213,7 @@ if ($rotate > 15) { $rotate = 15; }
 
     <button class="btn-default" id="centerBtn">Centrer</button>
     <button class="btn-success" id="stickBtn">Coller sur ce Design</button>
-    <button class="btn-primary" onclick="window.close()">Fermer</button>
+    <button class="btn-primary" id="closeBtn" type="button">Fermer</button>
 </div>
 
 <div class="stage-wrap">
@@ -275,6 +275,55 @@ if ($rotate > 15) { $rotate = 15; }
         statusBox.style.display = "block";
     }
 
+    function syncOpenerFields() {
+        try {
+            if (!window.opener || window.opener.closed) {
+                return false;
+            }
+
+            const x = xInput.value;
+            const y = yInput.value;
+            const planHeaderId = document.getElementById("planHeaderId").value;
+
+            const openerDoc = window.opener.document;
+
+            const xField = openerDoc.getElementById("postitdesign_target_x");
+            const yField = openerDoc.getElementById("postitdesign_target_y");
+            const planField = openerDoc.getElementById("postitdesign_target_planHeader_id");
+
+            if (xField) {
+                xField.value = x;
+                xField.dispatchEvent(new Event("input", { bubbles: true }));
+                xField.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+
+            if (yField) {
+                yField.value = y;
+                yField.dispatchEvent(new Event("input", { bubbles: true }));
+                yField.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+
+            if (planField && planHeaderId) {
+                planField.value = planHeaderId;
+                planField.dispatchEvent(new Event("input", { bubbles: true }));
+                planField.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+
+            if (window.opener.jQuery) {
+                const $ = window.opener.jQuery;
+                $("#postitdesign_target_x", openerDoc).val(x).trigger("change");
+                $("#postitdesign_target_y", openerDoc).val(y).trigger("change");
+                if (planHeaderId) {
+                    $("#postitdesign_target_planHeader_id", openerDoc).val(planHeaderId).trigger("change");
+                }
+            }
+
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
     note.addEventListener("pointerdown", function (e) {
         dragging = true;
         startX = e.clientX;
@@ -315,6 +364,12 @@ if ($rotate > 15) { $rotate = 15; }
         setPos(Math.round(maxX() / 2), Math.round(maxY() / 2));
     });
 
+
+    document.getElementById("closeBtn").addEventListener("click", function () {
+        syncOpenerFields();
+        window.close();
+    });
+
     document.getElementById("stickBtn").addEventListener("click", function () {
         const planHeaderId = document.getElementById("planHeaderId").value;
 
@@ -343,7 +398,9 @@ if ($rotate > 15) { $rotate = 15; }
             if (data.state !== "ok") {
                 throw new Error(data.result || "Erreur inconnue");
             }
-            showStatus("Post-it collé sur le Design à X=" + xInput.value + ", Y=" + yInput.value + ".", "ok");
+            syncOpenerFields();
+            showStatus("OK : post-it collé sur le Design à X=" + xInput.value + ", Y=" + yInput.value + ".", "ok");
+            alert("OK : le post-it est collé sur le Design. Position X=" + xInput.value + ", Y=" + yInput.value + ".");
         })
         .catch(function (err) {
             showStatus("Erreur : " + err.message, "err");
