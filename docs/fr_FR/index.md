@@ -150,3 +150,24 @@ Les actions de modification, déplacement, collage et décollage nécessitent un
 Post-it Design est un plugin indépendant.
 
 Il n’est pas un plugin officiel Jeedom SAS et n’utilise pas de logo officiel Jeedom.
+
+
+## Créer un nouveau post-it depuis le Design
+
+Depuis un post-it déjà présent sur un Design :
+
+1. Cliquer sur le post-it pour afficher les options.
+2. Cliquer sur le bouton `+`.
+3. Saisir le titre.
+4. Saisir le message.
+5. Choisir la couleur : jaune, vert, rose, bleu ou un code hexadécimal.
+6. Choisir la rotation.
+7. Valider.
+
+Le nouveau post-it est créé automatiquement sur le même Design, légèrement décalé par rapport au post-it utilisé.
+
+Il peut ensuite être déplacé directement avec le bouton `↔`.
+
+## Modifier la rotation depuis le Design
+
+Depuis les options du post-it, cliquer sur `⟳`, saisir une rotation entre -15 et +15 degrés, puis valider.

@@ -1,5 +1,12 @@
 # Changelog - Post-it Design
 
+## Développement en cours
+
+### Ajouté
+
+- Création depuis le Design avec le bouton `+`.
+- Rotation depuis le Design avec le bouton `⟳`.
+
 ## 1.0.0 - Version initiale prévue Market
 
 ### Ajouté

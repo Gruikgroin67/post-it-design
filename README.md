@@ -18,6 +18,8 @@ Créer une expérience proche d’un post-it collé sur un frigo, mais sur un De
 - Options visibles au clic.
 - Compléter le texte directement depuis le Design.
 - Décoller le post-it du Design sans supprimer l’équipement.
+- Créer un nouveau post-it directement depuis le Design.
+- Changer la rotation depuis le Design.
 
 ## Documentation
 
