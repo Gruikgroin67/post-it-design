@@ -192,7 +192,21 @@ $planHeaders = planHeader::all();
                             </div>
                         </div>
 
-                        <div class="alert alert-info">
+                        <div class="alert alert-info">\n
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Visuel}}</label>
+                            <div class="col-sm-4">
+                                <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="visual_style">
+                                    <option value="classic">{{Classic}}</option>
+                                    <option value="paper">{{Paper}}</option>
+                                    <option value="tape">{{Tape}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-5">
+                                <span class="help-block">{{Style visuel du post-it sur le Design.}}</span>
+                            </div>
+                        </div>
+
                             {{Aperçu dynamique en dessous : tu peux redimensionner le post-it par les coins et le faire tourner avec la poignée au-dessus.}}
                         </div>
 

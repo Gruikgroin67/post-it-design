@@ -48,6 +48,13 @@ class postitdesign extends eqLogic {
         $rotate = intval($this->cfg('postit_rotate', -1));
         $targetPlanHeaderId = intval($this->cfg('target_planHeader_id', 0));
 
+        // POSTITDESIGN_VISUAL_STYLE_PATCH
+        $visualStyle = $this->cfg('visual_style', 'classic');
+        if (!in_array($visualStyle, array('classic', 'paper', 'tape'), true)) {
+            $visualStyle = 'classic';
+        }
+
+
         if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
             $color = '#fff475';
         }
@@ -79,23 +86,50 @@ class postitdesign extends eqLogic {
             . 'transform-origin:center center !important;'
             . 'pointer-events:auto !important;';
 
+
+        $visualBackground = 'background:linear-gradient(180deg,#fff48c 0%,#f4df62 100%) !important;background-color:' . $color . ' !important;';
+        $visualShadow = 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;';
+        $visualBorder = 'border:1px solid rgba(120,95,15,.18) !important;';
+        $visualTexture = 'background-image:radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px) !important;background-size:7px 7px !important;';
+        $visualLines = '';
+        $visualFont = 'font-family:"Trebuchet MS",Arial,sans-serif !important;';
+        $visualFold = '<div style="position:absolute;top:0;right:0;width:0;height:0;border-top:22px solid rgba(255,255,255,.86);border-left:22px solid transparent;filter:drop-shadow(-1px 1px 1px rgba(0,0,0,.13));pointer-events:none;"></div>';
+        $visualTape = '';
+
+        if ($visualStyle == 'paper') {
+            $visualBackground = 'background:linear-gradient(180deg,#fff3a0 0%,#f4df70 100%) !important;background-color:' . $color . ' !important;';
+            $visualLines = 'background-image:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.10) 24px) !important;';
+            $visualShadow = 'box-shadow:0 9px 20px rgba(0,0,0,.22) !important;';
+            $visualFont = 'font-family:Verdana,Arial,sans-serif !important;';
+        }
+
+        if ($visualStyle == 'tape') {
+            $visualBackground = 'background:linear-gradient(180deg,#ffe878 0%,#f0d24b 100%) !important;background-color:' . $color . ' !important;';
+            $visualShadow = 'box-shadow:0 13px 28px rgba(0,0,0,.28) !important;';
+            $visualTape = '<div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%) rotate(-2deg);width:46px;height:18px;background:rgba(250,250,235,.72);border-left:1px solid rgba(255,255,255,.45);border-right:1px solid rgba(200,200,180,.45);box-shadow:0 1px 2px rgba(0,0,0,.16);pointer-events:none;"></div>';
+        }
+
         $noteStyle = ''
             . 'display:block !important;'
+            . 'position:relative !important;'
             . 'box-sizing:border-box !important;'
             . 'width:' . $width . 'px !important;'
             . 'min-width:' . $width . 'px !important;'
             . 'max-width:' . $width . 'px !important;'
             . 'min-height:' . $height . 'px !important;'
-            . 'background:' . $color . ' !important;'
-            . 'background-color:' . $color . ' !important;'
+            . $visualBackground
+            
             . 'padding:14px 16px !important;'
-            . 'border-radius:4px !important;'
-            . 'box-shadow:0 8px 18px rgba(0,0,0,.28) !important;'
+            . 'border-radius:5px !important;'
+            . $visualBorder
+            . $visualShadow
             . 'color:#2b2b2b !important;'
-            . 'font-family:Arial, sans-serif !important;'
+            . $visualFont
             . 'overflow:visible !important;'
             . 'pointer-events:auto !important;'
             . 'cursor:pointer !important;'
+            . $visualTexture
+            . $visualLines
             . 'touch-action:none !important;';
 
         $titleStyle = ''
@@ -376,6 +410,8 @@ class postitdesign extends eqLogic {
         $html .= 'style="' . $outerStyle . '">';
 
         $html .= '<div class="postitdesign-note-force" onpointerdown="' . $autoDragJsAttr . '" style="' . $noteStyle . '">';
+        $html .= $visualTape;
+        $html .= $visualFold;
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
 

@@ -49,3 +49,9 @@ Avant publication Market, il reste recommandé de vérifier :
 - documentation finale ;
 - tag stable ;
 - test d’installation depuis GitHub.
+
+
+- Ajout de la rotation par maintien du bouton `⟳` puis glisser gauche/droite.
+
+
+- Ajout de styles visuels sélectionnables : Classic, Paper, Tape.

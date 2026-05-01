@@ -192,3 +192,14 @@ Cliquer sur le post-it pour afficher les options.
 Maintenir le bouton `⟳`, glisser à gauche ou à droite pour tourner le post-it.
 
 Quand on relâche, la rotation est enregistrée automatiquement.
+
+
+## Choix du visuel
+
+Dans la configuration du post-it, le champ `Visuel` permet de choisir le rendu :
+
+- Classic : post-it propre avec coin plié.
+- Paper : rendu papier avec lignes légères.
+- Tape : post-it avec effet scotch.
+
+Le rendu est appliqué automatiquement sur le Design après sauvegarde.

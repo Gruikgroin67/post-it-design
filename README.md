@@ -49,3 +49,14 @@ Version cible Market : `1.0.2`.
 Post-it Design est un plugin indépendant. Il n’est pas un plugin officiel Jeedom SAS et n’utilise pas de logo officiel Jeedom.
 
 - Maintenir le bouton rotation `⟳` puis glisser à gauche ou à droite pour tourner le post-it sur le Design.
+
+
+## Visuels disponibles
+
+Le plugin propose plusieurs styles visuels :
+
+- Classic : post-it propre avec coin plié.
+- Paper : rendu papier avec lignes légères.
+- Tape : post-it avec effet scotch.
+
+Le choix se fait dans la configuration du post-it.
