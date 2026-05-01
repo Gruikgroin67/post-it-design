@@ -47,3 +47,5 @@ Version cible Market : `1.0.2`.
 ## Note
 
 Post-it Design est un plugin indépendant. Il n’est pas un plugin officiel Jeedom SAS et n’utilise pas de logo officiel Jeedom.
+
+- Maintenir le bouton rotation `⟳` puis glisser à gauche ou à droite pour tourner le post-it sur le Design.

@@ -183,3 +183,12 @@ Sur un écran tactile, poser deux doigts sur le post-it puis tourner légèremen
 La rotation est limitée entre -15 et +15 degrés.
 
 Au relâchement, la rotation est sauvegardée automatiquement.
+
+
+## Rotation depuis le Design
+
+Cliquer sur le post-it pour afficher les options.
+
+Maintenir le bouton `⟳`, glisser à gauche ou à droite pour tourner le post-it.
+
+Quand on relâche, la rotation est enregistrée automatiquement.

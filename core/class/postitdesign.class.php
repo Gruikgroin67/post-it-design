@@ -203,6 +203,64 @@ class postitdesign extends eqLogic {
             . "try{note.setPointerCapture(event.pointerId);}catch(err){}"
             . "return false;";
 
+        $rotateHoldJs = "event.preventDefault();event.stopPropagation();"
+            . "var btn=this;"
+            . "var widget=btn.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var note=widget.querySelector('.postitdesign-note-force');"
+            . "var status=widget.querySelector('.postitdesign-status-force');"
+            . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var startX=event.clientX;"
+            . "var startRotate=parseInt(widget.getAttribute('data-rotate')||widget.getAttribute('data-rotate-preview')||'0',10)||0;"
+            . "var currentRotate=startRotate;"
+            . "function clamp(n,min,max){n=parseInt(n,10);if(isNaN(n)){n=min;}return Math.max(min,Math.min(max,n));}"
+            . "function move(e){"
+            . "var dx=(e.clientX-startX);"
+            . "currentRotate=clamp(startRotate+Math.round(dx/3),-15,15);"
+            . "widget.setAttribute('data-rotate-preview',currentRotate);"
+            . "widget.style.setProperty('transform','rotate('+currentRotate+'deg)','important');"
+            . "if(status){status.style.setProperty('display','block','important');status.textContent='Rotation '+currentRotate+'°';}"
+            . "if(note){note.style.outline='2px dashed #f0ad4e';}"
+            . "e.preventDefault();e.stopPropagation();"
+            . "}"
+            . "function end(e){"
+            . "document.removeEventListener('pointermove',move,true);"
+            . "document.removeEventListener('pointerup',end,true);"
+            . "document.removeEventListener('pointercancel',end,true);"
+            . "if(note){note.style.outline='';}"
+            . "var body=new URLSearchParams();"
+            . "body.append('action','saveRotationFromDesign');"
+            . "body.append('eqLogic_id',eqId);"
+            . "body.append('rotate',currentRotate);"
+            . "if(status){status.style.setProperty('display','block','important');status.textContent='Sauvegarde rotation...';}"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
+            . ".then(function(r){return r.json();})"
+            . ".then(function(d){"
+            . "if(d.state==='ok'){"
+            . "widget.setAttribute('data-rotate',currentRotate);"
+            . "widget.setAttribute('data-rotate-preview',currentRotate);"
+            . "widget.style.setProperty('transform','rotate('+currentRotate+'deg)','important');"
+            . "if(status){status.textContent='OK rotation '+currentRotate+'°';}"
+            . "}else{"
+            . "widget.style.setProperty('transform','rotate('+startRotate+'deg)','important');"
+            . "widget.setAttribute('data-rotate-preview',startRotate);"
+            . "alert(d.result||'Erreur rotation');"
+            . "if(status){status.textContent='Erreur rotation';}"
+            . "}"
+            . "})"
+            . ".catch(function(err){"
+            . "widget.style.setProperty('transform','rotate('+startRotate+'deg)','important');"
+            . "widget.setAttribute('data-rotate-preview',startRotate);"
+            . "alert(err.message||err);"
+            . "if(status){status.textContent='Erreur rotation';}"
+            . "});"
+            . "e.preventDefault();e.stopPropagation();"
+            . "}"
+            . "document.addEventListener('pointermove',move,true);"
+            . "document.addEventListener('pointerup',end,true);"
+            . "document.addEventListener('pointercancel',end,true);"
+            . "return false;";
+
         $completeJs = "event.preventDefault();event.stopPropagation();"
             . "var widget=this.closest('.postitdesign-widget');"
             . "if(!widget){return false;}"
@@ -302,6 +360,7 @@ class postitdesign extends eqLogic {
 
         $toggleOptionsJsAttr = htmlspecialchars($toggleOptionsJs, ENT_QUOTES, 'UTF-8');
         $autoDragJsAttr = htmlspecialchars($autoDragJs, ENT_QUOTES, 'UTF-8');
+        $rotateHoldJsAttr = htmlspecialchars($rotateHoldJs, ENT_QUOTES, 'UTF-8');
         $completeJsAttr = htmlspecialchars($completeJs, ENT_QUOTES, 'UTF-8');
         $rotateJsAttr = htmlspecialchars($rotateJs, ENT_QUOTES, 'UTF-8');
         $newJsAttr = htmlspecialchars($newJs, ENT_QUOTES, 'UTF-8');
@@ -323,7 +382,7 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
         $html .= '<button type="button" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it sur ce Design">+</button>';
         $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
-        $html .= '<button type="button" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Changer la rotation">⟳</button>';
+        $html .= '<button type="button" onpointerdown="' . $rotateHoldJsAttr . '" style="' . $btnStyle . '" title="Maintenir puis glisser pour tourner">⟳</button>';
         $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
 
