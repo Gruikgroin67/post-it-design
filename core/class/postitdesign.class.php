@@ -429,16 +429,16 @@ class postitdesign extends eqLogic {
 
 
         $html .= <<<'HTML'
-<style id="postitdesign-touch-inline-v11-css">
+<style id="postitdesign-touch-inline-v12-css">
 .postitdesign-widget{z-index:999999!important;touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
 .postitdesign-widget .postitdesign-note-force{touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
 .postitdesign-widget button{min-width:48px!important;min-height:48px!important;line-height:42px!important;font-size:20px!important;pointer-events:auto!important;touch-action:manipulation!important;z-index:1000000!important;position:relative!important;}
-.postitdesign-widget.postitdesign-moving-v11{opacity:.96!important;}
+.postitdesign-widget.postitdesign-moving-v12{opacity:.96!important;}
 </style>
-<script id="postitdesign-touch-inline-v11">
+<script id="postitdesign-touch-inline-v12">
 (function(){
-  if(window.__postitdesignTouchInlineV11){return;}
-  window.__postitdesignTouchInlineV11 = true;
+  if(window.__postitdesignTouchInlineV12){return;}
+  window.__postitdesignTouchInlineV12 = true;
 
   var active = null;
   var raf = 0;
@@ -560,7 +560,7 @@ class postitdesign extends eqLogic {
 
     if(active && active.drag){
       var widget = active.widget;
-      widget.classList.remove('postitdesign-moving-v11');
+      widget.classList.remove('postitdesign-moving-v12');
 
       if(active.moved){
         var x = Math.round(active.left + active.dx);
@@ -641,18 +641,24 @@ class postitdesign extends eqLogic {
   }
 
   function startRotate(e, widget){
-    active = {widget: widget, rotate: getRotate(widget)};
-    var direction = 1;
+    /*
+      v12 : rotation simple au tap.
+      Ancien comportement supprimé : intervalle de maintien qui pouvait continuer
+      si la tablette ne transmettait pas correctement pointerup/touchend.
+    */
+    buttonLockUntil = Date.now() + 350;
 
-    function step(){
-      var r = getRotate(widget) + direction;
-      if(r >= 15){direction = -1;}
-      if(r <= -15){direction = 1;}
-      setRotate(widget, r);
+    if(rotateTimer){
+      clearInterval(rotateTimer);
+      rotateTimer = null;
     }
 
-    step();
-    rotateTimer = setInterval(step, 80);
+    var r = getRotate(widget);
+    r = r + 5;
+    if(r > 15){r = -15;}
+
+    setRotate(widget, r);
+    saveRot(widget);
 
     e.preventDefault();
     e.stopPropagation();
@@ -696,7 +702,7 @@ class postitdesign extends eqLogic {
       moved: false
     };
 
-    widget.classList.add('postitdesign-moving-v11');
+    widget.classList.add('postitdesign-moving-v12');
 
     e.preventDefault();
     e.stopPropagation();
