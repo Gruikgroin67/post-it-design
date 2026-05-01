@@ -418,7 +418,7 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
         $html .= '<button type="button" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it sur ce Design">+</button>';
         $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
-        $html .= '<button type="button" onpointerdown="' . $rotateHoldJsAttr . '" style="' . $btnStyle . '" title="Maintenir puis glisser pour tourner">⟳</button>';
+        $html .= '<button type="button" class="postitdesign-rotate-button" data-action="rotate" onclick="return false;" style="' . $btnStyle . '" title="Rotation : appui simple">⟳</button>';
         $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
 
@@ -429,16 +429,16 @@ class postitdesign extends eqLogic {
 
 
         $html .= <<<'HTML'
-<style id="postitdesign-touch-inline-v12-css">
+<style id="postitdesign-touch-inline-v13-css">
 .postitdesign-widget{z-index:999999!important;touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
 .postitdesign-widget .postitdesign-note-force{touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
 .postitdesign-widget button{min-width:48px!important;min-height:48px!important;line-height:42px!important;font-size:20px!important;pointer-events:auto!important;touch-action:manipulation!important;z-index:1000000!important;position:relative!important;}
-.postitdesign-widget.postitdesign-moving-v12{opacity:.96!important;}
+.postitdesign-widget.postitdesign-moving-v13{opacity:.96!important;}
 </style>
-<script id="postitdesign-touch-inline-v12">
+<script id="postitdesign-touch-inline-v13">
 (function(){
-  if(window.__postitdesignTouchInlineV12){return;}
-  window.__postitdesignTouchInlineV12 = true;
+  if(window.__postitdesignTouchInlineV13){return;}
+  window.__postitdesignTouchInlineV13 = true;
 
   var active = null;
   var raf = 0;
@@ -560,7 +560,7 @@ class postitdesign extends eqLogic {
 
     if(active && active.drag){
       var widget = active.widget;
-      widget.classList.remove('postitdesign-moving-v12');
+      widget.classList.remove('postitdesign-moving-v13');
 
       if(active.moved){
         var x = Math.round(active.left + active.dx);
@@ -642,16 +642,16 @@ class postitdesign extends eqLogic {
 
   function startRotate(e, widget){
     /*
-      v12 : rotation simple au tap.
-      Ancien comportement supprimé : intervalle de maintien qui pouvait continuer
-      si la tablette ne transmettait pas correctement pointerup/touchend.
+      v13 : rotation sans maintien.
+      Un appui = +5 degrés. Aucun setInterval. Aucun mode rotation bloquant.
     */
-    buttonLockUntil = Date.now() + 350;
-
     if(rotateTimer){
       clearInterval(rotateTimer);
       rotateTimer = null;
     }
+
+    active = null;
+    buttonLockUntil = Date.now() + 400;
 
     var r = getRotate(widget);
     r = r + 5;
@@ -660,9 +660,16 @@ class postitdesign extends eqLogic {
     setRotate(widget, r);
     saveRot(widget);
 
+    var status = widget.querySelector('.postitdesign-status-force');
+    if(status){
+      status.style.setProperty('display', 'block', 'important');
+      status.textContent = 'Rotation ' + r + '°';
+    }
+
     e.preventDefault();
     e.stopPropagation();
     if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
+    return false;
   }
 
   function start(e){
@@ -702,7 +709,7 @@ class postitdesign extends eqLogic {
       moved: false
     };
 
-    widget.classList.add('postitdesign-moving-v12');
+    widget.classList.add('postitdesign-moving-v13');
 
     e.preventDefault();
     e.stopPropagation();
