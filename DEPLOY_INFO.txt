@@ -1,33 +1,36 @@
-POST-IT DESIGN - INFO A LIRE AVANT PATCH
+Post-it Design - informations avant patch
 
 Projet :
 - Plugin Jeedom : postitdesign
-- Dépôt GitHub : Gruikgroin67/post-it-design
-- Dossier DEV actuel : /var/www/html/plugins/postitdesign
-- Branche DEV actuelle : main
-- Version actuelle : v1.0.8
+- Repo : Gruikgroin67/post-it-design
+- Dossier DEV : /var/www/html/plugins/postitdesign
 
-Règle actuelle :
-- Travailler uniquement sur DEV.
-- Ne plus modifier la PROD directement.
-- PROD à éviter sauf demande explicite.
+Etat validé avant tag :
+- Le script de rendu global postitdesign-safe-top-layer a été supprimé.
+- Le plugin ne doit plus modifier le parent DOM Jeedom du widget.
+- Le post-it repasse cliquable et déplaçable via pointer-events:auto sur outerStyle.
+- Les décorations internes comme coin plié / scotch peuvent rester en pointer-events:none.
+- Le z-index du post-it est local au widget / plan du post-it, sans toucher aux autres éléments du Design.
+- Le test DEV confirme : clic options OK, déplacement OK.
 
-État fonctionnel retenu :
-- Le post-it doit passer au-dessus des widgets Jeedom.
-- Le correctif doit rester local au widget post-it.
-- Le Design complet ne doit jamais être couvert par un calque global.
-- Le déplacement du post-it est disponible.
-- La sauvegarde X/Y est disponible.
-- La rotation se fait par appui simple de 5 degrés.
-- Les boutons du post-it sont accessibles.
-- Le décollage ne supprime pas l’équipement.
-- L’aperçu dynamique du style visuel est à conserver.
+Règles à ne pas refaire :
+- Ne pas injecter de script global qui remonte dans les parents DOM Jeedom.
+- Ne pas utiliser de z-index extrême type 999999, 1000000 ou 2147483647.
+- Ne pas modifier le Design 86 en PROD.
+- Ne pas modifier la table plan en PROD sans diagnostic et sauvegarde.
+- Ne pas tester directement sur le Jeedom réel tant que la DEV n’est pas validée.
 
-Points critiques :
-- Ne pas remettre de script tactile global permanent sur document.
-- Ne pas remettre de z-index extrême type 999999.
-- Ne pas remettre de CSS global visant tout le Design.
-- Ne pas modifier les widgets Jeedom voisins.
-- Le post-it doit rester isolé dans son widget.
+Méthode correcte :
+- Développer et tester sur jeedom-dev.
+- Vérifier PHP avec php -l.
+- Vider le cache Jeedom après patch.
+- Redémarrer Apache.
+- Tag uniquement après validation visuelle DEV.
 
-Dernière mise à jour : 20260501_130525
+Dernier changement avant tag :
+- Correction du bloc outerStyle dans core/class/postitdesign.class.php :
+  pointer-events:auto et z-index local raisonnable.
+- Conservation du déplacement et du clic options sur post-it.
+
+Date du mémo :
+20260501_133735

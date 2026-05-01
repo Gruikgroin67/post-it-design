@@ -1,10 +1,9 @@
 _patch_backups/
-*.bak
-*.tmp
 *.log
-.DS_Store
-Thumbs.db
-vendor/
-node_modules/
+*.tmp
+*.bak
+*.backup
 __pycache__/
 *.pyc
+.DS_Store
+Thumbs.db
