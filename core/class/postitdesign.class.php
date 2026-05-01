@@ -80,8 +80,8 @@ class postitdesign extends eqLogic {
             . 'padding:0 !important;'
             . 'margin:0 !important;'
             . 'overflow:visible !important;'
-            . 'pointer-events:none !important;'
-            . 'z-index:auto !important;';
+            . 'pointer-events:auto !important;'
+            . 'z-index:20000 !important;';
 
         $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
         $visualShadow = 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;';
