@@ -464,3 +464,142 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
     setTimeout(pdApplyVisualPreview, 1500);
   });
 })();
+
+
+/* POSTITDESIGN_FORCE_LIVE_VISUAL_PREVIEW_V3 */
+(function () {
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  function q(sel) {
+    return document.querySelector(sel);
+  }
+
+  function getField(keys, fallback) {
+    for (var i = 0; i < keys.length; i++) {
+      var el = q('[data-l2key="' + keys[i] + '"]');
+      if (el && el.value !== undefined && el.value !== '') {
+        return el.value;
+      }
+    }
+    return fallback;
+  }
+
+  function cleanText(v, fallback) {
+    v = (v || '').toString();
+    return v.trim() ? v : fallback;
+  }
+
+  function ensurePreview() {
+    var select = q('[data-l2key="visual_style"]');
+    if (!select) return null;
+
+    var wrap = q('#postitdesignForceLivePreviewWrap');
+    if (wrap) return wrap;
+
+    wrap = document.createElement('div');
+    wrap.id = 'postitdesignForceLivePreviewWrap';
+    wrap.innerHTML =
+      '<div id="postitdesignForceLivePreviewLabel">Aperçu immédiat du visuel</div>' +
+      '<div id="postitdesignForceLivePreviewCard">' +
+      '<div id="postitdesignForceLivePreviewTitle"></div>' +
+      '<div id="postitdesignForceLivePreviewMessage"></div>' +
+      '</div>' +
+      '<div style="font-size:12px;margin-top:7px;color:#555;">Cet aperçu change sans sauvegarder. Pour appliquer au Design réel, clique ensuite sur Sauvegarder.</div>';
+
+    var formGroup = select.closest('.form-group') || select.parentNode;
+    if (formGroup && formGroup.parentNode) {
+      formGroup.parentNode.insertBefore(wrap, formGroup.nextSibling);
+    } else {
+      select.parentNode.appendChild(wrap);
+    }
+
+    return wrap;
+  }
+
+  function applyOldPreviewToo(style) {
+    var candidates = document.querySelectorAll('.postitdesign-note-force, .postitdesign-preview-note, .postitdesign-live-note, .postitdesign-dynamic-preview-note, .postitdesign-preview-postit, .ui-resizable');
+    candidates.forEach(function (el) {
+      if (!el || el.id === 'postitdesignForceLivePreviewCard') return;
+
+      var txt = (el.textContent || '').trim();
+      var rect = el.getBoundingClientRect();
+
+      if (rect.width < 90 || rect.height < 60) return;
+      if (txt.indexOf('Titre') === -1 && txt.indexOf('message') === -1 && txt.indexOf('Message') === -1 && txt.length < 3) return;
+
+      el.classList.remove('postitdesign-force-style-classic', 'postitdesign-force-style-paper', 'postitdesign-force-style-tape');
+      el.classList.add('postitdesign-force-style-' + style);
+      el.setAttribute('data-visual-style-preview', style);
+    });
+  }
+
+  function updatePreview() {
+    var wrap = ensurePreview();
+    if (!wrap) return;
+
+    var style = getField(['visual_style'], 'classic');
+    if (['classic', 'paper', 'tape'].indexOf(style) === -1) {
+      style = 'classic';
+    }
+
+    var title = cleanText(getField(['postit_title', 'title'], ''), 'Titre');
+    var message = cleanText(getField(['postit_message', 'message'], ''), 'Ton message ici');
+    var width = parseInt(getField(['postit_width', 'width'], '220'), 10);
+    var height = parseInt(getField(['postit_height', 'height'], '150'), 10);
+    var rotate = parseInt(getField(['postit_rotate', 'rotate'], '-1'), 10);
+
+    if (isNaN(width) || width < 120) width = 220;
+    if (width > 900) width = 900;
+    if (isNaN(height) || height < 80) height = 150;
+    if (height > 700) height = 700;
+    if (isNaN(rotate)) rotate = -1;
+    if (rotate < -15) rotate = -15;
+    if (rotate > 15) rotate = 15;
+
+    var card = q('#postitdesignForceLivePreviewCard');
+    var titleEl = q('#postitdesignForceLivePreviewTitle');
+    var msgEl = q('#postitdesignForceLivePreviewMessage');
+
+    if (!card || !titleEl || !msgEl) return;
+
+    card.classList.remove('postitdesign-force-style-classic', 'postitdesign-force-style-paper', 'postitdesign-force-style-tape');
+    card.classList.add('postitdesign-force-style-' + style);
+
+    card.style.setProperty('width', width + 'px', 'important');
+    card.style.setProperty('min-height', height + 'px', 'important');
+    card.style.setProperty('transform', 'rotate(' + rotate + 'deg)', 'important');
+
+    titleEl.textContent = title;
+    msgEl.textContent = message;
+
+    applyOldPreviewToo(style);
+  }
+
+  ready(function () {
+    setTimeout(updatePreview, 100);
+    setTimeout(updatePreview, 500);
+    setTimeout(updatePreview, 1200);
+
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.matches && e.target.matches('[data-l2key]')) {
+        setTimeout(updatePreview, 10);
+      }
+    }, true);
+
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.matches && e.target.matches('[data-l2key]')) {
+        setTimeout(updatePreview, 10);
+      }
+    }, true);
+
+    document.addEventListener('click', function () {
+      setTimeout(updatePreview, 80);
+    }, true);
+  });
+})();
