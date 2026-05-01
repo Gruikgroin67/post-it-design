@@ -52,9 +52,8 @@ La gestion tactile principale est intégrée directement dans le rendu du widget
 
 Après une mise à jour, fermez puis rouvrez le Design sur tablette, ou rechargez complètement la page.
 
-## Documentation
+## Changelog
 
-- Changelog : `docs/fr_FR/changelog/index.md`
-- Dépôt GitHub : `Gruikgroin67/post-it-design`
+[Changelog Post-it Design](./changelog/)
 
-Dernière mise à jour : 20260501_120433
+Dernière mise à jour : 20260501_120832

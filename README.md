@@ -46,4 +46,4 @@ https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/
 
 https://github.com/Gruikgroin67/post-it-design
 
-Dernière mise à jour : 20260501_120433
+Dernière mise à jour : 20260501_120832

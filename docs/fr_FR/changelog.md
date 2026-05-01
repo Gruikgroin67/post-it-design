@@ -51,4 +51,4 @@ Version corrective centrée sur l’utilisation dans les Designs Jeedom depuis u
 
 - Première version publique du plugin Post-it Design.
 
-Dernière mise à jour : 20260501_120433
+Dernière mise à jour : 20260501_120832
