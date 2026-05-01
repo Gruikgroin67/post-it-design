@@ -12,7 +12,7 @@ Créer une expérience proche d’un post-it collé sur un frigo, mais sur un De
 - Titre, message, couleur, largeur, hauteur et rotation.
 - Aperçu dynamique avec redimensionnement et rotation.
 - Collage automatique sur un Design Jeedom.
-- Déplacement direct depuis le Design.
+- Déplacement direct depuis le Design par clic maintenu / glisser.
 - Sauvegarde automatique de la position.
 - Options masquées par défaut.
 - Options visibles au clic.

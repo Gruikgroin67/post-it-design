@@ -2,6 +2,12 @@
 
 ## Développement en cours
 
+### Modifié
+
+- Déplacement direct sans bouton : clic maintenu sur le post-it puis glisser-déposer.
+- Le clic simple affiche ou masque les options.
+
+
 ### Ajouté
 
 - Création depuis le Design avec le bouton `+`.

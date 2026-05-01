@@ -70,11 +70,7 @@ Ouvrir le Design Jeedom.
 
 Cliquer une fois sur le post-it pour afficher ses options.
 
-Cliquer sur l’icône :
-
-`↔`
-
-Déplacer le post-it avec la souris.
+Cliquer sur le post-it, garder le clic enfoncé, puis déplacer le post-it avec la souris.
 
 Relâcher la souris.
 
@@ -166,8 +162,15 @@ Depuis un post-it déjà présent sur un Design :
 
 Le nouveau post-it est créé automatiquement sur le même Design, légèrement décalé par rapport au post-it utilisé.
 
-Il peut ensuite être déplacé directement avec le bouton `↔`.
+Il peut ensuite être déplacé directement en gardant le clic enfoncé sur le post-it.
 
 ## Modifier la rotation depuis le Design
 
 Depuis les options du post-it, cliquer sur `⟳`, saisir une rotation entre -15 et +15 degrés, puis valider.
+
+
+## Déplacement direct sans bouton
+
+Sur le Design, maintenir le clic sur le post-it puis le déplacer. Au relâchement, la position est sauvegardée automatiquement.
+
+Un clic simple affiche ou masque les options du post-it.
