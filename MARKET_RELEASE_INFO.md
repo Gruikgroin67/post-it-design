@@ -6,7 +6,7 @@ v1.0.5
 
 ## Date
 
-2026-05-01 11:59:43
+2026-05-01 12:04:33
 
 ## Résumé
 
@@ -16,19 +16,18 @@ Version corrective pour l’utilisation tablette dans les Designs Jeedom.
 
 - Déplacement tactile plus fluide.
 - Correction des boutons sur tablette.
-- Correction de la rotation bloquée.
+- Correction de la rotation qui pouvait rester active.
 - Rotation par appui simple de 5 degrés.
-- Retrait de la dépendance au JavaScript externe pour la partie tactile critique.
-- Injection inline du script tactile dans le rendu HTML du widget pour éviter les erreurs 403 sur certaines installations.
+- Gestion tactile intégrée directement dans le rendu HTML du widget.
+- Documentation publique corrigée.
 
 ## État validé
 
-- Plugin corrigé sur DEV uniquement.
+- Plugin corrigé sur DEV.
 - PROD non modifiée.
 - PHP syntax OK.
-- Apache actif après redémarrage.
 - Documentation mise à jour.
-- Tag prévu : v1.0.5
+- Tag v1.0.5 remis sur le commit corrigé.
 
 ## Dépôt
 

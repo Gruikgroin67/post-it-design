@@ -29,8 +29,8 @@ Cette version corrige l’utilisation tactile sur tablette :
 - déplacement au doigt plus fluide ;
 - boutons plus faciles à utiliser ;
 - rotation par appui simple ;
-- suppression du mode rotation bloqué ;
-- gestion tactile injectée directement dans le rendu du widget pour éviter les problèmes d’accès `403` aux fichiers JavaScript externes selon les installations Jeedom.
+- correction du blocage de rotation ;
+- gestion tactile intégrée directement dans le rendu du widget pour éviter les problèmes d’accès `403` aux fichiers JavaScript externes selon les installations Jeedom.
 
 ## Documentation
 
@@ -45,3 +45,5 @@ https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/
 ## Dépôt
 
 https://github.com/Gruikgroin67/post-it-design
+
+Dernière mise à jour : 20260501_120433

@@ -2,22 +2,23 @@
 
 ## v1.0.5 - Correction tactile tablette
 
-Version de correction centrée sur l’utilisation dans les Designs Jeedom depuis une tablette tactile.
+Version corrective centrée sur l’utilisation dans les Designs Jeedom depuis une tablette tactile.
 
 ### Corrigé
 
 - Déplacement tactile plus fluide des post-it sur un Design.
-- Correction du problème des boutons tactiles qui répondaient mal sur tablette.
-- Correction du bouton de rotation : la rotation ne reste plus bloquée en mode maintien.
-- La rotation se fait maintenant par appui simple, par pas de 5 degrés.
-- Le bouton Décoller reste utilisable sans supprimer l’équipement.
+- Correction du comportement des boutons tactiles sur tablette.
+- Correction de la rotation qui pouvait rester active.
+- Rotation désormais par appui simple sur le bouton `⟳`.
+- Un appui sur `⟳` applique une rotation de 5 degrés.
+- Le bouton `✕` permet de décoller le post-it sans supprimer l’équipement.
 - Le post-it reste au-dessus des autres éléments du Design sans casser sa position Jeedom.
 
 ### Technique
 
-- Abandon du chargement JavaScript externe pour la gestion tactile, car certains Jeedom peuvent retourner un accès `403` sur les fichiers JS du plugin depuis le Design.
-- La gestion tactile critique est maintenant injectée directement dans le rendu HTML du widget.
-- Conservation des appels AJAX internes :
+- Certains contextes Jeedom peuvent retourner une erreur `403` sur les fichiers JavaScript externes d’un plugin.
+- La gestion tactile principale est donc intégrée directement dans le rendu HTML du widget.
+- Conservation des actions AJAX internes :
   - `savePositionFromDesign`
   - `saveRotationFromDesign`
 
@@ -49,3 +50,5 @@ Version de correction centrée sur l’utilisation dans les Designs Jeedom depui
 ## v1.0.0
 
 - Première version publique du plugin Post-it Design.
+
+Dernière mise à jour : 20260501_120433
