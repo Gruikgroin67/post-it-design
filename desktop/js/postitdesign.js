@@ -558,3 +558,133 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
     }, true);
   });
 })();
+
+
+/* POSTITDESIGN_COLOR_ON_VISUAL_PREVIEW_V5 */
+(function () {
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  function fieldValue(keys, fallback) {
+    for (var i = 0; i < keys.length; i++) {
+      var el = document.querySelector('[data-l2key="' + keys[i] + '"]');
+      if (el && el.value) return el.value;
+    }
+    return fallback;
+  }
+
+  function validHex(v) {
+    return /^#[0-9a-fA-F]{6}$/.test(v || '');
+  }
+
+  function selectedColor() {
+    var c = fieldValue(['postit_color', 'color'], '#fff475');
+    return validHex(c) ? c : '#fff475';
+  }
+
+  function selectedStyle() {
+    var s = fieldValue(['visual_style'], 'classic');
+    return ['classic', 'paper', 'tape'].indexOf(s) >= 0 ? s : 'classic';
+  }
+
+  function findPreview() {
+    var candidates = [];
+    [
+      '.postitdesign-note-force',
+      '.postitdesign-preview-note',
+      '.postitdesign-live-note',
+      '.postitdesign-dynamic-preview-note',
+      '.postitdesign-preview-postit',
+      '.ui-resizable'
+    ].forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        candidates.push(el);
+      });
+    });
+
+    var best = null;
+    candidates.forEach(function (el) {
+      if (!el) return;
+      var rect = el.getBoundingClientRect();
+      var txt = (el.textContent || '').trim();
+
+      if (rect.width < 100 || rect.height < 70) return;
+      if (rect.width > 950 || rect.height > 750) return;
+
+      if (
+        txt.indexOf('Titre') !== -1 ||
+        txt.indexOf('Ton message ici') !== -1 ||
+        txt.indexOf('message') !== -1 ||
+        txt.indexOf('Message') !== -1
+      ) {
+        best = el;
+      }
+    });
+    return best;
+  }
+
+  function applyColorAndStyle() {
+    var preview = findPreview();
+    if (!preview) return;
+
+    var color = selectedColor();
+    var style = selectedStyle();
+
+    preview.classList.remove(
+      'postitdesign-live-visual-classic',
+      'postitdesign-live-visual-paper',
+      'postitdesign-live-visual-tape'
+    );
+    preview.classList.add('postitdesign-live-visual-' + style);
+
+    preview.style.setProperty('background-color', color, 'important');
+    preview.style.setProperty('background', color, 'important');
+
+    if (style === 'paper') {
+      preview.style.setProperty(
+        'background-image',
+        'repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.12) 24px)',
+        'important'
+      );
+    } else if (style === 'classic') {
+      preview.style.setProperty(
+        'background-image',
+        'radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px)',
+        'important'
+      );
+      preview.style.setProperty('background-size', '7px 7px', 'important');
+    } else {
+      preview.style.setProperty('background-image', 'none', 'important');
+    }
+
+    preview.setAttribute('data-live-visual-style', style);
+    preview.setAttribute('data-live-color', color);
+  }
+
+  ready(function () {
+    setTimeout(applyColorAndStyle, 100);
+    setTimeout(applyColorAndStyle, 500);
+    setTimeout(applyColorAndStyle, 1200);
+
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.matches && e.target.matches('[data-l2key]')) {
+        setTimeout(applyColorAndStyle, 10);
+      }
+    }, true);
+
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.matches && e.target.matches('[data-l2key]')) {
+        setTimeout(applyColorAndStyle, 10);
+      }
+    }, true);
+
+    document.addEventListener('click', function () {
+      setTimeout(applyColorAndStyle, 80);
+    }, true);
+  });
+})();

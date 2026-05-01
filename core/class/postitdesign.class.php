@@ -87,7 +87,7 @@ class postitdesign extends eqLogic {
             . 'pointer-events:auto !important;';
 
 
-        $visualBackground = 'background:linear-gradient(180deg,#fff48c 0%,#f4df62 100%) !important;background-color:' . $color . ' !important;';
+        $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
         $visualShadow = 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;';
         $visualBorder = 'border:1px solid rgba(120,95,15,.18) !important;';
         $visualTexture = 'background-image:radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px) !important;background-size:7px 7px !important;';
@@ -97,14 +97,14 @@ class postitdesign extends eqLogic {
         $visualTape = '';
 
         if ($visualStyle == 'paper') {
-            $visualBackground = 'background:linear-gradient(180deg,#fff3a0 0%,#f4df70 100%) !important;background-color:' . $color . ' !important;';
+            $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
             $visualLines = 'background-image:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.10) 24px) !important;';
             $visualShadow = 'box-shadow:0 9px 20px rgba(0,0,0,.22) !important;';
             $visualFont = 'font-family:Verdana,Arial,sans-serif !important;';
         }
 
         if ($visualStyle == 'tape') {
-            $visualBackground = 'background:linear-gradient(180deg,#ffe878 0%,#f0d24b 100%) !important;background-color:' . $color . ' !important;';
+            $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
             $visualShadow = 'box-shadow:0 13px 28px rgba(0,0,0,.28) !important;';
             $visualTape = '<div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%) rotate(-2deg);width:46px;height:18px;background:rgba(250,250,235,.72);border-left:1px solid rgba(255,255,255,.45);border-right:1px solid rgba(200,200,180,.45);box-shadow:0 1px 2px rgba(0,0,0,.16);pointer-events:none;"></div>';
         }
