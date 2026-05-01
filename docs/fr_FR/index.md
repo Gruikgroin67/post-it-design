@@ -203,3 +203,21 @@ Dans la configuration du post-it, le champ `Visuel` permet de choisir le rendu :
 - Tape : post-it avec effet scotch.
 
 Le rendu est appliqué automatiquement sur le Design après sauvegarde.
+
+## Création depuis le Design
+
+Depuis un post-it déjà présent sur un Design, cliquer sur le bouton  dans les options du post-it.
+
+Le plugin demande le titre, le message, la couleur et la rotation, puis crée automatiquement un nouveau post-it sur le même Design.
+
+Le post-it peut ensuite être placé directement par clic maintenu / glisser.
+
+## Styles visuels
+
+Dans la configuration du post-it, le champ  permet de choisir le rendu :
+
+- Classic : post-it propre avec coin plié.
+- Paper : rendu papier avec lignes légères.
+- Tape : post-it avec effet scotch.
+
+La couleur choisie est conservée dans chaque style.

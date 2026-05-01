@@ -42,7 +42,7 @@ Checklist :
 
 Plugin en développement actif.
 
-Version cible Market : `1.0.2`.
+Version cible Market : . `1.0.2`.
 
 ## Note
 
@@ -60,3 +60,11 @@ Le plugin propose plusieurs styles visuels :
 - Tape : post-it avec effet scotch.
 
 Le choix se fait dans la configuration du post-it.
+
+## Fonctions récentes
+
+- Création d’un nouveau post-it directement depuis un Design.
+- Déplacement direct par clic maintenu / glisser.
+- Rotation avec maintien du bouton  puis glisser gauche/droite.
+- Styles visuels sélectionnables : Classic, Paper, Tape.
+- Conservation de la couleur choisie dans tous les styles.
