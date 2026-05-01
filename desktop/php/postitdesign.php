@@ -309,3 +309,238 @@ $planHeaders = planHeader::all();
 <?php include_file('desktop', 'postitdesign', 'css', 'postitdesign'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
 <?php include_file('desktop', 'postitdesign', 'js', 'postitdesign'); ?>
+
+<script>
+/* POSTITDESIGN LIVE VISUAL PREVIEW FIX V15 START */
+(function () {
+  "use strict";
+
+  if (window.__postitdesignPreviewV15) return;
+  window.__postitdesignPreviewV15 = true;
+
+  function one(sel, root) {
+    return (root || document).querySelector(sel);
+  }
+
+  function all(sel, root) {
+    return Array.prototype.slice.call((root || document).querySelectorAll(sel));
+  }
+
+  function getField(keys, fallback) {
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      var el =
+        one('[data-l2key="' + k + '"]') ||
+        one('[data-l1key="' + k + '"]') ||
+        one('[name="' + k + '"]') ||
+        one('[name*="' + k + '"]') ||
+        one('#' + k);
+
+      if (el && el.value !== undefined && String(el.value).trim() !== "") {
+        return el.value;
+      }
+    }
+    return fallback || "";
+  }
+
+  function esc(v) {
+    return String(v || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function styleName(v) {
+    v = String(v || "").toLowerCase();
+    if (v.indexOf("paper") !== -1 || v.indexOf("papier") !== -1) return "paper";
+    if (v.indexOf("tape") !== -1 || v.indexOf("scotch") !== -1) return "tape";
+    return "classic";
+  }
+
+  function visualSelect() {
+    var byKey =
+      one('select[data-l2key="visual_style"]') ||
+      one('select[data-l1key="visual_style"]') ||
+      one('select[name*="visual_style"]');
+
+    if (byKey) return byKey;
+
+    var selects = all("select");
+    for (var i = 0; i < selects.length; i++) {
+      var txt = (selects[i].textContent || "").toLowerCase();
+      var meta = ((selects[i].id || "") + " " + (selects[i].name || "") + " " + (selects[i].className || "")).toLowerCase();
+      if (txt.indexOf("classic") !== -1 && txt.indexOf("paper") !== -1 && txt.indexOf("tape") !== -1) return selects[i];
+      if (meta.indexOf("visual") !== -1 || meta.indexOf("visuel") !== -1) return selects[i];
+    }
+
+    return null;
+  }
+
+  function previewContainer() {
+    var old = one("#postitdesign_preview_v15");
+    if (old) return old;
+
+    var labels = all("label,td,th,span,div").filter(function (el) {
+      var t = (el.textContent || "").toLowerCase();
+      return t.indexOf("aperçu dynamique") !== -1 || t.indexOf("apercu dynamique") !== -1;
+    });
+
+    var anchor = labels.length ? labels[labels.length - 1] : null;
+    var row = anchor ? (anchor.closest(".form-group") || anchor.closest(".row") || anchor.parentNode) : null;
+
+    var box = document.createElement("div");
+    box.id = "postitdesign_preview_v15";
+    box.style.margin = "14px 0 24px 0";
+    box.style.minHeight = "240px";
+    box.style.display = "flex";
+    box.style.justifyContent = "center";
+    box.style.alignItems = "flex-start";
+    box.style.pointerEvents = "none";
+
+    if (row && row.parentNode) {
+      var next = row.nextSibling;
+      if (next && next.nodeType === 1) {
+        next.parentNode.insertBefore(box, next.nextSibling);
+      } else {
+        row.parentNode.appendChild(box);
+      }
+    } else {
+      var sel = visualSelect();
+      var parent = sel ? (sel.closest(".eqLogicAttr") || sel.closest(".form-group") || sel.parentNode) : null;
+      if (parent && parent.parentNode) {
+        parent.parentNode.appendChild(box);
+      } else {
+        document.body.appendChild(box);
+      }
+    }
+
+    return box;
+  }
+
+  function hideOldPreview() {
+    var box = one("#postitdesign_preview_v15");
+    all("[id*=preview], [class*=preview], [id*=Preview], [class*=Preview]").forEach(function (el) {
+      if (box && (el === box || box.contains(el) || el.contains(box))) return;
+      var t = (el.textContent || "").toLowerCase();
+      var html = (el.innerHTML || "").toLowerCase();
+      if (
+        t.indexOf("aperçu dynamique") === -1 &&
+        t.indexOf("apercu dynamique") === -1 &&
+        html.indexOf("postit") === -1 &&
+        html.indexOf("rotate") === -1
+      ) {
+        return;
+      }
+      if (el.id === "postitdesign_preview_v15") return;
+      el.style.display = "none";
+    });
+  }
+
+  function render() {
+    var style = visualSelect() ? styleName(visualSelect().value) : styleName(getField(["visual_style"], "classic"));
+    var title = getField(["postit_title", "name"], "Post-it");
+    var msg = getField(["postit_message"], "");
+    var color = getField(["postit_color"], "#fff475");
+    var width = parseInt(getField(["postit_width"], "220"), 10);
+    var height = parseInt(getField(["postit_height"], "160"), 10);
+    var rotate = parseInt(getField(["postit_rotate"], "0"), 10);
+
+    if (isNaN(width) || width < 120) width = 220;
+    if (isNaN(height) || height < 90) height = 160;
+    if (isNaN(rotate)) rotate = 0;
+    if (rotate > 15) rotate = 15;
+    if (rotate < -15) rotate = -15;
+
+    var tape = "";
+    var fold = "";
+    var lines = "";
+    var radius = "6px";
+    var shadow = "0 12px 24px rgba(0,0,0,.22)";
+
+    if (style === "classic") {
+      fold = '<div style="position:absolute;right:0;top:0;width:0;height:0;border-top:30px solid rgba(255,255,255,.72);border-left:30px solid rgba(0,0,0,.13);"></div>';
+    }
+
+    if (style === "paper") {
+      radius = "3px";
+      shadow = "0 5px 14px rgba(0,0,0,.18)";
+      lines = '<div style="position:absolute;left:18px;right:18px;top:58px;bottom:18px;background:repeating-linear-gradient(to bottom, transparent 0, transparent 22px, rgba(0,0,0,.14) 23px);"></div>';
+    }
+
+    if (style === "tape") {
+      tape = '<div style="position:absolute;left:50%;top:-14px;width:64px;height:26px;margin-left:-32px;background:rgba(220,220,220,.8);box-shadow:0 1px 4px rgba(0,0,0,.18);transform:rotate(-3deg);border-radius:2px;"></div>';
+    }
+
+    hideOldPreview();
+
+    previewContainer().innerHTML =
+      '<div style="' +
+      'position:relative;' +
+      'width:' + width + 'px;' +
+      'height:' + height + 'px;' +
+      'background:' + esc(color) + ';' +
+      'transform:rotate(' + rotate + 'deg);' +
+      'box-shadow:' + shadow + ';' +
+      'border-radius:' + radius + ';' +
+      'padding:18px 22px;' +
+      'box-sizing:border-box;' +
+      'font-family:Arial,sans-serif;' +
+      'color:#111;' +
+      'overflow:hidden;' +
+      '">' +
+      tape + fold + lines +
+      '<div style="position:relative;z-index:2;font-weight:bold;font-size:17px;margin-bottom:12px;border-bottom:1px solid rgba(0,0,0,.16);padding-bottom:8px;">' + esc(title) + '</div>' +
+      '<div style="position:relative;z-index:2;white-space:pre-wrap;font-size:15px;line-height:1.35;">' + esc(msg) + '</div>' +
+      '</div>';
+  }
+
+  function bindOnce(el) {
+    if (!el || el.__postitPreviewV15Bound) return;
+    el.__postitPreviewV15Bound = true;
+    el.addEventListener("change", function () { setTimeout(render, 0); }, true);
+    el.addEventListener("input", function () { setTimeout(render, 0); }, true);
+    el.addEventListener("keyup", function () { setTimeout(render, 0); }, true);
+  }
+
+  function bind() {
+    all("input, textarea, select").forEach(function (el) {
+      var meta = (
+        (el.getAttribute("data-l2key") || "") + " " +
+        (el.getAttribute("data-l1key") || "") + " " +
+        (el.name || "") + " " +
+        (el.id || "") + " " +
+        (el.textContent || "")
+      ).toLowerCase();
+
+      if (
+        meta.indexOf("postit") !== -1 ||
+        meta.indexOf("visual") !== -1 ||
+        meta.indexOf("visuel") !== -1 ||
+        meta.indexOf("classic") !== -1 ||
+        meta.indexOf("paper") !== -1 ||
+        meta.indexOf("tape") !== -1
+      ) {
+        bindOnce(el);
+      }
+    });
+
+    bindOnce(visualSelect());
+  }
+
+  function boot() {
+    bind();
+    render();
+    setTimeout(function () { bind(); render(); }, 400);
+    setTimeout(function () { bind(); render(); }, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+})();
+/* POSTITDESIGN LIVE VISUAL PREVIEW FIX V15 END */
+</script>
+
