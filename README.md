@@ -20,6 +20,7 @@ Créer une expérience proche d’un post-it collé sur un frigo, mais sur un De
 - Décoller le post-it du Design sans supprimer l’équipement.
 - Créer un nouveau post-it directement depuis le Design.
 - Changer la rotation depuis le Design.
+- Tourner le post-it directement avec deux doigts sur écran tactile.
 
 ## Documentation
 

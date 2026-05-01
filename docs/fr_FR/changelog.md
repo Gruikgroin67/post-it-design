@@ -2,6 +2,11 @@
 
 ## Développement en cours
 
+### Ajouté
+
+- Rotation tactile à deux doigts directement sur le post-it.
+
+
 ### Modifié
 
 - Déplacement direct sans bouton : clic maintenu sur le post-it puis glisser-déposer.

@@ -174,3 +174,12 @@ Depuis les options du post-it, cliquer sur `⟳`, saisir une rotation entre -15 
 Sur le Design, maintenir le clic sur le post-it puis le déplacer. Au relâchement, la position est sauvegardée automatiquement.
 
 Un clic simple affiche ou masque les options du post-it.
+
+
+## Rotation tactile à deux doigts
+
+Sur un écran tactile, poser deux doigts sur le post-it puis tourner légèrement.
+
+La rotation est limitée entre -15 et +15 degrés.
+
+Au relâchement, la rotation est sauvegardée automatiquement.
