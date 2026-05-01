@@ -426,7 +426,295 @@ class postitdesign extends eqLogic {
 
         $html .= '</div>';
         $html .= '</div>';
-        $html .= '<script src="/plugins/postitdesign/desktop/js/postitdesign_dev_probe.js?v=1"></script>';
+
+
+        $html .= <<<'HTML'
+<style id="postitdesign-touch-inline-v11-css">
+.postitdesign-widget{z-index:999999!important;touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
+.postitdesign-widget .postitdesign-note-force{touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
+.postitdesign-widget button{min-width:48px!important;min-height:48px!important;line-height:42px!important;font-size:20px!important;pointer-events:auto!important;touch-action:manipulation!important;z-index:1000000!important;position:relative!important;}
+.postitdesign-widget.postitdesign-moving-v11{opacity:.96!important;}
+</style>
+<script id="postitdesign-touch-inline-v11">
+(function(){
+  if(window.__postitdesignTouchInlineV11){return;}
+  window.__postitdesignTouchInlineV11 = true;
+
+  var active = null;
+  var raf = 0;
+  var rotateTimer = null;
+  var buttonLockUntil = 0;
+
+  function closest(el, selector){
+    while(el && el.nodeType === 1){
+      if(el.matches && el.matches(selector)){return el;}
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  function widgetFrom(el){
+    return closest(el, '.postitdesign-widget');
+  }
+
+  function controlFrom(el, widget){
+    var c = closest(el, 'button,a,[role="button"],[onclick],[data-action],.btn');
+    if(c && widget && widget.contains(c)){return c;}
+    return null;
+  }
+
+  function label(el){
+    return (
+      (el ? el.textContent || '' : '') + ' ' +
+      (el && el.getAttribute ? el.getAttribute('title') || '' : '') + ' ' +
+      (el && el.getAttribute ? el.getAttribute('onclick') || '' : '') + ' ' +
+      (el && el.getAttribute ? el.getAttribute('data-action') || '' : '')
+    ).toLowerCase();
+  }
+
+  function isRotate(c){
+    var t = label(c);
+    return t.indexOf('⟳') !== -1 || t.indexOf('rotate') !== -1 || t.indexOf('rotation') !== -1 || t.indexOf('tourner') !== -1;
+  }
+
+  function eqId(widget){
+    return widget.getAttribute('data-eqLogic_id') ||
+           widget.getAttribute('data-eqlogic_id') ||
+           widget.getAttribute('data-eqlogic-id') ||
+           widget.getAttribute('data-id') ||
+           '';
+  }
+
+  function planId(widget){
+    return widget.getAttribute('data-target-planheader') ||
+           widget.getAttribute('data-planheader_id') ||
+           widget.getAttribute('data-planHeader_id') ||
+           '';
+  }
+
+  function num(v, fallback){
+    var n = parseFloat(v);
+    return isNaN(n) ? fallback : n;
+  }
+
+  function getRotate(widget){
+    var r = widget.__postitRotate;
+    if(r !== undefined){return r;}
+    r = parseInt(widget.getAttribute('data-rotate') || '0', 10);
+    if(isNaN(r)){r = 0;}
+    widget.__postitRotate = r;
+    return r;
+  }
+
+  function setRotate(widget, r){
+    r = Math.max(-15, Math.min(15, parseInt(r, 10) || 0));
+    widget.__postitRotate = r;
+    widget.setAttribute('data-rotate', r);
+    widget.style.setProperty('transform', 'rotate(' + r + 'deg)', 'important');
+  }
+
+  function post(data){
+    try{
+      var body = new URLSearchParams();
+      Object.keys(data).forEach(function(k){body.append(k, data[k]);});
+      fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: body.toString()
+      }).catch(function(){});
+    }catch(e){}
+  }
+
+  function savePos(widget){
+    var id = eqId(widget);
+    var pid = planId(widget);
+    if(!id){return;}
+
+    post({
+      action: 'savePositionFromDesign',
+      eqLogic_id: id,
+      planHeader_id: pid,
+      x: parseInt(widget.style.left || widget.offsetLeft || 0, 10) || 0,
+      y: parseInt(widget.style.top || widget.offsetTop || 0, 10) || 0
+    });
+  }
+
+  function saveRot(widget){
+    var id = eqId(widget);
+    if(!id){return;}
+
+    post({
+      action: 'saveRotationFromDesign',
+      eqLogic_id: id,
+      rotate: getRotate(widget)
+    });
+  }
+
+  function stopEverything(e){
+    if(rotateTimer){
+      clearInterval(rotateTimer);
+      rotateTimer = null;
+      if(active && active.widget){saveRot(active.widget);}
+    }
+
+    if(active && active.drag){
+      var widget = active.widget;
+      widget.classList.remove('postitdesign-moving-v11');
+
+      if(active.moved){
+        var x = Math.round(active.left + active.dx);
+        var y = Math.round(active.top + active.dy);
+
+        widget.style.left = x + 'px';
+        widget.style.top = y + 'px';
+        widget.style.right = 'auto';
+        widget.style.bottom = 'auto';
+        widget.style.setProperty('transform', 'rotate(' + active.rotate + 'deg)', 'important');
+
+        savePos(widget);
+      }else{
+        var footer = widget.querySelector('.postitdesign-footer-force');
+        var status = widget.querySelector('.postitdesign-status-force');
+        if(footer){
+          var open = footer.getAttribute('data-open') === '1';
+          footer.setAttribute('data-open', open ? '0' : '1');
+          footer.style.setProperty('display', open ? 'none' : 'flex', 'important');
+          if(status){
+            status.style.setProperty('display', open ? 'none' : 'block', 'important');
+            status.textContent = open ? '' : 'Options du post-it';
+          }
+        }
+      }
+    }
+
+    active = null;
+
+    if(e){
+      e.preventDefault();
+      e.stopPropagation();
+      if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
+    }
+  }
+
+  function moveDrag(e){
+    if(!active || !active.drag){return;}
+
+    var p = e.touches ? e.touches[0] : e;
+    if(!p){return;}
+
+    active.dx = p.clientX - active.startX;
+    active.dy = p.clientY - active.startY;
+
+    if(Math.abs(active.dx) > 2 || Math.abs(active.dy) > 2){
+      active.moved = true;
+    }
+
+    if(!raf){
+      raf = requestAnimationFrame(function(){
+        raf = 0;
+        if(!active || !active.drag){return;}
+        active.widget.style.setProperty(
+          'transform',
+          'translate3d(' + active.dx + 'px,' + active.dy + 'px,0) rotate(' + active.rotate + 'deg)',
+          'important'
+        );
+      });
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
+  }
+
+  function fireButton(c){
+    if(!c){return;}
+    buttonLockUntil = Date.now() + 350;
+
+    setTimeout(function(){
+      try{
+        c.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
+      }catch(err){
+        try{c.click();}catch(e){}
+      }
+    }, 0);
+  }
+
+  function startRotate(e, widget){
+    active = {widget: widget, rotate: getRotate(widget)};
+    var direction = 1;
+
+    function step(){
+      var r = getRotate(widget) + direction;
+      if(r >= 15){direction = -1;}
+      if(r <= -15){direction = 1;}
+      setRotate(widget, r);
+    }
+
+    step();
+    rotateTimer = setInterval(step, 80);
+
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
+  }
+
+  function start(e){
+    if(Date.now() < buttonLockUntil){return;}
+
+    var widget = widgetFrom(e.target);
+    if(!widget){return;}
+
+    var c = controlFrom(e.target, widget);
+
+    if(c){
+      if(isRotate(c)){
+        startRotate(e, widget);
+        return;
+      }
+
+      e.preventDefault();
+      e.stopPropagation();
+      if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
+      fireButton(c);
+      return;
+    }
+
+    var p = e.touches ? e.touches[0] : e;
+    if(!p){return;}
+
+    active = {
+      widget: widget,
+      drag: true,
+      startX: p.clientX,
+      startY: p.clientY,
+      dx: 0,
+      dy: 0,
+      left: num(widget.style.left, widget.offsetLeft || 0),
+      top: num(widget.style.top, widget.offsetTop || 0),
+      rotate: getRotate(widget),
+      moved: false
+    };
+
+    widget.classList.add('postitdesign-moving-v11');
+
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
+  }
+
+  document.addEventListener('pointerdown', start, true);
+  document.addEventListener('pointermove', moveDrag, true);
+  document.addEventListener('pointerup', stopEverything, true);
+  document.addEventListener('pointercancel', stopEverything, true);
+
+  document.addEventListener('touchstart', start, {capture:true, passive:false});
+  document.addEventListener('touchmove', moveDrag, {capture:true, passive:false});
+  document.addEventListener('touchend', stopEverything, {capture:true, passive:false});
+  document.addEventListener('touchcancel', stopEverything, {capture:true, passive:false});
+})();
+</script>
+HTML;
 
         return $this->postToHtml($_version, $html);
     }
