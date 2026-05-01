@@ -15,10 +15,7 @@ Post-it Design sert à afficher des notes visuelles simples sur un Design Jeedom
 - Modification depuis le Design.
 - Décollage du Design sans suppression de l’équipement.
 - Options masquées par défaut.
-- Styles visuels :
-  - Classic
-  - Paper
-  - Tape
+- Styles visuels : Classic, Paper, Tape.
 
 ## Version actuelle
 
@@ -46,4 +43,4 @@ https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/
 
 https://github.com/Gruikgroin67/post-it-design
 
-Dernière mise à jour : 20260501_120832
+Dernière mise à jour : 20260501_121121

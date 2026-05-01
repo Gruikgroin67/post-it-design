@@ -14,10 +14,7 @@ Il permet d’ajouter des notes visuelles sur une tablette murale, un écran de 
 - Modification du contenu depuis le Design.
 - Décollage du post-it du Design sans supprimer l’équipement.
 - Options masquées par défaut pour garder un Design propre.
-- Styles visuels sélectionnables :
-  - Classic
-  - Paper
-  - Tape
+- Styles visuels sélectionnables : Classic, Paper, Tape.
 
 ## Utilisation sur un Design
 
@@ -56,4 +53,4 @@ Après une mise à jour, fermez puis rouvrez le Design sur tablette, ou recharge
 
 [Changelog Post-it Design](./changelog/)
 
-Dernière mise à jour : 20260501_120832
+Dernière mise à jour : 20260501_121121

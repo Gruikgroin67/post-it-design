@@ -17,4 +17,3 @@ v1.0.5
 - [x] Le changelog public est présent.
 - [x] Le README est présent.
 - [x] GitHub Pages est compatible avec la documentation.
-- [x] La PROD n’a pas été modifiée pendant cette correction.
