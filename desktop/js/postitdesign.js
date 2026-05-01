@@ -464,3 +464,75 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
     setTimeout(pdApplyVisualPreview, 1500);
   });
 })();
+
+
+/* POSTITDESIGN_AUTOSAVE_VISUAL_STYLE_V1 */
+(function () {
+  var visualSaveTimer = null;
+  var visualSaving = false;
+
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  function findSaveButton() {
+    return document.querySelector('.eqLogicAction[data-action="save"], a[data-action="save"], button[data-action="save"], .btn-success[data-action="save"]');
+  }
+
+  function setVisualStatus(text) {
+    var select = document.querySelector('[data-l2key="visual_style"]');
+    if (!select) return;
+
+    var old = document.getElementById('postitdesignVisualAutosaveStatus');
+    if (!old) {
+      old = document.createElement('div');
+      old.id = 'postitdesignVisualAutosaveStatus';
+      old.style.marginTop = '6px';
+      old.style.fontSize = '12px';
+      old.style.fontWeight = 'bold';
+      old.style.color = '#3c763d';
+      select.parentNode.appendChild(old);
+    }
+    old.textContent = text;
+  }
+
+  function autosaveVisualStyle() {
+    if (visualSaving) return;
+
+    var btn = findSaveButton();
+    if (!btn) {
+      setVisualStatus('Visuel modifié : clique sur Sauvegarder pour l’appliquer au Design.');
+      return;
+    }
+
+    visualSaving = true;
+    setVisualStatus('Sauvegarde automatique du visuel...');
+
+    try {
+      btn.click();
+      setTimeout(function () {
+        visualSaving = false;
+        setVisualStatus('Visuel sauvegardé automatiquement.');
+      }, 1200);
+    } catch (e) {
+      visualSaving = false;
+      setVisualStatus('Erreur autosauvegarde : clique sur Sauvegarder.');
+    }
+  }
+
+  ready(function () {
+    document.addEventListener('change', function (e) {
+      if (!e.target || !e.target.matches || !e.target.matches('[data-l2key="visual_style"]')) {
+        return;
+      }
+
+      clearTimeout(visualSaveTimer);
+      setVisualStatus('Visuel modifié...');
+      visualSaveTimer = setTimeout(autosaveVisualStyle, 500);
+    }, true);
+  });
+})();
