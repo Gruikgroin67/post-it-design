@@ -1,0 +1,54 @@
+POST-IT DESIGN - INFO A LIRE AVANT PATCH
+
+Projet :
+- Plugin Jeedom : postitdesign
+- Dépôt GitHub : Gruikgroin67/post-it-design
+- Dossier DEV actuel : /var/www/html/plugins/postitdesign
+- Branche DEV actuelle : main
+- Version Market précédente : v1.0.4
+- Version en préparation : v1.0.5
+
+Règle actuelle :
+- Travailler uniquement sur DEV.
+- Ne plus modifier la PROD directement.
+- PROD à éviter sauf demande explicite.
+
+Méthode utilisée pour les changements :
+- Analyse réelle du fichier core/class/postitdesign.class.php.
+- Diagnostic effectué sur DEV.
+- Cause trouvée : les fichiers JS externes du plugin étaient servis en 403 depuis Apache.
+- Correction retenue : script tactile critique injecté inline dans le HTML du widget.
+- Objectif : éviter les problèmes de cache ou de blocage d’accès aux fichiers JS externes.
+
+Changements v1.0.5 :
+- Déplacement tactile fluide.
+- Boutons tactiles corrigés.
+- Rotation corrigée.
+- Rotation par appui simple de 5 degrés.
+- Suppression du mode rotation en maintien qui pouvait rester bloqué.
+- Documentation mise à jour.
+- Changelog mis à jour.
+- Fichiers Market mis à jour.
+
+Fichiers importants :
+- core/class/postitdesign.class.php
+- README.md
+- docs/fr_FR/index.md
+- docs/fr_FR/changelog.md
+- MARKET_CHECKLIST.md
+- MARKET_RELEASE_INFO.md
+- DEPLOY_INFO.txt
+
+Erreurs à ne pas refaire :
+- Ne pas tester directement en PROD.
+- Ne pas dépendre d’un fichier JS externe pour une fonction critique du Design si Apache/Jeedom le bloque en 403.
+- Ne pas forcer position:absolute si cela casse la position Jeedom.
+- Ne pas utiliser une rotation avec setInterval/maintien sans arrêt garanti sur tablette.
+- Toujours garder un rollback avant patch.
+
+Publication :
+- Commit docs + code.
+- Tag Git : v1.0.5
+- Push branche main.
+- Push tag v1.0.5.
+- Vérifier ensuite GitHub Pages.

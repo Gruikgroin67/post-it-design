@@ -1,74 +1,47 @@
 # Post-it Design
 
-Plugin Jeedom permettant de créer des post-it interactifs et de les afficher directement sur les Designs Jeedom.
+Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Jeedom.
 
 ## Objectif
 
-Créer une expérience proche d’un post-it collé sur un frigo, mais sur un Design Jeedom affiché sur une tablette ou un écran mural.
+Post-it Design sert à afficher des notes visuelles simples sur un Design Jeedom, comme des post-it collés sur une tablette murale, un écran de supervision ou une page de contrôle.
 
 ## Fonctions
 
-- Création de post-it comme équipements Jeedom.
-- Titre, message, couleur, largeur, hauteur et rotation.
-- Aperçu dynamique avec redimensionnement et rotation.
-- Collage automatique sur un Design Jeedom.
-- Déplacement direct depuis le Design par clic maintenu / glisser.
-- Sauvegarde automatique de la position.
+- Post-it affichable sur un Design Jeedom.
+- Déplacement visuel.
+- Sauvegarde de la position X/Y.
+- Rotation.
+- Modification depuis le Design.
+- Décollage du Design sans suppression de l’équipement.
 - Options masquées par défaut.
-- Options visibles au clic.
-- Compléter le texte directement depuis le Design.
-- Décoller le post-it du Design sans supprimer l’équipement.
-- Créer un nouveau post-it directement depuis le Design.
-- Changer la rotation depuis le Design.
-- Tourner le post-it directement avec deux doigts sur écran tactile.
+- Styles visuels :
+  - Classic
+  - Paper
+  - Tape
+
+## Version actuelle
+
+`v1.0.5`
+
+Cette version corrige l’utilisation tactile sur tablette :
+
+- déplacement au doigt plus fluide ;
+- boutons plus faciles à utiliser ;
+- rotation par appui simple ;
+- suppression du mode rotation bloqué ;
+- gestion tactile injectée directement dans le rendu du widget pour éviter les problèmes d’accès `403` aux fichiers JavaScript externes selon les installations Jeedom.
 
 ## Documentation
 
-Documentation utilisateur :
+Documentation GitHub Pages :
 
-`docs/fr_FR/index.md`
+https://gruikgroin67.github.io/post-it-design/fr_FR/
 
 Changelog :
 
-`docs/fr_FR/changelog.md`
+https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/
 
-## Publication Market
+## Dépôt
 
-Checklist :
-
-`MARKET_CHECKLIST.md`
-
-## Statut
-
-Plugin en développement actif.
-
-Version cible Market : . `1.0.2`.
-
-## Note
-
-Post-it Design est un plugin indépendant. Il n’est pas un plugin officiel Jeedom SAS et n’utilise pas de logo officiel Jeedom.
-
-- Maintenir le bouton rotation `⟳` puis glisser à gauche ou à droite pour tourner le post-it sur le Design.
-
-
-## Visuels disponibles
-
-Le plugin propose plusieurs styles visuels :
-
-- Classic : post-it propre avec coin plié.
-- Paper : rendu papier avec lignes légères.
-- Tape : post-it avec effet scotch.
-
-Le choix se fait dans la configuration du post-it.
-
-## Fonctions récentes
-
-- Création d’un nouveau post-it directement depuis un Design avec le bouton `+`.
-- Déplacement direct par clic maintenu / glisser.
-- Rotation avec maintien du bouton `⟳` puis glisser gauche/droite.
-- Styles visuels sélectionnables : `Classic`, `Paper`, `Tape`.
-- Conservation de la couleur choisie dans tous les styles.
-
-## Version stable
-
-Version stable actuelle : `v1.0.4`.
+https://github.com/Gruikgroin67/post-it-design

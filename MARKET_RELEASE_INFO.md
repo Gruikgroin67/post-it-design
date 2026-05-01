@@ -1,40 +1,39 @@
-# Post-it Design - Release Market
+# Market Release Info - Post-it Design
 
 ## Version
 
-Tag : v1.0.4
-Date : 2026-05-01
+v1.0.5
 
-## Plugin
+## Date
 
-- ID : postitdesign
-- Nom : Post-it Design
-- Catégorie : communication
-- Dépôt GitHub : https://github.com/Gruikgroin67/post-it-design
-- Documentation : https://gruikgroin67.github.io/post-it-design/fr_FR/
-- Changelog : https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/
+2026-05-01 11:59:43
+
+## Résumé
+
+Version corrective pour l’utilisation tablette dans les Designs Jeedom.
+
+## Changements principaux
+
+- Déplacement tactile plus fluide.
+- Correction des boutons sur tablette.
+- Correction de la rotation bloquée.
+- Rotation par appui simple de 5 degrés.
+- Retrait de la dépendance au JavaScript externe pour la partie tactile critique.
+- Injection inline du script tactile dans le rendu HTML du widget pour éviter les erreurs 403 sur certaines installations.
 
 ## État validé
 
-- Création de post-it.
-- Affichage sur Design Jeedom.
-- Création d’un post-it depuis un Design avec le bouton `+`.
-- Déplacement direct par clic maintenu / glisser.
-- Sauvegarde automatique de la position au relâchement.
-- Rotation depuis le Design avec maintien du bouton `⟳`.
-- Sauvegarde automatique de la rotation au relâchement.
-- Compléter le texte depuis le Design.
-- Décoller le post-it depuis le Design.
-- Options masquées au repos.
-- Styles visuels sélectionnables : `Classic`, `Paper`, `Tape`.
-- Couleur conservée dans tous les styles.
-- Documentation française mise à jour.
-- Changelog mis à jour.
+- Plugin corrigé sur DEV uniquement.
+- PROD non modifiée.
+- PHP syntax OK.
+- Apache actif après redémarrage.
+- Documentation mise à jour.
+- Tag prévu : v1.0.5
 
-## Règles
+## Dépôt
 
-- Plugin indépendant.
-- Non officiel Jeedom SAS.
-- Ne pas utiliser de logo officiel Jeedom.
-- Ne pas versionner `_patch_backups/`.
-- Tester sur Design Jeedom avant publication Market.
+Gruikgroin67/post-it-design
+
+## Documentation
+
+https://gruikgroin67.github.io/post-it-design/fr_FR/
