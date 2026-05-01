@@ -426,6 +426,7 @@ class postitdesign extends eqLogic {
 
         $html .= '</div>';
         $html .= '</div>';
+        $html .= '<script src="/plugins/postitdesign/desktop/js/postitdesign_dev_probe.js?v=1"></script>';
 
         return $this->postToHtml($_version, $html);
     }
