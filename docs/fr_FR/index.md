@@ -2,7 +2,9 @@
 
 Post-it Design est un plugin Jeedom permettant d’afficher des post-it directement sur les Designs Jeedom.
 
-Il permet d’ajouter des notes visuelles sur une tablette murale, un écran de supervision ou un Design personnel.
+## Version actuelle
+
+`v1.0.7`
 
 ## Fonctions principales
 
@@ -10,7 +12,7 @@ Il permet d’ajouter des notes visuelles sur une tablette murale, un écran de 
 - Affichage du post-it sur un Design.
 - Déplacement direct à la souris ou au doigt.
 - Sauvegarde automatique de la position X/Y.
-- Rotation du post-it.
+- Rotation du post-it par appui simple.
 - Modification du contenu depuis le Design.
 - Décollage du post-it du Design sans supprimer l’équipement.
 - Options masquées par défaut pour garder un Design propre.
@@ -36,15 +38,11 @@ Le bouton `✕` ne supprime pas l’équipement Jeedom. Il retire uniquement le 
 
 ## Rotation
 
-La rotation se fait par appui simple sur le bouton `⟳`.
-
-Chaque appui tourne le post-it de 5 degrés.
-
-Ce fonctionnement évite les blocages sur tablette tactile.
+Chaque appui sur `⟳` tourne le post-it de 5 degrés.
 
 ## Aperçu visuel
 
-Depuis la version `v1.0.6`, l’aperçu dynamique du champ `Visuel` est documenté et stabilisé.
+L’aperçu dynamique du champ `Visuel` est conservé.
 
 Le changement entre Classic, Paper et Tape doit se voir directement dans l’aperçu de la page du plugin.
 
@@ -52,12 +50,10 @@ Le changement entre Classic, Paper et Tape doit se voir directement dans l’ape
 
 La gestion tactile améliore le déplacement au doigt.
 
-La gestion tactile principale est intégrée directement dans le rendu du widget afin d’éviter les blocages d’accès `403` aux fichiers JavaScript externes selon les installations Jeedom.
-
-Après une mise à jour, fermez puis rouvrez le Design sur tablette, ou rechargez complètement la page.
+La gestion tactile principale est intégrée directement dans le rendu du widget afin d’éviter les erreurs `403` sur les fichiers JavaScript externes selon les installations Jeedom.
 
 ## Changelog
 
 [Changelog Post-it Design](./changelog/)
 
-Dernière mise à jour : 20260501_122647
+Dernière mise à jour : 20260501_123004

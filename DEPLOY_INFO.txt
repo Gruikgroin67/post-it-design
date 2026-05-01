@@ -5,21 +5,12 @@ Projet :
 - Dépôt GitHub : Gruikgroin67/post-it-design
 - Dossier DEV actuel : /var/www/html/plugins/postitdesign
 - Branche DEV actuelle : main
-- Version actuelle : v1.0.6
+- Version actuelle : v1.0.7
 
 Règle actuelle :
 - Travailler uniquement sur DEV.
 - Ne plus modifier la PROD directement.
 - PROD à éviter sauf demande explicite.
-
-Méthode utilisée :
-- Modifications faites sur DEV.
-- Documentation écrasée proprement dans docs/fr_FR.
-- README mis à jour.
-- Changelog principal et changelog/index.md synchronisés.
-- Fichiers Market mis à jour.
-- Fichiers info.json recherchés automatiquement et corrigés si présents.
-- Tag Git créé puis poussé.
 
 État fonctionnel retenu :
 - Déplacement tactile fluide.
@@ -27,22 +18,6 @@ Méthode utilisée :
 - Boutons du post-it accessibles.
 - Décollage sans suppression de l’équipement.
 - Aperçu dynamique du style visuel à conserver.
-- Gestion tactile intégrée dans le rendu HTML du widget pour éviter les blocages 403 sur fichiers JS externes.
+- Documentation publique et changelog synchronisés.
 
-Fichiers importants :
-- core/class/postitdesign.class.php
-- README.md
-- docs/fr_FR/index.md
-- docs/fr_FR/changelog.md
-- docs/fr_FR/changelog/index.md
-- MARKET_CHECKLIST.md
-- MARKET_RELEASE_INFO.md
-- DEPLOY_INFO.txt
-- plugin_info/info.json si présent
-
-Erreurs à éviter :
-- Ne pas tester directement en PROD.
-- Ne pas dépendre d’un fichier JS externe pour une fonction critique du Design.
-- Ne pas forcer une position CSS qui casserait la position Jeedom.
-- Ne pas remettre de rotation par maintien.
-- Toujours garder un rollback avant patch.
+Dernière mise à jour : 20260501_123004

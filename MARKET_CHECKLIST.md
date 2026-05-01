@@ -2,21 +2,15 @@
 
 ## Version
 
-v1.0.6
+v1.0.7
 
 ## Vérifications
 
-- [x] Le plugin s’installe dans Jeedom.
-- [x] Le post-it peut être affiché sur un Design.
-- [x] Le post-it peut être déplacé.
-- [x] La position X/Y est sauvegardée.
-- [x] La rotation fonctionne par appui simple.
-- [x] Les boutons du post-it restent accessibles.
-- [x] Le décollage du Design ne supprime pas l’équipement.
-- [x] L’aperçu dynamique du champ Visuel est documenté.
-- [x] La documentation française est présente.
-- [x] Le changelog public est présent.
-- [x] Le README est présent.
-- [x] Le fichier d’information projet est présent.
-- [x] GitHub Pages est compatible avec la documentation.
-- [x] La PROD n’a pas été modifiée pendant cette mise à jour.
+- [x] Documentation principale mise à jour.
+- [x] Changelog public mis à jour.
+- [x] README mis à jour.
+- [x] Fichiers Market mis à jour.
+- [x] Fichier d’information projet mis à jour.
+- [x] Changelog principal et changelog/index.md synchronisés.
+- [x] Tag créé depuis l’état DEV courant.
+- [x] PROD non modifiée.

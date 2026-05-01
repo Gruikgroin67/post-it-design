@@ -2,35 +2,29 @@
 
 ## Version
 
-v1.0.6
+v1.0.7
 
 ## Date
 
-2026-05-01 12:26:50
+2026-05-01 12:30:05
 
 ## Résumé
 
-Version de mise à jour de documentation et de stabilisation après les corrections tactiles et aperçu visuel.
+Version finale de mise à jour de la documentation et du changelog.
 
 ## Changements principaux
 
-- Documentation mise à jour partout.
-- README mis à jour.
+- Documentation principale mise à jour.
 - Changelog public mis à jour.
+- README mis à jour.
 - Fichiers Market mis à jour.
 - Fichier d’information projet mis à jour.
-- Tag Git créé depuis l’état DEV courant.
+- Documentation de l’aperçu dynamique du champ Visuel.
 - Conservation des corrections tactiles.
 - Conservation de la rotation par appui simple.
-- Conservation de l’aperçu dynamique du style visuel.
 
-## État validé
+## État
 
-- Travail réalisé sur DEV.
+- Travail fait sur DEV.
 - PROD non modifiée.
-- Documentation GitHub Pages compatible.
-- Tag prévu : v1.0.6
-
-## Documentation
-
-https://gruikgroin67.github.io/post-it-design/fr_FR/
+- Tag : v1.0.7
