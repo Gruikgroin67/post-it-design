@@ -142,3 +142,64 @@
 #bt_postitdesign_open_placer {
     margin-right: 8px;
 }
+
+/* POSTITDESIGN_VISUAL_PREVIEW_PATCH_V2 */
+.postitdesign-preview-style-classic,
+.postitdesign-preview-style-paper,
+.postitdesign-preview-style-tape {
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 5px !important;
+  border: 1px solid rgba(120, 95, 15, .18) !important;
+}
+
+.postitdesign-preview-style-classic {
+  background: linear-gradient(180deg, #fff48c 0%, #f4df62 100%) !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.24) !important;
+  background-image: radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px) !important;
+  background-size: 7px 7px !important;
+  font-family: "Trebuchet MS", Arial, sans-serif !important;
+}
+
+.postitdesign-preview-style-paper {
+  background: linear-gradient(180deg, #fff3a0 0%, #f4df70 100%) !important;
+  box-shadow: 0 9px 20px rgba(0,0,0,.22) !important;
+  background-image: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.10) 24px) !important;
+  font-family: Verdana, Arial, sans-serif !important;
+}
+
+.postitdesign-preview-style-tape {
+  background: linear-gradient(180deg, #ffe878 0%, #f0d24b 100%) !important;
+  box-shadow: 0 13px 28px rgba(0,0,0,.28) !important;
+}
+
+.postitdesign-preview-style-classic::after,
+.postitdesign-preview-style-paper::after,
+.postitdesign-preview-style-tape::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 22px solid rgba(255,255,255,.86);
+  border-left: 22px solid transparent;
+  filter: drop-shadow(-1px 1px 1px rgba(0,0,0,.13));
+  pointer-events: none;
+}
+
+.postitdesign-preview-style-tape::before {
+  content: "";
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 46px;
+  height: 18px;
+  background: rgba(250,250,235,.72);
+  border-left: 1px solid rgba(255,255,255,.45);
+  border-right: 1px solid rgba(200,200,180,.45);
+  box-shadow: 0 1px 2px rgba(0,0,0,.16);
+  pointer-events: none;
+  z-index: 20;
+}

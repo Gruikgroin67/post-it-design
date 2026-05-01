@@ -351,3 +351,116 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
 
     window.open('/plugins/postitdesign/postitdesign_placer.php?id=' + encodeURIComponent(eqLogicId), '_blank');
 });
+
+
+/* POSTITDESIGN_VISUAL_PREVIEW_PATCH_V2 */
+(function () {
+  function pdReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  function pdGetValue(l2key, fallback) {
+    var el = document.querySelector('.eqLogicAttr[data-l1key="configuration"][data-l2key="' + l2key + '"], .eqLogicAttr[data-l2key="' + l2key + '"]');
+    if (!el) return fallback;
+    return el.value || fallback;
+  }
+
+  function pdFindPreviewNote() {
+    var selectors = [
+      '#postitdesignPreviewNote',
+      '#postitdesign_preview_note',
+      '.postitdesign-preview-note',
+      '.postitdesign-live-note',
+      '.postitdesign-dynamic-preview-note',
+      '.postitdesign-note-preview',
+      '.postitdesign-preview .postitdesign-note',
+      '.postitdesign-preview-postit',
+      '.postitdesign-note-force'
+    ];
+
+    for (var i = 0; i < selectors.length; i++) {
+      var el = document.querySelector(selectors[i]);
+      if (el) return el;
+    }
+
+    /* Fallback : on cherche un bloc dans l'onglet post-it qui ressemble au post-it d'aperçu. */
+    var tab = document.querySelector('#postittab') || document.querySelector('[id*="postit"]') || document.body;
+    var nodes = tab.querySelectorAll('div');
+    var best = null;
+
+    nodes.forEach(function (el) {
+      var txt = (el.textContent || '').trim();
+      var r = el.getBoundingClientRect();
+      var style = window.getComputedStyle(el);
+      var bg = style.backgroundColor || '';
+
+      if (
+        r.width >= 100 &&
+        r.width <= 900 &&
+        r.height >= 70 &&
+        r.height <= 700 &&
+        (txt.indexOf('Titre') !== -1 || txt.indexOf('Ton message ici') !== -1 || txt.indexOf('course') !== -1 || txt.indexOf('Message') !== -1) &&
+        bg !== 'rgba(0, 0, 0, 0)'
+      ) {
+        best = el;
+      }
+    });
+
+    return best;
+  }
+
+  function pdApplyVisualPreview() {
+    var style = pdGetValue('visual_style', 'classic');
+    if (['classic', 'paper', 'tape'].indexOf(style) === -1) {
+      style = 'classic';
+    }
+
+    var note = pdFindPreviewNote();
+    if (!note) return;
+
+    note.classList.remove(
+      'postitdesign-preview-style-classic',
+      'postitdesign-preview-style-paper',
+      'postitdesign-preview-style-tape'
+    );
+
+    note.classList.add('postitdesign-preview-style-' + style);
+
+    var color = pdGetValue('postit_color', '');
+    if (!color) {
+      color = pdGetValue('color', '');
+    }
+
+    if (/^#[0-9a-fA-F]{6}$/.test(color) && style === 'classic') {
+      note.style.setProperty('background', 'linear-gradient(180deg, ' + color + ' 0%, #f4df62 100%)', 'important');
+    }
+
+    if (/^#[0-9a-fA-F]{6}$/.test(color) && style !== 'classic') {
+      note.style.setProperty('background-color', color, 'important');
+    }
+
+    note.setAttribute('data-visual-style-preview', style);
+  }
+
+  pdReady(function () {
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.matches && e.target.matches('[data-l2key="visual_style"], [data-l2key="postit_color"], [data-l2key="color"]')) {
+        setTimeout(pdApplyVisualPreview, 20);
+      }
+    }, true);
+
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.matches && e.target.matches('[data-l2key="visual_style"], [data-l2key="postit_color"], [data-l2key="color"]')) {
+        setTimeout(pdApplyVisualPreview, 20);
+      }
+    }, true);
+
+    setTimeout(pdApplyVisualPreview, 200);
+    setTimeout(pdApplyVisualPreview, 800);
+    setTimeout(pdApplyVisualPreview, 1500);
+  });
+})();

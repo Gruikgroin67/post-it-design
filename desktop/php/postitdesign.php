@@ -192,7 +192,7 @@ $planHeaders = planHeader::all();
                             </div>
                         </div>
 
-                        <div class="alert alert-info">\n
+                        <div class="alert alert-info">
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Visuel}}</label>
                             <div class="col-sm-4">
