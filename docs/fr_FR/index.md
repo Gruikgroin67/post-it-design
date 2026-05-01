@@ -169,12 +169,11 @@ Il peut ensuite être déplacé directement en gardant le clic enfoncé sur le p
 Depuis les options du post-it, cliquer sur `⟳`, saisir une rotation entre -15 et +15 degrés, puis valider.
 
 
-## Déplacement direct sans bouton
+## Déplacement direct
 
-Sur le Design, maintenir le clic sur le post-it puis le déplacer. Au relâchement, la position est sauvegardée automatiquement.
+Sur le Design, maintenir le clic sur le post-it, déplacer le post-it, puis relâcher.
 
-Un clic simple affiche ou masque les options du post-it.
-
+La position est sauvegardée automatiquement.
 
 ## Rotation tactile à deux doigts
 
@@ -189,10 +188,9 @@ Au relâchement, la rotation est sauvegardée automatiquement.
 
 Cliquer sur le post-it pour afficher les options.
 
-Maintenir le bouton `⟳`, glisser à gauche ou à droite pour tourner le post-it.
+Maintenir le bouton `⟳`, glisser à gauche ou à droite pour tourner le post-it, puis relâcher.
 
-Quand on relâche, la rotation est enregistrée automatiquement.
-
+La rotation est sauvegardée automatiquement.
 
 ## Choix du visuel
 
@@ -206,7 +204,7 @@ Le rendu est appliqué automatiquement sur le Design après sauvegarde.
 
 ## Création depuis le Design
 
-Depuis un post-it déjà présent sur un Design, cliquer sur le bouton  dans les options du post-it.
+Depuis un post-it déjà présent sur un Design, cliquer sur le bouton `+` dans les options du post-it.
 
 Le plugin demande le titre, le message, la couleur et la rotation, puis crée automatiquement un nouveau post-it sur le même Design.
 
@@ -214,10 +212,10 @@ Le post-it peut ensuite être placé directement par clic maintenu / glisser.
 
 ## Styles visuels
 
-Dans la configuration du post-it, le champ  permet de choisir le rendu :
+Dans la configuration du post-it, le champ `Visuel` permet de choisir le rendu :
 
-- Classic : post-it propre avec coin plié.
-- Paper : rendu papier avec lignes légères.
-- Tape : post-it avec effet scotch.
+- `Classic` : post-it propre avec coin plié.
+- `Paper` : rendu papier avec lignes légères.
+- `Tape` : post-it avec effet scotch.
 
 La couleur choisie est conservée dans chaque style.

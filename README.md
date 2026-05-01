@@ -63,8 +63,12 @@ Le choix se fait dans la configuration du post-it.
 
 ## Fonctions récentes
 
-- Création d’un nouveau post-it directement depuis un Design.
+- Création d’un nouveau post-it directement depuis un Design avec le bouton `+`.
 - Déplacement direct par clic maintenu / glisser.
-- Rotation avec maintien du bouton  puis glisser gauche/droite.
-- Styles visuels sélectionnables : Classic, Paper, Tape.
+- Rotation avec maintien du bouton `⟳` puis glisser gauche/droite.
+- Styles visuels sélectionnables : `Classic`, `Paper`, `Tape`.
 - Conservation de la couleur choisie dans tous les styles.
+
+## Version stable
+
+Version stable actuelle : `v1.0.4`.

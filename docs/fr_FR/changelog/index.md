@@ -1,5 +1,23 @@
 # Changelog - Post-it Design
 
+## v1.0.4 - 2026-05-01
+
+### Ajouté
+
+- Création d’un nouveau post-it directement depuis un Design avec le bouton `+`.
+- Déplacement direct par clic maintenu / glisser sur le Design.
+- Rotation depuis le Design avec maintien du bouton `⟳` puis glisser gauche/droite.
+- Styles visuels sélectionnables : `Classic`, `Paper`, `Tape`.
+- Aperçu dynamique du style visuel dans la configuration du post-it.
+- Conservation de la couleur choisie dans tous les styles visuels.
+- Rendu plus proche d’un vrai post-it : coin plié, ombre, texture papier, effet scotch selon le style.
+
+### Modifié
+
+- Le bouton de déplacement dédié n’est plus nécessaire pour déplacer un post-it.
+- L’aperçu de configuration reste unique.
+- La rotation et la position sont sauvegardées depuis le Design.
+
 ## v1.0.3 - 2026-05-01
 
 ### Ajouté
