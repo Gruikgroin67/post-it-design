@@ -239,17 +239,7 @@ $planHeaders = planHeader::all();
                             </div>
                         <?php } ?>
 
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">{{Créer un Design}}</label>
-                            <div class="col-sm-4">
-                                <input type="text" id="postitdesign_new_design_name" class="form-control" placeholder="{{Exemple : Frigo, Cuisine, Tablette}}">
-                            </div>
-                            <div class="col-sm-3">
-                                <a class="btn btn-primary" id="bt_postitdesign_create_design">
-                                    <i class="fas fa-plus-circle"></i> {{Créer}}
-                                </a>
-                            </div>
-                        </div>
+                        <div class="alert alert-info">{{Les Designs doivent être créés directement dans Jeedom. Le plugin ne crée plus de Design.}}</div>
 
                         <hr>
 

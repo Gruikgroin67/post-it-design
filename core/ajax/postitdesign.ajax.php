@@ -36,23 +36,7 @@ try {
     }
 
     if (init('action') == 'createDesign') {
-        if (!isConnect('admin')) {
-            throw new Exception('{{401 - Accès non autorisé}}');
-        }
-
-        $name = trim(init('name'));
-        if ($name == '') {
-            throw new Exception('{{Nom du design obligatoire}}');
-        }
-
-        $planHeader = new planHeader();
-        $planHeader->setName($name);
-        $planHeader->save();
-
-        ajax::success(array(
-            'id' => $planHeader->getId(),
-            'name' => $planHeader->getName()
-        ));
+        throw new Exception('{{Création de Design désactivée : crée le Design directement dans Jeedom.}}');
     }
 
     if (init('action') == 'stickToDesign') {
@@ -112,6 +96,9 @@ try {
         $plan->setPosition('width', $width);
         $plan->setPosition('height', $height);
         $plan->setDisplay('name', 0);
+        if (method_exists($plan, 'setCss')) {
+            $plan->setCss('z-index', '20000');
+        }
         $plan->save();
 
         $eqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
@@ -246,6 +233,9 @@ try {
         $plan->setPosition('left', $x);
         $plan->setPosition('top', $y);
         $plan->setDisplay('name', 0);
+        if (method_exists($plan, 'setCss')) {
+            $plan->setCss('z-index', '20000');
+        }
         $plan->save();
 
         $eqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
@@ -426,6 +416,9 @@ try {
         $plan->setPosition('left', $x);
         $plan->setPosition('top', $y);
         $plan->setDisplay('name', 0);
+        if (method_exists($plan, 'setCss')) {
+            $plan->setCss('z-index', '20000');
+        }
         $plan->save();
 
         ajax::success(array(
