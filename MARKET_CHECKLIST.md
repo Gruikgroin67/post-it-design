@@ -2,7 +2,7 @@
 
 ## Version
 
-v1.0.5
+v1.0.6
 
 ## Vérifications
 
@@ -13,7 +13,10 @@ v1.0.5
 - [x] La rotation fonctionne par appui simple.
 - [x] Les boutons du post-it restent accessibles.
 - [x] Le décollage du Design ne supprime pas l’équipement.
+- [x] L’aperçu dynamique du champ Visuel est documenté.
 - [x] La documentation française est présente.
 - [x] Le changelog public est présent.
 - [x] Le README est présent.
+- [x] Le fichier d’information projet est présent.
 - [x] GitHub Pages est compatible avec la documentation.
+- [x] La PROD n’a pas été modifiée pendant cette mise à jour.

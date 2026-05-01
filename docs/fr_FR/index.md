@@ -15,6 +15,7 @@ Il permet d’ajouter des notes visuelles sur une tablette murale, un écran de 
 - Décollage du post-it du Design sans supprimer l’équipement.
 - Options masquées par défaut pour garder un Design propre.
 - Styles visuels sélectionnables : Classic, Paper, Tape.
+- Aperçu dynamique du style visuel dans la page du plugin.
 
 ## Utilisation sur un Design
 
@@ -35,15 +36,21 @@ Le bouton `✕` ne supprime pas l’équipement Jeedom. Il retire uniquement le 
 
 ## Rotation
 
-Depuis la version `v1.0.5`, la rotation se fait par appui simple sur le bouton `⟳`.
+La rotation se fait par appui simple sur le bouton `⟳`.
 
 Chaque appui tourne le post-it de 5 degrés.
 
 Ce fonctionnement évite les blocages sur tablette tactile.
 
+## Aperçu visuel
+
+Depuis la version `v1.0.6`, l’aperçu dynamique du champ `Visuel` est documenté et stabilisé.
+
+Le changement entre Classic, Paper et Tape doit se voir directement dans l’aperçu de la page du plugin.
+
 ## Notes tablette
 
-Depuis la version `v1.0.5`, la gestion tactile améliore le déplacement au doigt.
+La gestion tactile améliore le déplacement au doigt.
 
 La gestion tactile principale est intégrée directement dans le rendu du widget afin d’éviter les blocages d’accès `403` aux fichiers JavaScript externes selon les installations Jeedom.
 
@@ -53,4 +60,4 @@ Après une mise à jour, fermez puis rouvrez le Design sur tablette, ou recharge
 
 [Changelog Post-it Design](./changelog/)
 
-Dernière mise à jour : 20260501_121121
+Dernière mise à jour : 20260501_122647

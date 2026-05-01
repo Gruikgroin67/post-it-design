@@ -1,15 +1,29 @@
 # Changelog - Post-it Design
 
-## v1.0.5 - Correction tactile tablette
+## v1.0.6 - Documentation et aperçu visuel
 
-Version corrective centrée sur l’utilisation dans les Designs Jeedom depuis une tablette tactile.
+### Corrigé
+
+- Mise à jour de la documentation partout.
+- Mise à jour du README.
+- Mise à jour des fichiers Market.
+- Mise à jour du fichier d’information projet.
+- Synchronisation de `docs/fr_FR/changelog.md` et `docs/fr_FR/changelog/index.md`.
+- Mention de l’aperçu dynamique du champ `Visuel`.
+
+### Technique
+
+- Tag Git créé depuis l’état DEV courant.
+- La PROD n’a pas été modifiée.
+
+## v1.0.5 - Correction tactile tablette
 
 ### Corrigé
 
 - Déplacement tactile plus fluide des post-it sur un Design.
 - Correction du comportement des boutons tactiles sur tablette.
 - Correction de la rotation qui pouvait rester active.
-- Rotation désormais par appui simple sur le bouton `⟳`.
+- Rotation par appui simple sur le bouton `⟳`.
 - Un appui sur `⟳` applique une rotation de 5 degrés.
 - Le bouton `✕` permet de décoller le post-it sans supprimer l’équipement.
 - Le post-it reste au-dessus des autres éléments du Design sans casser sa position Jeedom.
@@ -51,4 +65,4 @@ Version corrective centrée sur l’utilisation dans les Designs Jeedom depuis u
 
 - Première version publique du plugin Post-it Design.
 
-Dernière mise à jour : 20260501_121121
+Dernière mise à jour : 20260501_122647
