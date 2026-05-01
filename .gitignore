@@ -6,3 +6,5 @@ _patch_backups/
 Thumbs.db
 vendor/
 node_modules/
+__pycache__/
+*.pyc

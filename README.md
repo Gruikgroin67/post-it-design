@@ -4,7 +4,7 @@ Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Je
 
 ## Version actuelle
 
-`v1.0.7`
+`v1.0.8`
 
 ## Fonctions
 
@@ -17,6 +17,13 @@ Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Je
 - Options masquées par défaut.
 - Styles visuels : Classic, Paper, Tape.
 - Aperçu dynamique du style visuel.
+- Passage du post-it au-dessus des widgets Jeedom sans calque global.
+
+## Note technique
+
+Le post-it doit rester isolé dans son propre widget.
+
+La version `v1.0.8` conserve le correctif local `postitdesign-safe-top-layer` : seul le post-it et son parent Jeedom direct sont relevés dans l’ordre d’affichage.
 
 ## Documentation
 
@@ -32,4 +39,4 @@ https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/
 
 https://github.com/Gruikgroin67/post-it-design
 
-Dernière mise à jour : 20260501_123004
+Dernière mise à jour : 20260501_130525

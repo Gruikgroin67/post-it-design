@@ -5,7 +5,7 @@ Projet :
 - Dépôt GitHub : Gruikgroin67/post-it-design
 - Dossier DEV actuel : /var/www/html/plugins/postitdesign
 - Branche DEV actuelle : main
-- Version actuelle : v1.0.7
+- Version actuelle : v1.0.8
 
 Règle actuelle :
 - Travailler uniquement sur DEV.
@@ -13,11 +13,21 @@ Règle actuelle :
 - PROD à éviter sauf demande explicite.
 
 État fonctionnel retenu :
-- Déplacement tactile fluide.
-- Rotation par appui simple de 5 degrés.
-- Boutons du post-it accessibles.
-- Décollage sans suppression de l’équipement.
-- Aperçu dynamique du style visuel à conserver.
-- Documentation publique et changelog synchronisés.
+- Le post-it doit passer au-dessus des widgets Jeedom.
+- Le correctif doit rester local au widget post-it.
+- Le Design complet ne doit jamais être couvert par un calque global.
+- Le déplacement du post-it est disponible.
+- La sauvegarde X/Y est disponible.
+- La rotation se fait par appui simple de 5 degrés.
+- Les boutons du post-it sont accessibles.
+- Le décollage ne supprime pas l’équipement.
+- L’aperçu dynamique du style visuel est à conserver.
 
-Dernière mise à jour : 20260501_123004
+Points critiques :
+- Ne pas remettre de script tactile global permanent sur document.
+- Ne pas remettre de z-index extrême type 999999.
+- Ne pas remettre de CSS global visant tout le Design.
+- Ne pas modifier les widgets Jeedom voisins.
+- Le post-it doit rester isolé dans son widget.
+
+Dernière mise à jour : 20260501_130525

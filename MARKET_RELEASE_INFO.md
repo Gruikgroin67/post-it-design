@@ -2,29 +2,28 @@
 
 ## Version
 
-v1.0.7
+v1.0.8
 
 ## Date
 
-2026-05-01 12:30:05
+2026-05-01 13:05:27
 
 ## Résumé
 
-Version finale de mise à jour de la documentation et du changelog.
+Version de correction du calque d’affichage sur les Designs Jeedom.
 
 ## Changements principaux
 
-- Documentation principale mise à jour.
-- Changelog public mis à jour.
-- README mis à jour.
-- Fichiers Market mis à jour.
-- Fichier d’information projet mis à jour.
-- Documentation de l’aperçu dynamique du champ Visuel.
-- Conservation des corrections tactiles.
-- Conservation de la rotation par appui simple.
+- Le post-it passe au-dessus des widgets Jeedom.
+- Le correctif est local au widget post-it.
+- Le Design complet n’est pas modifié.
+- Le déplacement reste disponible.
+- Les boutons restent accessibles.
+- Suppression des anciens mécanismes dangereux.
+- Documentation et changelog mis à jour.
 
 ## État
 
 - Travail fait sur DEV.
-- PROD non modifiée.
-- Tag : v1.0.7
+- PROD non modifiée par ce tag.
+- Tag : v1.0.8

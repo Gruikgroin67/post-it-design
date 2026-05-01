@@ -4,7 +4,7 @@ Post-it Design est un plugin Jeedom permettant d’afficher des post-it directem
 
 ## Version actuelle
 
-`v1.0.7`
+`v1.0.8`
 
 ## Fonctions principales
 
@@ -18,6 +18,7 @@ Post-it Design est un plugin Jeedom permettant d’afficher des post-it directem
 - Options masquées par défaut pour garder un Design propre.
 - Styles visuels sélectionnables : Classic, Paper, Tape.
 - Aperçu dynamique du style visuel dans la page du plugin.
+- Passage du post-it au-dessus des widgets Jeedom sans calque global.
 
 ## Utilisation sur un Design
 
@@ -36,24 +37,22 @@ Un appui simple sur le post-it affiche les options.
 
 Le bouton `✕` ne supprime pas l’équipement Jeedom. Il retire uniquement le post-it du Design.
 
-## Rotation
+## Calque Design
 
-Chaque appui sur `⟳` tourne le post-it de 5 degrés.
+Depuis `v1.0.8`, le post-it passe au-dessus des autres widgets Jeedom sans créer de calque global.
 
-## Aperçu visuel
+Le correctif relève seulement le widget post-it et son parent Jeedom direct.
 
-L’aperçu dynamique du champ `Visuel` est conservé.
+Le reste du Design n’est pas modifié.
 
-Le changement entre Classic, Paper et Tape doit se voir directement dans l’aperçu de la page du plugin.
+## Déplacement
 
-## Notes tablette
+Le déplacement est local au post-it.
 
-La gestion tactile améliore le déplacement au doigt.
-
-La gestion tactile principale est intégrée directement dans le rendu du widget afin d’éviter les erreurs `403` sur les fichiers JavaScript externes selon les installations Jeedom.
+Aucun écouteur global permanent n’est installé sur tout le document.
 
 ## Changelog
 
 [Changelog Post-it Design](./changelog/)
 
-Dernière mise à jour : 20260501_123004
+Dernière mise à jour : 20260501_130525
