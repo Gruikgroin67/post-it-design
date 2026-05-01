@@ -81,7 +81,7 @@ class postitdesign extends eqLogic {
             . 'margin:0 !important;'
             . 'overflow:visible !important;'
             . 'pointer-events:none !important;'
-            . 'z-index:auto !important;';
+            . 'z-index:9000 !important;';
 
         $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
         $visualShadow = 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;';
@@ -397,6 +397,66 @@ class postitdesign extends eqLogic {
 
         $html .= '</div>';
         $html .= '</div>';
+
+
+        $html .= <<<'HTML'
+<script id="postitdesign-safe-top-layer">
+(function(){
+  var script = document.currentScript;
+  if (!script) { return; }
+
+  var widget = script.previousElementSibling;
+  while (widget && (!widget.classList || !widget.classList.contains('postitdesign-widget'))) {
+    widget = widget.previousElementSibling;
+  }
+  if (!widget) { return; }
+
+  widget.style.setProperty('z-index', '9000', 'important');
+  widget.style.setProperty('position', 'relative', 'important');
+
+  var note = widget.querySelector('.postitdesign-note-force');
+  if (note) {
+    note.style.setProperty('z-index', '9001', 'important');
+    note.style.setProperty('position', 'relative', 'important');
+  }
+
+  var wRect = widget.getBoundingClientRect();
+  var parent = widget.parentElement;
+  var best = null;
+
+  for (var i = 0; i < 8 && parent && parent !== document.body; i++) {
+    var cs = window.getComputedStyle(parent);
+    var r = parent.getBoundingClientRect();
+    var hasPlanMarker =
+      parent.hasAttribute('data-plan_id') ||
+      parent.hasAttribute('data-plan-id') ||
+      parent.className.toString().indexOf('plan') !== -1;
+
+    var looksLikeSmallPlanItem =
+      (cs.position === 'absolute' || parent.style.left || parent.style.top || hasPlanMarker) &&
+      r.width > 0 &&
+      r.height > 0 &&
+      r.width <= Math.max(wRect.width + 180, 450) &&
+      r.height <= Math.max(wRect.height + 180, 380);
+
+    if (looksLikeSmallPlanItem) {
+      best = parent;
+      break;
+    }
+
+    parent = parent.parentElement;
+  }
+
+  if (best) {
+    best.style.setProperty('z-index', '9000', 'important');
+    if (window.getComputedStyle(best).position === 'static') {
+      best.style.setProperty('position', 'relative', 'important');
+    }
+    best.style.setProperty('overflow', 'visible', 'important');
+  }
+})();
+</script>
+HTML;
 
         return $this->postToHtml($_version, $html);
     }
