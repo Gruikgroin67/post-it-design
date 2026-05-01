@@ -204,50 +204,18 @@
   z-index: 20;
 }
 
-/* POSTITDESIGN_FORCE_LIVE_VISUAL_PREVIEW_V3 */
-#postitdesignForceLivePreviewWrap {
-  margin: 10px 0 14px 0 !important;
-  padding: 10px 12px !important;
-  background: rgba(255,255,255,.28) !important;
-  border: 1px dashed rgba(0,0,0,.18) !important;
-  border-radius: 6px !important;
-}
-
-#postitdesignForceLivePreviewLabel {
-  font-weight: 700 !important;
-  margin-bottom: 8px !important;
-  color: #555 !important;
-}
-
-#postitdesignForceLivePreviewCard {
+/* POSTITDESIGN_EXISTING_PREVIEW_STYLE_V4 */
+.postitdesign-live-visual-classic,
+.postitdesign-live-visual-paper,
+.postitdesign-live-visual-tape {
   position: relative !important;
-  width: 220px !important;
-  min-height: 150px !important;
-  padding: 14px 16px !important;
+  overflow: hidden !important;
   border-radius: 5px !important;
   border: 1px solid rgba(120,95,15,.18) !important;
   color: #2b2b2b !important;
-  transform-origin: center center !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
 }
 
-#postitdesignForceLivePreviewTitle {
-  font-weight: 800 !important;
-  font-size: 16px !important;
-  line-height: 1.2 !important;
-  padding-bottom: 7px !important;
-  margin-bottom: 8px !important;
-  border-bottom: 1px solid rgba(0,0,0,.16) !important;
-}
-
-#postitdesignForceLivePreviewMessage {
-  font-size: 15px !important;
-  line-height: 1.35 !important;
-  white-space: pre-wrap !important;
-}
-
-.postitdesign-force-style-classic {
+.postitdesign-live-visual-classic {
   background: linear-gradient(180deg, #fff48c 0%, #f4df62 100%) !important;
   box-shadow: 0 10px 24px rgba(0,0,0,.24) !important;
   background-image: radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px) !important;
@@ -255,22 +223,22 @@
   font-family: "Trebuchet MS", Arial, sans-serif !important;
 }
 
-.postitdesign-force-style-paper {
+.postitdesign-live-visual-paper {
   background: linear-gradient(180deg, #fff3a0 0%, #f4df70 100%) !important;
   box-shadow: 0 9px 20px rgba(0,0,0,.22) !important;
   background-image: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.12) 24px) !important;
   font-family: Verdana, Arial, sans-serif !important;
 }
 
-.postitdesign-force-style-tape {
+.postitdesign-live-visual-tape {
   background: linear-gradient(180deg, #ffe878 0%, #f0d24b 100%) !important;
   box-shadow: 0 13px 28px rgba(0,0,0,.28) !important;
   font-family: "Trebuchet MS", Arial, sans-serif !important;
 }
 
-.postitdesign-force-style-classic::after,
-.postitdesign-force-style-paper::after,
-.postitdesign-force-style-tape::after {
+.postitdesign-live-visual-classic::after,
+.postitdesign-live-visual-paper::after,
+.postitdesign-live-visual-tape::after {
   content: "";
   position: absolute;
   top: 0;
@@ -283,7 +251,7 @@
   pointer-events: none;
 }
 
-.postitdesign-force-style-tape::before {
+.postitdesign-live-visual-tape::before {
   content: "";
   position: absolute;
   top: -10px;
