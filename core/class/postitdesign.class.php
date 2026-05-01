@@ -45,15 +45,9 @@ class postitdesign extends eqLogic {
         $color = $this->cfg('postit_color', '#fff475');
         $width = intval($this->cfg('postit_width', 220));
         $height = intval($this->cfg('postit_height', 160));
-        $rotate = intval($this->cfg('postit_rotate', -1));
+        $rotate = intval($this->cfg('postit_rotate', 0));
         $targetPlanHeaderId = intval($this->cfg('target_planHeader_id', 0));
-
-        // POSTITDESIGN_VISUAL_STYLE_PATCH
         $visualStyle = $this->cfg('visual_style', 'classic');
-        if (!in_array($visualStyle, array('classic', 'paper', 'tape'), true)) {
-            $visualStyle = 'classic';
-        }
-
 
         if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
             $color = '#fff475';
@@ -67,6 +61,10 @@ class postitdesign extends eqLogic {
 
         if ($rotate < -15) { $rotate = -15; }
         if ($rotate > 15) { $rotate = 15; }
+
+        if (!in_array($visualStyle, array('classic', 'paper', 'tape'), true)) {
+            $visualStyle = 'classic';
+        }
 
         $messageHtml = nl2br($message);
 
@@ -82,10 +80,8 @@ class postitdesign extends eqLogic {
             . 'padding:0 !important;'
             . 'margin:0 !important;'
             . 'overflow:visible !important;'
-            . 'transform:rotate(' . $rotate . 'deg) !important;'
-            . 'transform-origin:center center !important;'
-            . 'pointer-events:auto !important;';
-
+            . 'pointer-events:none !important;'
+            . 'z-index:auto !important;';
 
         $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
         $visualShadow = 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;';
@@ -97,14 +93,13 @@ class postitdesign extends eqLogic {
         $visualTape = '';
 
         if ($visualStyle == 'paper') {
-            $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
             $visualLines = 'background-image:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.10) 24px) !important;';
+            $visualTexture = '';
             $visualShadow = 'box-shadow:0 9px 20px rgba(0,0,0,.22) !important;';
             $visualFont = 'font-family:Verdana,Arial,sans-serif !important;';
         }
 
         if ($visualStyle == 'tape') {
-            $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
             $visualShadow = 'box-shadow:0 13px 28px rgba(0,0,0,.28) !important;';
             $visualTape = '<div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%) rotate(-2deg);width:46px;height:18px;background:rgba(250,250,235,.72);border-left:1px solid rgba(255,255,255,.45);border-right:1px solid rgba(200,200,180,.45);box-shadow:0 1px 2px rgba(0,0,0,.16);pointer-events:none;"></div>';
         }
@@ -118,7 +113,6 @@ class postitdesign extends eqLogic {
             . 'max-width:' . $width . 'px !important;'
             . 'min-height:' . $height . 'px !important;'
             . $visualBackground
-            
             . 'padding:14px 16px !important;'
             . 'border-radius:5px !important;'
             . $visualBorder
@@ -128,14 +122,14 @@ class postitdesign extends eqLogic {
             . 'overflow:visible !important;'
             . 'pointer-events:auto !important;'
             . 'cursor:pointer !important;'
+            . 'transform:rotate(' . $rotate . 'deg) !important;'
+            . 'transform-origin:center center !important;'
             . $visualTexture
-            . $visualLines
-            . 'touch-action:none !important;';
+            . $visualLines;
 
         $titleStyle = ''
             . 'display:block !important;'
             . 'background:transparent !important;'
-            . 'background-color:transparent !important;'
             . 'color:#2b2b2b !important;'
             . 'font-weight:700 !important;'
             . 'font-size:16px !important;'
@@ -148,7 +142,6 @@ class postitdesign extends eqLogic {
         $messageStyle = ''
             . 'display:block !important;'
             . 'background:transparent !important;'
-            . 'background-color:transparent !important;'
             . 'color:#2b2b2b !important;'
             . 'font-size:15px !important;'
             . 'line-height:1.35 !important;'
@@ -168,16 +161,14 @@ class postitdesign extends eqLogic {
             . 'padding-top:7px !important;'
             . 'border-top:1px solid rgba(0,0,0,.12) !important;'
             . 'background:transparent !important;'
-            . 'pointer-events:auto !important;'
-            . 'max-width:100% !important;'
-            . 'overflow:visible !important;';
+            . 'pointer-events:auto !important;';
 
         $btnStyle = ''
             . 'display:inline-block !important;'
-            . 'font-size:10px !important;'
+            . 'font-size:12px !important;'
             . 'font-weight:700 !important;'
             . 'line-height:1 !important;'
-            . 'padding:5px 6px !important;'
+            . 'padding:6px 7px !important;'
             . 'border-radius:4px !important;'
             . 'border:0 !important;'
             . 'text-decoration:none !important;'
@@ -186,8 +177,7 @@ class postitdesign extends eqLogic {
             . 'color:#ffffff !important;'
             . 'font-family:Arial, sans-serif !important;'
             . 'pointer-events:auto !important;'
-            . 'white-space:nowrap !important;'
-            . 'max-width:100% !important;';
+            . 'white-space:nowrap !important;';
 
         $newBtnStyle = $btnStyle . 'background:#3cae45 !important;';
         $rotateBtnStyle = $btnStyle . 'background:#f0ad4e !important;';
@@ -207,92 +197,6 @@ class postitdesign extends eqLogic {
             . "f.style.setProperty('display','flex','important');"
             . "if(st){st.style.setProperty('display','block','important');st.textContent='Options du post-it';}"
             . "}"
-            . "return false;";
-
-        $autoDragJs = "event.stopPropagation();"
-            . "var note=this;"
-            . "var widget=note.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "if(event.target && event.target.closest && event.target.closest('button,a,input,textarea,select')){return true;}"
-            . "var status=widget.querySelector('.postitdesign-status-force');"
-            . "var eqId=widget.getAttribute('data-eqLogic_id');"
-            . "var planHeaderId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
-            . "var moveEl=widget;"
-            . "var parent=widget.parentElement;"
-            . "for(var i=0;i<6 && parent && parent!==document.body;i++){var cs=window.getComputedStyle(parent);if(cs.position==='absolute'||parent.style.left||parent.style.top||parent.getAttribute('data-plan_id')){moveEl=parent;break;}parent=parent.parentElement;}"
-            . "if(!window.__postitdesignGesture){window.__postitdesignGesture={};}"
-            . "var key='p'+eqId;"
-            . "var g=window.__postitdesignGesture[key]||{pointers:{},mode:'',moved:false,rotated:false};"
-            . "window.__postitdesignGesture[key]=g;"
-            . "g.pointers[event.pointerId]={x:event.clientX,y:event.clientY};"
-            . "function pts(){var r=[];for(var k in g.pointers){r.push(g.pointers[k]);}return r;}"
-            . "function clamp(n,min,max){n=parseInt(n,10);if(isNaN(n)){n=min;}return Math.max(min,Math.min(max,n));}"
-            . "function ang(a,b){return Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;}"
-            . "function savePos(x,y){var body=new URLSearchParams();body.append('action','savePositionFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',planHeaderId);body.append('x',x);body.append('y',y);fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).then(function(r){return r.json();}).then(function(d){if(d.state==='ok'){if(status){status.textContent='OK position X='+x+', Y='+y;}}else{alert(d.result||'Erreur position');}}).catch(function(e){alert(e.message||e);});}"
-            . "function saveRot(rot){var body=new URLSearchParams();body.append('action','saveRotationFromDesign');body.append('eqLogic_id',eqId);body.append('rotate',rot);fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).then(function(r){return r.json();}).then(function(d){if(d.state==='ok'){widget.setAttribute('data-rotate',rot);if(status){status.textContent='OK rotation '+rot+'°';}}else{alert(d.result||'Erreur rotation');}}).catch(function(e){alert(e.message||e);});}"
-            . "function toggle(){var f=note.querySelector('.postitdesign-footer-force');var st=note.querySelector('.postitdesign-status-force');if(!f){return;}var o=f.getAttribute('data-open')==='1';if(o){f.setAttribute('data-open','0');f.style.setProperty('display','none','important');if(st){st.style.setProperty('display','none','important');}}else{f.setAttribute('data-open','1');f.style.setProperty('display','flex','important');if(st){st.style.setProperty('display','block','important');st.textContent='Options du post-it';}}}"
-            . "function bind(){if(g.bound){return;}g.bound=true;g.move=function(e){if(!g.pointers[e.pointerId]){return;}g.pointers[e.pointerId]={x:e.clientX,y:e.clientY};var a=pts();if(a.length>=2){if(g.mode!=='rotate'){g.mode='rotate';g.rotated=false;g.startAngle=ang(a[0],a[1]);g.startRotate=parseInt(widget.getAttribute('data-rotate')||'0',10)||0;note.style.outline='2px dashed #f0ad4e';if(status){status.style.setProperty('display','block','important');status.textContent='Rotation deux doigts...';}}var r=clamp(Math.round(g.startRotate+(ang(a[0],a[1])-g.startAngle)),-15,15);g.currentRotate=r;g.rotated=true;widget.style.setProperty('transform','rotate('+r+'deg)','important');if(status){status.textContent='Rotation '+r+'°';}e.preventDefault();e.stopPropagation();return;}if(g.mode==='drag'){var dx=e.clientX-g.startX,dy=e.clientY-g.startY;if(Math.abs(dx)<4&&Math.abs(dy)<4){return;}g.moved=true;var box=moveEl.offsetParent||moveEl.parentElement;var mx=box?Math.max(0,box.clientWidth-moveEl.offsetWidth):5000;var my=box?Math.max(0,box.clientHeight-moveEl.offsetHeight):5000;var x=clamp(Math.round(g.startLeft+dx),0,mx);var y=clamp(Math.round(g.startTop+dy),0,my);moveEl.style.left=x+'px';moveEl.style.top=y+'px';note.style.outline='2px dashed #2f80ed';if(status){status.style.setProperty('display','block','important');status.textContent='Déplacement...';}e.preventDefault();e.stopPropagation();}};g.up=function(e){delete g.pointers[e.pointerId];var a=pts();if(g.mode==='rotate'&&a.length<2){note.style.outline='';if(g.rotated){saveRot(g.currentRotate);}g.mode='';g.rotated=false;}if(g.mode==='drag'&&a.length===0){note.style.outline='';if(g.moved){var x=parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0;var y=parseInt(moveEl.style.top||moveEl.offsetTop||0,10)||0;savePos(x,y);}else{toggle();}g.mode='';g.moved=false;}if(a.length===0){document.removeEventListener('pointermove',g.move,true);document.removeEventListener('pointerup',g.up,true);document.removeEventListener('pointercancel',g.up,true);delete window.__postitdesignGesture[key];}try{note.releasePointerCapture(e.pointerId);}catch(err){}e.preventDefault();e.stopPropagation();};document.addEventListener('pointermove',g.move,true);document.addEventListener('pointerup',g.up,true);document.addEventListener('pointercancel',g.up,true);}"
-            . "if(pts().length>=2){g.mode='rotate';}else if(!g.mode){g.mode='drag';g.startX=event.clientX;g.startY=event.clientY;g.startLeft=parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0;g.startTop=parseInt(moveEl.style.top||moveEl.offsetTop||0,10)||0;g.moved=false;}"
-            . "bind();"
-            . "try{note.setPointerCapture(event.pointerId);}catch(err){}"
-            . "return false;";
-
-        $rotateHoldJs = "event.preventDefault();event.stopPropagation();"
-            . "var btn=this;"
-            . "var widget=btn.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "var note=widget.querySelector('.postitdesign-note-force');"
-            . "var status=widget.querySelector('.postitdesign-status-force');"
-            . "var eqId=widget.getAttribute('data-eqLogic_id');"
-            . "var startX=event.clientX;"
-            . "var startRotate=parseInt(widget.getAttribute('data-rotate')||widget.getAttribute('data-rotate-preview')||'0',10)||0;"
-            . "var currentRotate=startRotate;"
-            . "function clamp(n,min,max){n=parseInt(n,10);if(isNaN(n)){n=min;}return Math.max(min,Math.min(max,n));}"
-            . "function move(e){"
-            . "var dx=(e.clientX-startX);"
-            . "currentRotate=clamp(startRotate+Math.round(dx/3),-15,15);"
-            . "widget.setAttribute('data-rotate-preview',currentRotate);"
-            . "widget.style.setProperty('transform','rotate('+currentRotate+'deg)','important');"
-            . "if(status){status.style.setProperty('display','block','important');status.textContent='Rotation '+currentRotate+'°';}"
-            . "if(note){note.style.outline='2px dashed #f0ad4e';}"
-            . "e.preventDefault();e.stopPropagation();"
-            . "}"
-            . "function end(e){"
-            . "document.removeEventListener('pointermove',move,true);"
-            . "document.removeEventListener('pointerup',end,true);"
-            . "document.removeEventListener('pointercancel',end,true);"
-            . "if(note){note.style.outline='';}"
-            . "var body=new URLSearchParams();"
-            . "body.append('action','saveRotationFromDesign');"
-            . "body.append('eqLogic_id',eqId);"
-            . "body.append('rotate',currentRotate);"
-            . "if(status){status.style.setProperty('display','block','important');status.textContent='Sauvegarde rotation...';}"
-            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
-            . ".then(function(r){return r.json();})"
-            . ".then(function(d){"
-            . "if(d.state==='ok'){"
-            . "widget.setAttribute('data-rotate',currentRotate);"
-            . "widget.setAttribute('data-rotate-preview',currentRotate);"
-            . "widget.style.setProperty('transform','rotate('+currentRotate+'deg)','important');"
-            . "if(status){status.textContent='OK rotation '+currentRotate+'°';}"
-            . "}else{"
-            . "widget.style.setProperty('transform','rotate('+startRotate+'deg)','important');"
-            . "widget.setAttribute('data-rotate-preview',startRotate);"
-            . "alert(d.result||'Erreur rotation');"
-            . "if(status){status.textContent='Erreur rotation';}"
-            . "}"
-            . "})"
-            . ".catch(function(err){"
-            . "widget.style.setProperty('transform','rotate('+startRotate+'deg)','important');"
-            . "widget.setAttribute('data-rotate-preview',startRotate);"
-            . "alert(err.message||err);"
-            . "if(status){status.textContent='Erreur rotation';}"
-            . "});"
-            . "e.preventDefault();e.stopPropagation();"
-            . "}"
-            . "document.addEventListener('pointermove',move,true);"
-            . "document.addEventListener('pointerup',end,true);"
-            . "document.addEventListener('pointercancel',end,true);"
             . "return false;";
 
         $completeJs = "event.preventDefault();event.stopPropagation();"
@@ -320,67 +224,31 @@ class postitdesign extends eqLogic {
             . "var widget=this.closest('.postitdesign-widget');"
             . "if(!widget){return false;}"
             . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var note=widget.querySelector('.postitdesign-note-force');"
             . "var st=widget.querySelector('.postitdesign-status-force');"
             . "var current=parseInt(widget.getAttribute('data-rotate')||'0',10);"
-            . "var angle=prompt('Rotation du post-it (-15 à 15 degrés) :', current);"
-            . "if(angle===null){return false;}"
-            . "angle=parseInt(angle,10);"
-            . "if(isNaN(angle)){angle=0;}"
-            . "if(angle<-15){angle=-15;}if(angle>15){angle=15;}"
-            . "if(st){st.style.setProperty('display','block','important');st.textContent='Sauvegarde rotation...';}"
+            . "if(isNaN(current)){current=0;}"
+            . "var angle=current+5;"
+            . "if(angle>15){angle=-15;}"
             . "var body=new URLSearchParams();"
             . "body.append('action','saveRotationFromDesign');"
             . "body.append('eqLogic_id',eqId);"
             . "body.append('rotate',angle);"
             . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
             . ".then(function(r){return r.json();})"
-            . ".then(function(d){if(d.state==='ok'){widget.setAttribute('data-rotate', angle);widget.style.setProperty('transform','rotate('+angle+'deg)','important');if(st){st.textContent='OK rotation '+angle+'°';}}else{alert(d.result||'Erreur rotation');if(st){st.textContent='Erreur rotation';}}})"
-            . ".catch(function(err){alert(err.message||err);if(st){st.textContent='Erreur rotation';}});"
+            . ".then(function(d){if(d.state==='ok'){widget.setAttribute('data-rotate', angle);if(note){note.style.setProperty('transform','rotate('+angle+'deg)','important');}if(st){st.style.setProperty('display','block','important');st.textContent='OK rotation '+angle+'°';}}else{alert(d.result||'Erreur rotation');}})"
+            . ".catch(function(err){alert(err.message||err);});"
             . "return false;";
 
         $newJs = "event.preventDefault();event.stopPropagation();"
-            . "var widget=this.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "var st=widget.querySelector('.postitdesign-status-force');"
-            . "var p=new URLSearchParams(window.location.search);"
-            . "var planHeaderId=p.get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
-            . "if(!planHeaderId){alert('Design introuvable. Recharge le Design.');return false;}"
-            . "var title=prompt('Titre du nouveau post-it :','Nouveau post-it');"
-            . "if(title===null){return false;}"
-            . "title=(title||'').trim();if(!title){title='Nouveau post-it';}"
-            . "var message=prompt('Message du nouveau post-it :','');"
-            . "if(message===null){return false;}"
-            . "var color=prompt('Couleur : jaune, vert, rose, bleu ou code #RRGGBB','jaune');"
-            . "if(color===null){return false;}"
-            . "var rotate=prompt('Rotation (-15 à 15 degrés) :','-2');"
-            . "if(rotate===null){return false;}"
-            . "var moveEl=widget;var parent=widget.parentElement;"
-            . "for(var i=0;i<6 && parent && parent!==document.body;i++){var cs=window.getComputedStyle(parent);if(cs.position==='absolute'||parent.style.left||parent.style.top||parent.getAttribute('data-plan_id')){moveEl=parent;break;}parent=parent.parentElement;}"
-            . "var x=(parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0)+35;"
-            . "var y=(parseInt(moveEl.style.top||moveEl.offsetTop||0,10)||0)+35;"
-            . "if(st){st.style.setProperty('display','block','important');st.textContent='Création du post-it...';}"
-            . "var body=new URLSearchParams();"
-            . "body.append('action','createFromDesign');"
-            . "body.append('planHeader_id',planHeaderId);"
-            . "body.append('title',title);"
-            . "body.append('message',message);"
-            . "body.append('color',color);"
-            . "body.append('rotate',rotate);"
-            . "body.append('x',x);"
-            . "body.append('y',y);"
-            . "body.append('width','220');"
-            . "body.append('height','160');"
-            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
-            . ".then(function(r){return r.json();})"
-            . ".then(function(d){if(d.state==='ok'){if(st){st.textContent='OK nouveau post-it créé';}window.location.reload();}else{alert(d.result||'Erreur création');if(st){st.textContent='Erreur création';}}})"
-            . ".catch(function(err){alert(err.message||err);if(st){st.textContent='Erreur création';}});"
+            . "alert('Crée un nouveau post-it depuis la page du plugin pour éviter de modifier le Design par erreur.');"
             . "return false;";
 
-        $decollerJs = "event.preventDefault();"
-            . "event.stopPropagation();"
+        $decollerJs = "event.preventDefault();event.stopPropagation();"
             . "if(!confirm('Décoller ce post-it du Design ?')){return false;}"
             . "var p=new URLSearchParams(window.location.search);"
-            . "var pid=p.get('plan_id')||'';"
+            . "var pid=p.get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
+            . "var widget=this.closest('.postitdesign-widget');"
             . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{"
             . "method:'POST',"
             . "credentials:'same-origin',"
@@ -393,15 +261,13 @@ class postitdesign extends eqLogic {
             . "return false;";
 
         $toggleOptionsJsAttr = htmlspecialchars($toggleOptionsJs, ENT_QUOTES, 'UTF-8');
-        $autoDragJsAttr = htmlspecialchars($autoDragJs, ENT_QUOTES, 'UTF-8');
-        $rotateHoldJsAttr = htmlspecialchars($rotateHoldJs, ENT_QUOTES, 'UTF-8');
         $completeJsAttr = htmlspecialchars($completeJs, ENT_QUOTES, 'UTF-8');
         $rotateJsAttr = htmlspecialchars($rotateJs, ENT_QUOTES, 'UTF-8');
         $newJsAttr = htmlspecialchars($newJs, ENT_QUOTES, 'UTF-8');
         $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
 
         $html = '';
-        $html .= '<div class="eqLogic-widget eqLogic allowResize allowReorderCmd postitdesign-widget" ';
+        $html .= '<div class="eqLogic-widget eqLogic postitdesign-widget" ';
         $html .= 'data-eqLogic_id="' . $this->getId() . '" ';
         $html .= 'data-target-planheader="' . $targetPlanHeaderId . '" ';
         $html .= 'data-rotate="' . $rotate . '" ';
@@ -409,16 +275,16 @@ class postitdesign extends eqLogic {
         $html .= 'data-version="' . $_version . '" ';
         $html .= 'style="' . $outerStyle . '">';
 
-        $html .= '<div class="postitdesign-note-force" onpointerdown="' . $autoDragJsAttr . '" style="' . $noteStyle . '">';
+        $html .= '<div class="postitdesign-note-force" onclick="' . $toggleOptionsJsAttr . '" style="' . $noteStyle . '">';
         $html .= $visualTape;
         $html .= $visualFold;
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
 
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
-        $html .= '<button type="button" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it sur ce Design">+</button>';
+        $html .= '<button type="button" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
         $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
-        $html .= '<button type="button" class="postitdesign-rotate-button" data-action="rotate" onclick="return false;" style="' . $btnStyle . '" title="Rotation : appui simple">⟳</button>';
+        $html .= '<button type="button" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation : appui simple">⟳</button>';
         $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
 
@@ -426,308 +292,6 @@ class postitdesign extends eqLogic {
 
         $html .= '</div>';
         $html .= '</div>';
-
-
-        $html .= <<<'HTML'
-<style id="postitdesign-touch-inline-v13-css">
-.postitdesign-widget{z-index:999999!important;touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
-.postitdesign-widget .postitdesign-note-force{touch-action:none!important;-webkit-user-select:none!important;user-select:none!important;}
-.postitdesign-widget button{min-width:48px!important;min-height:48px!important;line-height:42px!important;font-size:20px!important;pointer-events:auto!important;touch-action:manipulation!important;z-index:1000000!important;position:relative!important;}
-.postitdesign-widget.postitdesign-moving-v13{opacity:.96!important;}
-</style>
-<script id="postitdesign-touch-inline-v13">
-(function(){
-  if(window.__postitdesignTouchInlineV13){return;}
-  window.__postitdesignTouchInlineV13 = true;
-
-  var active = null;
-  var raf = 0;
-  var rotateTimer = null;
-  var buttonLockUntil = 0;
-
-  function closest(el, selector){
-    while(el && el.nodeType === 1){
-      if(el.matches && el.matches(selector)){return el;}
-      el = el.parentNode;
-    }
-    return null;
-  }
-
-  function widgetFrom(el){
-    return closest(el, '.postitdesign-widget');
-  }
-
-  function controlFrom(el, widget){
-    var c = closest(el, 'button,a,[role="button"],[onclick],[data-action],.btn');
-    if(c && widget && widget.contains(c)){return c;}
-    return null;
-  }
-
-  function label(el){
-    return (
-      (el ? el.textContent || '' : '') + ' ' +
-      (el && el.getAttribute ? el.getAttribute('title') || '' : '') + ' ' +
-      (el && el.getAttribute ? el.getAttribute('onclick') || '' : '') + ' ' +
-      (el && el.getAttribute ? el.getAttribute('data-action') || '' : '')
-    ).toLowerCase();
-  }
-
-  function isRotate(c){
-    var t = label(c);
-    return t.indexOf('⟳') !== -1 || t.indexOf('rotate') !== -1 || t.indexOf('rotation') !== -1 || t.indexOf('tourner') !== -1;
-  }
-
-  function eqId(widget){
-    return widget.getAttribute('data-eqLogic_id') ||
-           widget.getAttribute('data-eqlogic_id') ||
-           widget.getAttribute('data-eqlogic-id') ||
-           widget.getAttribute('data-id') ||
-           '';
-  }
-
-  function planId(widget){
-    return widget.getAttribute('data-target-planheader') ||
-           widget.getAttribute('data-planheader_id') ||
-           widget.getAttribute('data-planHeader_id') ||
-           '';
-  }
-
-  function num(v, fallback){
-    var n = parseFloat(v);
-    return isNaN(n) ? fallback : n;
-  }
-
-  function getRotate(widget){
-    var r = widget.__postitRotate;
-    if(r !== undefined){return r;}
-    r = parseInt(widget.getAttribute('data-rotate') || '0', 10);
-    if(isNaN(r)){r = 0;}
-    widget.__postitRotate = r;
-    return r;
-  }
-
-  function setRotate(widget, r){
-    r = Math.max(-15, Math.min(15, parseInt(r, 10) || 0));
-    widget.__postitRotate = r;
-    widget.setAttribute('data-rotate', r);
-    widget.style.setProperty('transform', 'rotate(' + r + 'deg)', 'important');
-  }
-
-  function post(data){
-    try{
-      var body = new URLSearchParams();
-      Object.keys(data).forEach(function(k){body.append(k, data[k]);});
-      fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php', {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: body.toString()
-      }).catch(function(){});
-    }catch(e){}
-  }
-
-  function savePos(widget){
-    var id = eqId(widget);
-    var pid = planId(widget);
-    if(!id){return;}
-
-    post({
-      action: 'savePositionFromDesign',
-      eqLogic_id: id,
-      planHeader_id: pid,
-      x: parseInt(widget.style.left || widget.offsetLeft || 0, 10) || 0,
-      y: parseInt(widget.style.top || widget.offsetTop || 0, 10) || 0
-    });
-  }
-
-  function saveRot(widget){
-    var id = eqId(widget);
-    if(!id){return;}
-
-    post({
-      action: 'saveRotationFromDesign',
-      eqLogic_id: id,
-      rotate: getRotate(widget)
-    });
-  }
-
-  function stopEverything(e){
-    if(rotateTimer){
-      clearInterval(rotateTimer);
-      rotateTimer = null;
-      if(active && active.widget){saveRot(active.widget);}
-    }
-
-    if(active && active.drag){
-      var widget = active.widget;
-      widget.classList.remove('postitdesign-moving-v13');
-
-      if(active.moved){
-        var x = Math.round(active.left + active.dx);
-        var y = Math.round(active.top + active.dy);
-
-        widget.style.left = x + 'px';
-        widget.style.top = y + 'px';
-        widget.style.right = 'auto';
-        widget.style.bottom = 'auto';
-        widget.style.setProperty('transform', 'rotate(' + active.rotate + 'deg)', 'important');
-
-        savePos(widget);
-      }else{
-        var footer = widget.querySelector('.postitdesign-footer-force');
-        var status = widget.querySelector('.postitdesign-status-force');
-        if(footer){
-          var open = footer.getAttribute('data-open') === '1';
-          footer.setAttribute('data-open', open ? '0' : '1');
-          footer.style.setProperty('display', open ? 'none' : 'flex', 'important');
-          if(status){
-            status.style.setProperty('display', open ? 'none' : 'block', 'important');
-            status.textContent = open ? '' : 'Options du post-it';
-          }
-        }
-      }
-    }
-
-    active = null;
-
-    if(e){
-      e.preventDefault();
-      e.stopPropagation();
-      if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
-    }
-  }
-
-  function moveDrag(e){
-    if(!active || !active.drag){return;}
-
-    var p = e.touches ? e.touches[0] : e;
-    if(!p){return;}
-
-    active.dx = p.clientX - active.startX;
-    active.dy = p.clientY - active.startY;
-
-    if(Math.abs(active.dx) > 2 || Math.abs(active.dy) > 2){
-      active.moved = true;
-    }
-
-    if(!raf){
-      raf = requestAnimationFrame(function(){
-        raf = 0;
-        if(!active || !active.drag){return;}
-        active.widget.style.setProperty(
-          'transform',
-          'translate3d(' + active.dx + 'px,' + active.dy + 'px,0) rotate(' + active.rotate + 'deg)',
-          'important'
-        );
-      });
-    }
-
-    e.preventDefault();
-    e.stopPropagation();
-    if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
-  }
-
-  function fireButton(c){
-    if(!c){return;}
-    buttonLockUntil = Date.now() + 350;
-
-    setTimeout(function(){
-      try{
-        c.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
-      }catch(err){
-        try{c.click();}catch(e){}
-      }
-    }, 0);
-  }
-
-  function startRotate(e, widget){
-    /*
-      v13 : rotation sans maintien.
-      Un appui = +5 degrés. Aucun setInterval. Aucun mode rotation bloquant.
-    */
-    if(rotateTimer){
-      clearInterval(rotateTimer);
-      rotateTimer = null;
-    }
-
-    active = null;
-    buttonLockUntil = Date.now() + 400;
-
-    var r = getRotate(widget);
-    r = r + 5;
-    if(r > 15){r = -15;}
-
-    setRotate(widget, r);
-    saveRot(widget);
-
-    var status = widget.querySelector('.postitdesign-status-force');
-    if(status){
-      status.style.setProperty('display', 'block', 'important');
-      status.textContent = 'Rotation ' + r + '°';
-    }
-
-    e.preventDefault();
-    e.stopPropagation();
-    if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
-    return false;
-  }
-
-  function start(e){
-    if(Date.now() < buttonLockUntil){return;}
-
-    var widget = widgetFrom(e.target);
-    if(!widget){return;}
-
-    var c = controlFrom(e.target, widget);
-
-    if(c){
-      if(isRotate(c)){
-        startRotate(e, widget);
-        return;
-      }
-
-      e.preventDefault();
-      e.stopPropagation();
-      if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
-      fireButton(c);
-      return;
-    }
-
-    var p = e.touches ? e.touches[0] : e;
-    if(!p){return;}
-
-    active = {
-      widget: widget,
-      drag: true,
-      startX: p.clientX,
-      startY: p.clientY,
-      dx: 0,
-      dy: 0,
-      left: num(widget.style.left, widget.offsetLeft || 0),
-      top: num(widget.style.top, widget.offsetTop || 0),
-      rotate: getRotate(widget),
-      moved: false
-    };
-
-    widget.classList.add('postitdesign-moving-v13');
-
-    e.preventDefault();
-    e.stopPropagation();
-    if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
-  }
-
-  document.addEventListener('pointerdown', start, true);
-  document.addEventListener('pointermove', moveDrag, true);
-  document.addEventListener('pointerup', stopEverything, true);
-  document.addEventListener('pointercancel', stopEverything, true);
-
-  document.addEventListener('touchstart', start, {capture:true, passive:false});
-  document.addEventListener('touchmove', moveDrag, {capture:true, passive:false});
-  document.addEventListener('touchend', stopEverything, {capture:true, passive:false});
-  document.addEventListener('touchcancel', stopEverything, {capture:true, passive:false});
-})();
-</script>
-HTML;
 
         return $this->postToHtml($_version, $html);
     }
