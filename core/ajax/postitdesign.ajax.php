@@ -3,6 +3,7 @@
 try {
     require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
     include_file('core', 'authentification', 'php');
+    include_file('core', 'postitdesign', 'class', 'postitdesign');
 
     if (!isConnect()) {
         throw new Exception('{{401 - Accès non autorisé}}');
@@ -314,37 +315,53 @@ try {
         ));
     }
 
+
+    if (init('action') == 'setMessageFromDesign') {
+        if (!isConnect('admin')) {
+            throw new Exception('{{401 - Accès non autorisé}}');
+        }
+
+        $eqLogic_id = intval(init('eqLogic_id'));
+        $text = trim((string) init('text'));
+
+        if ($eqLogic_id <= 0) {
+            throw new Exception('{{Post-it invalide}}');
+        }
+
+        if (strlen($text) > 5000) {
+            $text = substr($text, 0, 5000);
+        }
+
+        $eqLogic = eqLogic::byId($eqLogic_id);
+        if (!is_object($eqLogic)) {
+            throw new Exception('{{Post-it introuvable}}');
+        }
+
+        if ($eqLogic->getEqType_name() != 'postitdesign') {
+            throw new Exception('{{Equipement invalide pour Post-it Design}}');
+        }
+
+        $eqLogic->setConfiguration('postit_message', $text);
+        $eqLogic->save();
+
+        $messageHtml = nl2br(htmlspecialchars($text, ENT_QUOTES, 'UTF-8'));
+
+        ajax::success(array(
+            'ok' => true,
+            'eqLogic_id' => $eqLogic->getId(),
+            'message' => $text,
+            'message_html' => $messageHtml
+        ));
+    }
+
     if (init('action') == 'createFromDesign') {
         if (!isConnect('admin')) {
             throw new Exception('{{401 - Accès non autorisé}}');
         }
 
-        $source_id = intval(init('eqLogic_id'));
         $planHeader_id = intval(init('planHeader_id'));
-        $text = trim(init('text'));
-        $x = intval(init('x'));
-        $y = intval(init('y'));
-
-        if ($source_id <= 0) {
-            throw new Exception('{{Post-it source invalide}}');
-        }
-
         if ($planHeader_id <= 0) {
             throw new Exception('{{Design cible obligatoire}}');
-        }
-
-        if ($x < 0) { $x = 100; }
-        if ($y < 0) { $y = 100; }
-        if ($x > 5000) { $x = 5000; }
-        if ($y > 5000) { $y = 5000; }
-
-        $source = eqLogic::byId($source_id);
-        if (!is_object($source)) {
-            throw new Exception('{{Post-it source introuvable}}');
-        }
-
-        if ($source->getEqType_name() != 'postitdesign') {
-            throw new Exception('{{Equipement source invalide pour Post-it Design}}');
         }
 
         $planHeader = planHeader::byId($planHeader_id);
@@ -356,42 +373,60 @@ try {
             throw new Exception('{{Vous n’avez pas le droit de modifier ce Design}}');
         }
 
-        if ($text == '') {
-            $text = 'Nouveau post-it';
+        $title = trim((string) init('title'));
+        $message = trim((string) init('message'));
+        $color = trim((string) init('color'));
+        $rotate = intval(init('rotate'));
+        $x = intval(init('x'));
+        $y = intval(init('y'));
+        $width = intval(init('width'));
+        $height = intval(init('height'));
+
+        if ($title == '') { $title = 'Nouveau post-it'; }
+        if ($message == '') { $message = 'Nouveau post-it'; }
+
+        if (strlen($title) > 80) { $title = substr($title, 0, 80); }
+        if (strlen($message) > 5000) { $message = substr($message, 0, 5000); }
+
+        if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
+            $color = '#fff475';
         }
 
-        $width = intval($source->getConfiguration('postit_width', 220));
-        $height = intval($source->getConfiguration('postit_height', 160));
+        if ($rotate < -15) { $rotate = -15; }
+        if ($rotate > 15) { $rotate = 15; }
+
+        if ($x < 0) { $x = 20; }
+        if ($y < 0) { $y = 20; }
+        if ($x > 5000) { $x = 5000; }
+        if ($y > 5000) { $y = 5000; }
+
         if ($width < 120) { $width = 220; }
+        if ($width > 900) { $width = 900; }
         if ($height < 80) { $height = 160; }
+        if ($height > 700) { $height = 700; }
 
-        $newEqLogic = new postitdesign();
-        $newEqLogic->setEqType_name('postitdesign');
-        $newEqLogic->setName('Post-it ' . date('H:i:s'));
-        $newEqLogic->setIsEnable(1);
-        $newEqLogic->setIsVisible(1);
-
-        if (method_exists($source, 'getObject_id') && method_exists($newEqLogic, 'setObject_id')) {
-            $newEqLogic->setObject_id($source->getObject_id());
-        }
-
-        foreach (array('postit_color', 'postit_width', 'postit_height', 'postit_rotate', 'visual_style') as $key) {
-            $newEqLogic->setConfiguration($key, $source->getConfiguration($key, ''));
-        }
-
-        $newEqLogic->setConfiguration('postit_title', 'Post-it');
-        $newEqLogic->setConfiguration('postit_message', $text);
-        $newEqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
-        $newEqLogic->setConfiguration('target_x', $x);
-        $newEqLogic->setConfiguration('target_y', $y);
-        $newEqLogic->save();
+        $eqLogic = new postitdesign();
+        $eqLogic->setEqType_name('postitdesign');
+        $eqLogic->setName($title . ' ' . date('His'));
+        $eqLogic->setIsEnable(1);
+        $eqLogic->setIsVisible(1);
+        $eqLogic->setConfiguration('postit_title', $title);
+        $eqLogic->setConfiguration('postit_message', $message);
+        $eqLogic->setConfiguration('postit_color', $color);
+        $eqLogic->setConfiguration('postit_width', $width);
+        $eqLogic->setConfiguration('postit_height', $height);
+        $eqLogic->setConfiguration('postit_rotate', $rotate);
+        $eqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
+        $eqLogic->setConfiguration('target_x', $x);
+        $eqLogic->setConfiguration('target_y', $y);
+        $eqLogic->save();
 
         $plan = new plan();
         $plan->setPlanHeader_id($planHeader->getId());
         $plan->setLink_type('eqLogic');
-        $plan->setLink_id($newEqLogic->getId());
-        $plan->setPosition('left', 0);
-        $plan->setPosition('top', 0);
+        $plan->setLink_id($eqLogic->getId());
+        $plan->setPosition('left', $x);
+        $plan->setPosition('top', $y);
         $plan->setPosition('width', $width);
         $plan->setPosition('height', $height);
         $plan->setDisplay('name', 0);
@@ -399,13 +434,14 @@ try {
 
         ajax::success(array(
             'ok' => true,
-            'eqLogic_id' => $newEqLogic->getId(),
+            'eqLogic_id' => $eqLogic->getId(),
             'plan_id' => $plan->getId(),
             'planHeader_id' => $planHeader->getId(),
             'x' => $x,
             'y' => $y
         ));
     }
+
 
     throw new Exception('{{Aucune méthode correspondante à}} : ' . init('action'));
 

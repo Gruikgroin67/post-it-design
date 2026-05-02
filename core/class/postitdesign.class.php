@@ -189,8 +189,6 @@ class postitdesign extends eqLogic {
             . 'color:#ffffff !important;'
             . 'font-family:Arial, sans-serif !important;'
             . 'pointer-events:auto !important;'
-            . 'touch-action:manipulation !important;'
-            . 'user-select:none !important;'
             . 'white-space:nowrap !important;';
 
         $newBtnStyle = $btnStyle . 'background:#3cae45 !important;';
@@ -298,14 +296,36 @@ class postitdesign extends eqLogic {
             . "return false;";
 
         $completeJs = "event.preventDefault();event.stopPropagation();"
-            . "var widget=this.closest('.postitdesign-widget');if(!widget){return false;}"
-            . "var panel=widget.querySelector('.postitdesign-panel-simple');var input=widget.querySelector('.postitdesign-panel-input');var title=widget.querySelector('.postitdesign-panel-title');"
-            . "if(!panel||!input){return false;}"
-            . "panel.setAttribute('data-mode','complete');"
-            . "if(title){title.textContent='Compléter le post-it';}"
-            . "input.style.display='block';input.value='';input.placeholder='Texte à ajouter';"
-            . "panel.style.setProperty('display','block','important');"
-            . "setTimeout(function(){try{input.focus();}catch(e){}},80);"
+            . "var btn=this;"
+            . "var widget=btn.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var msgEl=widget.querySelector('.postitdesign-message-force');"
+            . "var st=widget.querySelector('.postitdesign-status-force');"
+            . "if(!msgEl){return false;}"
+            . "if(btn.getAttribute('data-editing')!=='1'){"
+            . "btn.setAttribute('data-editing','1');"
+            . "msgEl.setAttribute('contenteditable','true');"
+            . "msgEl.style.setProperty('outline','2px dashed rgba(47,128,237,.75)','important');"
+            . "msgEl.style.setProperty('padding','4px','important');"
+            . "if(st){st.style.setProperty('display','block','important');st.textContent='Edition active : modifie le texte puis rappuie sur ✎ pour sauvegarder';}"
+            . "try{msgEl.focus();var r=document.createRange();r.selectNodeContents(msgEl);r.collapse(false);var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);}catch(e){}"
+            . "return false;"
+            . "}"
+            . "var txt=(msgEl.innerText||msgEl.textContent||'').replace(/\\u00a0/g,' ').trim();"
+            . "btn.setAttribute('data-editing','0');"
+            . "msgEl.removeAttribute('contenteditable');"
+            . "msgEl.style.removeProperty('outline');"
+            . "msgEl.style.removeProperty('padding');"
+            . "if(st){st.style.setProperty('display','block','important');st.textContent='Sauvegarde du texte...';}"
+            . "var body=new URLSearchParams();"
+            . "body.append('action','setMessageFromDesign');"
+            . "body.append('eqLogic_id',eqId);"
+            . "body.append('text',txt);"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
+            . ".then(function(r){return r.json();})"
+            . ".then(function(d){if(d.state==='ok'){if(msgEl){msgEl.innerHTML=d.result.message_html;}if(st){st.textContent='OK texte sauvegardé';}}else{alert(d.result||'Erreur sauvegarde texte');if(st){st.textContent='Erreur sauvegarde texte';}}})"
+            . ".catch(function(err){alert(err.message||err);if(st){st.textContent='Erreur sauvegarde texte';}});"
             . "return false;";
 
         $rotateJs = "event.preventDefault();event.stopPropagation();"
@@ -329,68 +349,64 @@ class postitdesign extends eqLogic {
             . "return false;";
 
         $newJs = "event.preventDefault();event.stopPropagation();"
-            . "var widget=this.closest('.postitdesign-widget');if(!widget){return false;}"
-            . "var panel=widget.querySelector('.postitdesign-panel-simple');var input=widget.querySelector('.postitdesign-panel-input');var title=widget.querySelector('.postitdesign-panel-title');"
-            . "if(!panel||!input){return false;}"
-            . "panel.setAttribute('data-mode','new');"
-            . "if(title){title.textContent='Nouveau post-it';}"
-            . "input.style.display='block';input.value='';input.placeholder='Texte du nouveau post-it';"
-            . "panel.style.setProperty('display','block','important');"
-            . "setTimeout(function(){try{input.focus();}catch(e){}},80);"
+            . "var widget=this.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var st=widget.querySelector('.postitdesign-status-force');"
+            . "var p=new URLSearchParams(window.location.search);"
+            . "var planHeaderId=p.get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
+            . "if(!planHeaderId){alert('Design introuvable. Recharge le Design.');return false;}"
+            . "var x=(parseInt(widget.style.left||widget.offsetLeft||0,10)||0)+35;"
+            . "var y=(parseInt(widget.style.top||widget.offsetTop||0,10)||0)+35;"
+            . "if(st){st.style.setProperty('display','block','important');st.textContent='Création du post-it...';}"
+            . "var body=new URLSearchParams();"
+            . "body.append('action','createFromDesign');"
+            . "body.append('planHeader_id',planHeaderId);"
+            . "body.append('title','Nouveau post-it');"
+            . "body.append('message','Nouveau post-it');"
+            . "body.append('color','#fff475');"
+            . "body.append('rotate','0');"
+            . "body.append('x',x);"
+            . "body.append('y',y);"
+            . "body.append('width','220');"
+            . "body.append('height','160');"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
+            . ".then(function(r){return r.json();})"
+            . ".then(function(d){if(d.state==='ok'){if(st){st.textContent='OK nouveau post-it créé';}window.location.reload();}else{alert(d.result||'Erreur création');if(st){st.textContent='Erreur création';}}})"
+            . ".catch(function(err){alert(err.message||err);if(st){st.textContent='Erreur création';}});"
             . "return false;";
 
         $decollerJs = "event.preventDefault();event.stopPropagation();"
-            . "var widget=this.closest('.postitdesign-widget');if(!widget){return false;}"
-            . "var panel=widget.querySelector('.postitdesign-panel-simple');var input=widget.querySelector('.postitdesign-panel-input');var title=widget.querySelector('.postitdesign-panel-title');"
-            . "if(!panel){return false;}"
-            . "panel.setAttribute('data-mode','delete');"
-            . "if(title){title.textContent='Décoller ce post-it ?';}"
-            . "if(input){input.style.display='none';input.value='';}"
-            . "panel.style.setProperty('display','block','important');"
-            . "return false;";
-
-        $newJsAttr = htmlspecialchars($newJs, ENT_QUOTES, 'UTF-8');
-        $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
-
-        $panelOkJs = "event.preventDefault();event.stopPropagation();"
-            . "var panel=this.closest('.postitdesign-panel-simple');var widget=this.closest('.postitdesign-widget');"
-            . "if(!panel||!widget){return false;}"
-            . "var mode=panel.getAttribute('data-mode')||'';"
-            . "var input=panel.querySelector('.postitdesign-panel-input');"
-            . "var text=input&&input.value?input.value.trim():'';"
-            . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var btn=this;"
+            . "var widget=btn.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var st=widget.querySelector('.postitdesign-status-force');"
+            . "if(btn.getAttribute('data-confirm')!=='1'){"
+            . "btn.setAttribute('data-confirm','1');"
+            . "if(st){st.style.setProperty('display','block','important');st.textContent='Rappuie encore sur ✕ pour décoller';}"
+            . "setTimeout(function(){try{btn.setAttribute('data-confirm','0');if(st&&st.textContent==='Rappuie encore sur ✕ pour décoller'){st.style.setProperty('display','none','important');}}catch(e){}},3500);"
+            . "return false;"
+            . "}"
+            . "btn.setAttribute('data-confirm','0');"
             . "var p=new URLSearchParams(window.location.search);"
             . "var pid=p.get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
-            . "var status=widget.querySelector('.postitdesign-status-force');"
-            . "var body=new URLSearchParams();"
-            . "if(mode==='complete'){"
-            . "if(!text){if(status){status.style.setProperty('display','block','important');status.textContent='Texte vide';}return false;}"
-            . "body.append('action','completeFromDesign');body.append('eqLogic_id',eqId);body.append('text',text);"
-            . "}else if(mode==='new'){"
-            . "body.append('action','createFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',pid);body.append('text',text||'Nouveau post-it');"
-            . "body.append('x',(parseInt(widget.style.left||widget.offsetLeft||0,10)||0)+35);"
-            . "body.append('y',(parseInt(widget.style.top||widget.offsetTop||0,10)||0)+35);"
-            . "}else if(mode==='delete'){"
-            . "body.append('action','removeFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',pid);"
-            . "}else{return false;}"
-            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
-            . ".then(function(r){return r.json();})"
-            . ".then(function(d){"
-            . "if(d.state==='ok'){"
-            . "if(mode==='complete'){var msg=widget.querySelector('.postitdesign-message-force');if(msg&&d.result&&d.result.message_html){msg.innerHTML=d.result.message_html;}panel.style.setProperty('display','none','important');if(status){status.style.setProperty('display','block','important');status.textContent='Message sauvegardé';}}"
-            . "else{window.location.reload();}"
-            . "}else{alert(d.result||'Erreur action post-it');}"
+            . "if(st){st.style.setProperty('display','block','important');st.textContent='Décollage du post-it...';}"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{"
+            . "method:'POST',"
+            . "credentials:'same-origin',"
+            . "headers:{'Content-Type':'application/x-www-form-urlencoded'},"
+            . "body:'action=removeFromDesign&eqLogic_id=" . $this->getId() . "&planHeader_id='+encodeURIComponent(pid)"
             . "})"
-            . ".catch(function(e){alert(e.message||e);});"
+            . ".then(function(r){return r.json();})"
+            . ".then(function(d){if(d.state==='ok'){window.location.reload();}else{alert(d.result||'Erreur');if(st){st.textContent='Erreur décollage';}}})"
+            . ".catch(function(e){alert(e.message||e);if(st){st.textContent='Erreur décollage';}});"
             . "return false;";
 
-        $panelCancelJs = "event.preventDefault();event.stopPropagation();"
-            . "var panel=this.closest('.postitdesign-panel-simple');"
-            . "if(panel){panel.style.setProperty('display','none','important');panel.setAttribute('data-mode','');}"
-            . "return false;";
-
-        $panelOkJsAttr = htmlspecialchars($panelOkJs, ENT_QUOTES, 'UTF-8');
-        $panelCancelJsAttr = htmlspecialchars($panelCancelJs, ENT_QUOTES, 'UTF-8');
+        $toggleOptionsJsAttr = htmlspecialchars($toggleOptionsJs, ENT_QUOTES, 'UTF-8');
+        $dragJsAttr = htmlspecialchars($dragJs, ENT_QUOTES, 'UTF-8');
+        $completeJsAttr = htmlspecialchars($completeJs, ENT_QUOTES, 'UTF-8');
+        $rotateJsAttr = htmlspecialchars($rotateJs, ENT_QUOTES, 'UTF-8');
+        $newJsAttr = htmlspecialchars($newJs, ENT_QUOTES, 'UTF-8');
+        $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
 
         $html = '';
         $html .= '<div class="eqLogic-widget eqLogic postitdesign-widget" ';
@@ -408,10 +424,10 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
 
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
-        $html .= '<button type="button" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
-        $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
-        $html .= '<button type="button" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation : appui simple">⟳</button>';
-        $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
+        $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
+        $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
+        $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation : appui simple">⟳</button>';
+        $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
 
         $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;line-height:1.2 !important;word-break:break-word !important;"></div>';
