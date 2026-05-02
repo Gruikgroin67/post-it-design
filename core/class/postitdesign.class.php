@@ -2,83 +2,95 @@
 
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-class postitdesign extends eqLogic {
-
-    private static function cleanText($_value) {
-        return htmlspecialchars((string) $_value, ENT_QUOTES, 'UTF-8');
-    }
-
-    private function cfg($_key, $_default = '') {
-        $value = $this->getConfiguration($_key);
+class postitdesign extends eqLogic
+{
+    private function cfg($key, $default = '')
+    {
+        $value = $this->getConfiguration($key, $default);
         if ($value === '' || $value === null) {
-            return $_default;
+            return $default;
         }
         return $value;
     }
 
-    public function preSave() {
-        if ($this->getConfiguration('postit_color', '') == '') {
-            $this->setConfiguration('postit_color', '#fff475');
+    public function preSave()
+    {
+        if ($this->getConfiguration('postit_title', '') === '') {
+            $this->setConfiguration('postit_title', $this->getName());
         }
-        if ($this->getConfiguration('postit_width', '') == '') {
+        if ($this->getConfiguration('postit_message', '') === '') {
+            $this->setConfiguration('postit_message', 'Nouveau post-it');
+        }
+        if ($this->getConfiguration('postit_color', '') === '') {
+            $this->setConfiguration('postit_color', '#fff4a8');
+        }
+        if ($this->getConfiguration('postit_width', '') === '') {
             $this->setConfiguration('postit_width', 220);
         }
-        if ($this->getConfiguration('postit_height', '') == '') {
+        if ($this->getConfiguration('postit_height', '') === '') {
             $this->setConfiguration('postit_height', 160);
         }
-        if ($this->getConfiguration('postit_rotate', '') == '') {
+        if ($this->getConfiguration('postit_rotate', '') === '') {
             $this->setConfiguration('postit_rotate', -1);
+        }
+        if ($this->getConfiguration('target_x', '') === '') {
+            $this->setConfiguration('target_x', 40);
+        }
+        if ($this->getConfiguration('target_y', '') === '') {
+            $this->setConfiguration('target_y', 40);
         }
     }
 
-    public function toHtml($_version = 'dashboard') {
-        $_version = jeedom::versionAlias($_version);
+    public function toHtml($_version = 'dashboard')
+    {
+        $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), ENT_QUOTES, 'UTF-8');
+        $message = (string)$this->cfg('postit_message', 'Nouveau post-it');
+        $color = preg_replace('/[^#a-zA-Z0-9(),.%\s-]/', '', (string)$this->cfg('postit_color', '#fff4a8'));
 
-        $replace = $this->preToHtml($_version);
-        if (!is_array($replace)) {
-            return $replace;
-        }
-
-        $title = self::cleanText($this->cfg('postit_title', $this->getName()));
-        $message = self::cleanText($this->cfg('postit_message', 'Nouveau post-it'));
-
-        $color = $this->cfg('postit_color', '#fff475');
         $width = intval($this->cfg('postit_width', 220));
         $height = intval($this->cfg('postit_height', 160));
-        $rotate = intval($this->cfg('postit_rotate', 0));
-        $targetPlanHeaderId = intval($this->cfg('target_planHeader_id', 0));
-        $targetX = intval($this->cfg('target_x', 100));
-        $targetY = intval($this->cfg('target_y', 100));
-        $visualStyle = $this->cfg('visual_style', 'classic');
-
-        if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
-            $color = '#fff475';
-        }
-
         if ($width < 120) { $width = 220; }
         if ($width > 900) { $width = 900; }
-
         if ($height < 80) { $height = 160; }
         if ($height > 700) { $height = 700; }
 
-        if ($rotate < -15) { $rotate = -15; }
-        if ($rotate > 15) { $rotate = 15; }
+        $rotate = intval($this->cfg('postit_rotate', -1));
+        if ($rotate < -9) { $rotate = -9; }
+        if ($rotate > 9) { $rotate = 9; }
+
+        $targetPlanHeaderId = intval($this->cfg('target_planHeader_id', 0));
+        if (function_exists('init')) {
+            $fromUrl = intval(init('plan_id', init('id', init('planHeader_id', 0))));
+            if ($fromUrl > 0) {
+                $targetPlanHeaderId = $fromUrl;
+            }
+        }
+
+        $targetX = intval($this->cfg('target_x', 40));
+        $targetY = intval($this->cfg('target_y', 40));
+
+        if ($targetPlanHeaderId > 0 && class_exists('plan')) {
+            try {
+                $plan = plan::byLinkTypeLinkIdPlanHeaderId('eqLogic', $this->getId(), $targetPlanHeaderId);
+                if (is_object($plan) && method_exists($plan, 'getPosition')) {
+                    $px = $plan->getPosition('left');
+                    $py = $plan->getPosition('top');
+                    if ($px !== '' && $px !== null) { $targetX = intval($px); }
+                    if ($py !== '' && $py !== null) { $targetY = intval($py); }
+                }
+            } catch (Exception $e) {
+            }
+        }
 
         if ($targetX < 0) { $targetX = 0; }
         if ($targetY < 0) { $targetY = 0; }
-        if ($targetX > 5000) { $targetX = 5000; }
-        if ($targetY > 5000) { $targetY = 5000; }
 
-        if (!in_array($visualStyle, array('classic', 'paper', 'tape'), true)) {
-            $visualStyle = 'classic';
-        }
-
-        $strikeRaw = (string) $this->cfg('postit_strikes', '');
+        $strikeRaw = (string)$this->cfg('postit_strikes', '');
         $strikeIndexes = array();
-        foreach (explode(',', $strikeRaw) as $strikeIndex) {
-            $strikeIndex = trim($strikeIndex);
-            if ($strikeIndex !== '' && ctype_digit($strikeIndex)) {
-                $strikeIndexes[] = intval($strikeIndex);
+        foreach (explode(',', $strikeRaw) as $strikePart) {
+            $strikePart = trim($strikePart);
+            if ($strikePart !== '' && ctype_digit($strikePart)) {
+                $strikeIndexes[] = intval($strikePart);
             }
         }
         $strikeIndexes = array_values(array_unique($strikeIndexes));
@@ -91,6 +103,7 @@ class postitdesign extends eqLogic {
         $messageHtml = '';
         foreach ($messageLines as $lineIndex => $lineText) {
             $isStruck = in_array(intval($lineIndex), $strikeIndexes, true);
+            $lineSafe = htmlspecialchars($lineText, ENT_QUOTES, 'UTF-8');
             $lineStyle = ''
                 . 'display:block !important;'
                 . 'min-height:18px !important;'
@@ -100,7 +113,7 @@ class postitdesign extends eqLogic {
                 . 'border-radius:3px !important;'
                 . 'text-decoration:' . ($isStruck ? 'line-through' : 'none') . ' !important;'
                 . 'opacity:' . ($isStruck ? '.55' : '1') . ' !important;';
-            $messageHtml .= '<div class="postitdesign-line-force" data-line-index="' . intval($lineIndex) . '" data-struck="' . ($isStruck ? '1' : '0') . '" style="' . $lineStyle . '">' . ($lineText === '' ? '&nbsp;' : $lineText) . '</div>';
+            $messageHtml .= '<div class="postitdesign-line-force" data-line-index="' . intval($lineIndex) . '" data-struck="' . ($isStruck ? '1' : '0') . '" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLineTouchLast||Date.now()-this.__ptLineTouchLast>600){this.__ptLineTouchLast=Date.now();this.click();}return false;" style="' . $lineStyle . '">' . ($lineSafe === '' ? '&nbsp;' : $lineSafe) . '</div>'; /* POSTITDESIGN_LINE_TOUCH_TABLET_V1 */
         }
         /* POSTITDESIGN_HANDLES_LINE_STRIKE_V1 */
 
@@ -110,7 +123,6 @@ class postitdesign extends eqLogic {
             . 'max-width:' . $width . 'px !important;'
             . 'min-height:' . $height . 'px !important;'
             . 'background:transparent !important;'
-            . 'background-color:transparent !important;'
             . 'border:0 !important;'
             . 'box-shadow:none !important;'
             . 'padding:0 !important;'
@@ -120,28 +132,8 @@ class postitdesign extends eqLogic {
             . 'position:fixed !important;'
             . 'left:' . $targetX . 'px !important;'
             . 'top:' . $targetY . 'px !important;'
-            . 'z-index:9999 !important;';
-
-        $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
-        $visualShadow = 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;';
-        $visualBorder = 'border:1px solid rgba(120,95,15,.18) !important;';
-        $visualTexture = 'background-image:radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px) !important;background-size:7px 7px !important;';
-        $visualLines = '';
-        $visualFont = 'font-family:"Trebuchet MS",Arial,sans-serif !important;';
-        $visualFold = '<div style="position:absolute;top:0;right:0;width:0;height:0;border-top:22px solid rgba(255,255,255,.86);border-left:22px solid transparent;filter:drop-shadow(-1px 1px 1px rgba(0,0,0,.13));pointer-events:none;"></div>';
-        $visualTape = '';
-
-        if ($visualStyle == 'paper') {
-            $visualLines = 'background-image:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.10) 24px) !important;';
-            $visualTexture = '';
-            $visualShadow = 'box-shadow:0 9px 20px rgba(0,0,0,.22) !important;';
-            $visualFont = 'font-family:Verdana,Arial,sans-serif !important;';
-        }
-
-        if ($visualStyle == 'tape') {
-            $visualShadow = 'box-shadow:0 13px 28px rgba(0,0,0,.28) !important;';
-            $visualTape = '<div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%) rotate(-2deg);width:46px;height:18px;background:rgba(250,250,235,.72);border-left:1px solid rgba(255,255,255,.45);border-right:1px solid rgba(200,200,180,.45);box-shadow:0 1px 2px rgba(0,0,0,.16);pointer-events:none;"></div>';
-        }
+            . 'z-index:9999 !important;'
+            . 'transform:none !important;';
 
         $noteStyle = ''
             . 'display:block !important;'
@@ -151,22 +143,22 @@ class postitdesign extends eqLogic {
             . 'min-width:' . $width . 'px !important;'
             . 'max-width:' . $width . 'px !important;'
             . 'min-height:' . $height . 'px !important;'
-            . $visualBackground
+            . 'background:' . $color . ' !important;'
+            . 'background-color:' . $color . ' !important;'
             . 'padding:14px 16px !important;'
             . 'border-radius:5px !important;'
-            . $visualBorder
-            . $visualShadow
+            . 'border:1px solid rgba(120,95,15,.18) !important;'
+            . 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;'
             . 'color:#2b2b2b !important;'
-            . $visualFont
+            . 'font-family:Arial,sans-serif !important;'
             . 'overflow:visible !important;'
             . 'pointer-events:auto !important;'
-            . 'cursor:move !important;'
-            . 'touch-action:none !important;'
             . 'user-select:none !important;'
+            . 'touch-action:none !important;'
+            . 'background-image:radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px) !important;'
+            . 'background-size:7px 7px !important;'
             . 'transform:rotate(' . $rotate . 'deg) !important;'
-            . 'transform-origin:center center !important;'
-            . $visualTexture
-            . $visualLines;
+            . 'transform-origin:center center !important;'; /* POSTITDESIGN_RENDER_SAVED_ROTATE_V1 */
 
         $titleStyle = ''
             . 'display:block !important;'
@@ -212,11 +204,10 @@ class postitdesign extends eqLogic {
             . 'padding:6px 7px !important;'
             . 'border-radius:4px !important;'
             . 'border:0 !important;'
-            . 'text-decoration:none !important;'
             . 'cursor:pointer !important;'
             . 'background:#2f80ed !important;'
             . 'color:#ffffff !important;'
-            . 'font-family:Arial, sans-serif !important;'
+            . 'font-family:Arial,sans-serif !important;'
             . 'pointer-events:auto !important;'
             . 'white-space:nowrap !important;';
 
@@ -226,19 +217,19 @@ class postitdesign extends eqLogic {
 
         $dragHandleStyle = ''
             . 'position:absolute !important;'
-            . 'top:4px !important;'
             . 'right:4px !important;'
-            . 'width:22px !important;'
-            . 'height:22px !important;'
-            . 'line-height:22px !important;'
+            . 'top:4px !important;'
+            . 'width:34px !important;'
+            . 'height:34px !important;'
+            . 'line-height:34px !important;'
             . 'text-align:center !important;'
             . 'border-radius:50% !important;'
-            . 'background:rgba(0,0,0,.10) !important;'
-            . 'color:rgba(0,0,0,.55) !important;'
-            . 'font-size:12px !important;'
+            . 'background:rgba(0,0,0,.22) !important;'
+            . 'color:rgba(255,255,255,.92) !important;'
+            . 'font-size:13px !important;'
             . 'font-weight:700 !important;'
             . 'cursor:move !important;'
-            . 'z-index:3 !important;'
+            . 'z-index:99999 !important;'
             . 'user-select:none !important;'
             . 'touch-action:none !important;';
 
@@ -246,226 +237,62 @@ class postitdesign extends eqLogic {
             . 'position:absolute !important;'
             . 'right:4px !important;'
             . 'bottom:4px !important;'
-            . 'width:22px !important;'
-            . 'height:22px !important;'
-            . 'line-height:22px !important;'
+            . 'width:34px !important;'
+            . 'height:34px !important;'
+            . 'line-height:34px !important;'
             . 'text-align:center !important;'
             . 'border-radius:50% !important;'
-            . 'background:rgba(0,0,0,.10) !important;'
-            . 'color:rgba(0,0,0,.55) !important;'
+            . 'background:rgba(0,0,0,.22) !important;'
+            . 'color:rgba(255,255,255,.92) !important;'
             . 'font-size:13px !important;'
             . 'font-weight:700 !important;'
             . 'cursor:pointer !important;'
-            . 'z-index:3 !important;'
+            . 'z-index:99999 !important;'
             . 'user-select:none !important;'
             . 'touch-action:manipulation !important;';
 
-        $toggleOptionsJs = "event.stopPropagation();"
-            . "var root=(this.closest&&this.closest('.postitdesign-note-force'))||this;"
-            . "if(root.__postitMovedUntil && Date.now()<root.__postitMovedUntil){return false;}"
+        $toggleOptionsJs = "var ev=event||window.event;"
+            . "ev.preventDefault();ev.stopPropagation();"
+            . "var h=this;"
+            . "var now=Date.now();"
+            . "if(h.__ptToggleLockUntil && now<h.__ptToggleLockUntil){return false;}"
+            . "h.__ptToggleLockUntil=now+900;"
+            . "var root=(h.closest&&h.closest('.postitdesign-note-force'))||h;"
             . "var f=root.querySelector('.postitdesign-footer-force');"
             . "var st=root.querySelector('.postitdesign-status-force');"
-            . "/* POSTITDESIGN_OPTIONS_CORNER_FIX_V1 */"
             . "if(!f){return false;}"
-            . "var isOpen=f.getAttribute('data-open')==='1';"
+            . "var isOpen=(f.getAttribute('data-open')==='1');"
             . "if(isOpen){"
             . "f.setAttribute('data-open','0');"
             . "f.style.setProperty('display','none','important');"
-            . "if(st){st.style.setProperty('display','none','important');}"
+            . "f.style.setProperty('visibility','hidden','important');"
+            . "f.style.setProperty('opacity','0','important');"
+            . "if(st){st.style.setProperty('display','none','important');st.textContent='';}"
             . "}else{"
             . "f.setAttribute('data-open','1');"
             . "f.style.setProperty('display','flex','important');"
+            . "f.style.setProperty('visibility','visible','important');"
+            . "f.style.setProperty('opacity','1','important');"
             . "if(st){st.style.setProperty('display','block','important');st.textContent='Options du post-it';}"
             . "}"
+            . "/* POSTITDESIGN_OPTIONS_NO_DOUBLE_CLOSE_V2 */"
             . "return false;";
 
-        $dragJs = "var note=this;"
-            . "var ev=event||window.event;"
-            . "if(ev.target && ev.target.closest && ev.target.closest('button,a,input,textarea,select')){return true;}"
-            . "var widget=note.closest('.postitdesign-widget');"
-            . "if(!widget){return true;}"
-            . "var eqId=widget.getAttribute('data-eqLogic_id');"
-            . "var planHeaderId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
-            . "var moveEl=widget;"
-            . "var status=widget.querySelector('.postitdesign-status-force');"
-            . "var touchOpt={capture:true,passive:false};"
-            . "function point(e){"
-            . "if(e.touches && e.touches.length){return {x:e.touches[0].clientX,y:e.touches[0].clientY};}"
-            . "if(e.changedTouches && e.changedTouches.length){return {x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};}"
-            . "return {x:e.clientX||0,y:e.clientY||0};"
-            . "}"
+        $dragJs = "var ev=event||window.event;"
+            . "ev.preventDefault();ev.stopPropagation();"
+            . "var handle=this;"
+            . "var widget=handle.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var eqId=widget.getAttribute('data-eqLogic_id')||'';"
+            . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
+            . "function point(e){if(e.touches&&e.touches.length){return{x:e.touches[0].clientX,y:e.touches[0].clientY};}if(e.changedTouches&&e.changedTouches.length){return{x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};}return{x:e.clientX||0,y:e.clientY||0};}"
             . "var p0=point(ev);"
-            . "var startX=p0.x;"
-            . "var startY=p0.y;"
-            . "var startLeft=parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0;"
-            . "var startTop=parseInt(moveEl.style.top||moveEl.offsetTop||0,10)||0;"
-            . "var lastX=startLeft;"
-            . "var lastY=startTop;"
-            . "var moved=false;"
-            . "function clamp(n,min,max){n=parseInt(n,10);if(isNaN(n)){n=min;}return Math.max(min,Math.min(max,n));}"
-            . "function savePos(x,y){"
-            . "var body=new URLSearchParams();"
-            . "body.append('action','savePositionFromDesign');"
-            . "body.append('eqLogic_id',eqId);"
-            . "body.append('planHeader_id',planHeaderId);"
-            . "body.append('x',x);"
-            . "body.append('y',y);"
-            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
-            . ".then(function(r){return r.json();})"
-            . ".then(function(d){if(d.state==='ok'){if(status){status.style.setProperty('display','block','important');status.textContent='OK position X='+x+', Y='+y;}}else{alert(d.result||'Erreur position');}})"
-            . ".catch(function(e){alert(e.message||e);});"
-            . "}"
-            . "function move(e){"
-            . "var p=point(e);"
-            . "var dx=p.x-startX;"
-            . "var dy=p.y-startY;"
-            . "if(Math.abs(dx)<1 && Math.abs(dy)<1){return;}"
-            . "moved=true;"
-            . "var maxX=Math.max(0,(window.innerWidth||document.documentElement.clientWidth||5000)-moveEl.offsetWidth);"
-            . "var maxY=Math.max(0,(window.innerHeight||document.documentElement.clientHeight||5000)-moveEl.offsetHeight);"
-            . "lastX=clamp(startLeft+dx,0,maxX);"
-            . "lastY=clamp(startTop+dy,0,maxY);"
-            . "moveEl.style.left=lastX+'px';"
-            . "moveEl.style.top=lastY+'px';"
-            . "if(status){status.style.setProperty('display','block','important');status.textContent='Déplacement...';}"
-            . "if(e.cancelable){e.preventDefault();}"
-            . "e.stopPropagation();"
-            . "}"
-            . "function up(e){"
-            . "document.removeEventListener('pointermove',move,true);"
-            . "document.removeEventListener('pointerup',up,true);"
-            . "document.removeEventListener('pointercancel',up,true);"
-            . "document.removeEventListener('mousemove',move,true);"
-            . "document.removeEventListener('mouseup',up,true);"
-            . "document.removeEventListener('touchmove',move,touchOpt);"
-            . "document.removeEventListener('touchend',up,true);"
-            . "document.removeEventListener('touchcancel',up,true);"
-            . "try{if(note.releasePointerCapture && ev.pointerId!==undefined){note.releasePointerCapture(ev.pointerId);}}catch(err){}"
-            . "if(moved){"
-            . "note.__postitMovedUntil=Date.now()+500;"
-            . "savePos(lastX,lastY);"
-            . "}"
-            . "if(e && e.cancelable){e.preventDefault();}"
-            . "if(e){e.stopPropagation();}"
-            . "}"
-            . "document.addEventListener('pointermove',move,true);"
-            . "document.addEventListener('pointerup',up,true);"
-            . "document.addEventListener('pointercancel',up,true);"
-            . "document.addEventListener('mousemove',move,true);"
-            . "document.addEventListener('mouseup',up,true);"
-            . "document.addEventListener('touchmove',move,touchOpt);"
-            . "document.addEventListener('touchend',up,true);"
-            . "document.addEventListener('touchcancel',up,true);"
-            . "try{if(note.setPointerCapture && ev.pointerId!==undefined){note.setPointerCapture(ev.pointerId);}}catch(err){}"
-            . "if(status){status.style.setProperty('display','block','important');status.textContent='Déplacement actif';}"
-            . "if(ev.cancelable){ev.preventDefault();}"
-            . "ev.stopPropagation();"
-            . "return false;";
-
-        $completeJs = "event.preventDefault();event.stopPropagation();"
-            . "var btn=this;"
-            . "var widget=btn.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "var eqId=widget.getAttribute('data-eqLogic_id');"
-            . "var msgEl=widget.querySelector('.postitdesign-message-force');"
-            . "var st=widget.querySelector('.postitdesign-status-force');"
-            . "if(!msgEl){return false;}"
-            . "if(btn.getAttribute('data-editing')!=='1'){"
-            . "btn.setAttribute('data-editing','1');"
-            . "msgEl.setAttribute('contenteditable','true');"
-            . "msgEl.style.setProperty('outline','2px dashed rgba(47,128,237,.75)','important');"
-            . "msgEl.style.setProperty('padding','4px','important');"
-            . "if(st){st.style.setProperty('display','block','important');st.textContent='Edition active : modifie le texte puis rappuie sur ✎ pour sauvegarder';}"
-            . "try{msgEl.focus();var r=document.createRange();r.selectNodeContents(msgEl);r.collapse(false);var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);}catch(e){}"
-            . "return false;"
-            . "}"
-            . "var txt=(msgEl.innerText||msgEl.textContent||'').replace(/\\u00a0/g,' ').trim();"
-            . "btn.setAttribute('data-editing','0');"
-            . "msgEl.removeAttribute('contenteditable');"
-            . "msgEl.style.removeProperty('outline');"
-            . "msgEl.style.removeProperty('padding');"
-            . "if(st){st.style.setProperty('display','block','important');st.textContent='Sauvegarde du texte...';}"
-            . "var body=new URLSearchParams();"
-            . "body.append('action','setMessageFromDesign');"
-            . "body.append('eqLogic_id',eqId);"
-            . "body.append('text',txt);"
-            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
-            . ".then(function(r){return r.json();})"
-            . ".then(function(d){if(d.state==='ok'){if(msgEl){msgEl.innerHTML=d.result.message_html;}if(st){st.textContent='OK texte sauvegardé';}}else{alert(d.result||'Erreur sauvegarde texte');if(st){st.textContent='Erreur sauvegarde texte';}}})"
-            . ".catch(function(err){alert(err.message||err);if(st){st.textContent='Erreur sauvegarde texte';}});"
-            . "return false;";
-
-        $rotateJs = "event.preventDefault();event.stopPropagation();"
-            . "var widget=this.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "var eqId=widget.getAttribute('data-eqLogic_id');"
-            . "var note=widget.querySelector('.postitdesign-note-force');"
-            . "var st=widget.querySelector('.postitdesign-status-force');"
-            . "var current=parseInt(widget.getAttribute('data-rotate')||'0',10);"
-            . "if(isNaN(current)){current=0;}"
-            . "var angle=current+5;"
-            . "if(angle>15){angle=-15;}"
-            . "var body=new URLSearchParams();"
-            . "body.append('action','saveRotationFromDesign');"
-            . "body.append('eqLogic_id',eqId);"
-            . "body.append('rotate',angle);"
-            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
-            . ".then(function(r){return r.json();})"
-            . ".then(function(d){if(d.state==='ok'){widget.setAttribute('data-rotate', angle);if(note){note.style.setProperty('transform','rotate('+angle+'deg)','important');}if(st){st.style.setProperty('display','block','important');st.textContent='OK rotation '+angle+'°';}}else{alert(d.result||'Erreur rotation');}})"
-            . ".catch(function(err){alert(err.message||err);});"
-            . "return false;";
-
-        $newJs = "event.preventDefault();event.stopPropagation();"
-            . "var widget=this.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "var st=widget.querySelector('.postitdesign-status-force');"
-            . "var p=new URLSearchParams(window.location.search);"
-            . "var planHeaderId=p.get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
-            . "if(!planHeaderId){alert('Design introuvable. Recharge le Design.');return false;}"
-            . "var x=(parseInt(widget.style.left||widget.offsetLeft||0,10)||0)+35;"
-            . "var y=(parseInt(widget.style.top||widget.offsetTop||0,10)||0)+35;"
-            . "if(st){st.style.setProperty('display','block','important');st.textContent='Création du post-it...';}"
-            . "var body=new URLSearchParams();"
-            . "body.append('action','createFromDesign');"
-            . "body.append('planHeader_id',planHeaderId);"
-            . "body.append('title','Nouveau post-it');"
-            . "body.append('message','Nouveau post-it');"
-            . "body.append('color','#fff475');"
-            . "body.append('rotate','0');"
-            . "body.append('x',x);"
-            . "body.append('y',y);"
-            . "body.append('width','220');"
-            . "body.append('height','160');"
-            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
-            . ".then(function(r){return r.json();})"
-            . ".then(function(d){if(d.state==='ok'){if(st){st.textContent='OK nouveau post-it créé';}window.location.reload();}else{alert(d.result||'Erreur création');if(st){st.textContent='Erreur création';}}})"
-            . ".catch(function(err){alert(err.message||err);if(st){st.textContent='Erreur création';}});"
-            . "return false;";
-
-        $decollerJs = "event.preventDefault();event.stopPropagation();"
-            . "var btn=this;"
-            . "var widget=btn.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "var st=widget.querySelector('.postitdesign-status-force');"
-            . "if(btn.getAttribute('data-confirm')!=='1'){"
-            . "btn.setAttribute('data-confirm','1');"
-            . "if(st){st.style.setProperty('display','block','important');st.textContent='Rappuie encore sur ✕ pour décoller';}"
-            . "setTimeout(function(){try{btn.setAttribute('data-confirm','0');if(st&&st.textContent==='Rappuie encore sur ✕ pour décoller'){st.style.setProperty('display','none','important');}}catch(e){}},3500);"
-            . "return false;"
-            . "}"
-            . "btn.setAttribute('data-confirm','0');"
-            . "var p=new URLSearchParams(window.location.search);"
-            . "var pid=p.get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
-            . "if(st){st.style.setProperty('display','block','important');st.textContent='Décollage du post-it...';}"
-            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{"
-            . "method:'POST',"
-            . "credentials:'same-origin',"
-            . "headers:{'Content-Type':'application/x-www-form-urlencoded'},"
-            . "body:'action=removeFromDesign&eqLogic_id=" . $this->getId() . "&planHeader_id='+encodeURIComponent(pid)"
-            . "})"
-            . ".then(function(r){return r.json();})"
-            . ".then(function(d){if(d.state==='ok'){window.location.reload();}else{alert(d.result||'Erreur');if(st){st.textContent='Erreur décollage';}}})"
-            . ".catch(function(e){alert(e.message||e);if(st){st.textContent='Erreur décollage';}});"
+            . "var rect=widget.getBoundingClientRect();"
+            . "var ox=p0.x-rect.left;"
+            . "var oy=p0.y-rect.top;"
+            . "function move(e){e.preventDefault();e.stopPropagation();var p=point(e);var x=Math.max(0,Math.round(p.x-ox));var y=Math.max(0,Math.round(p.y-oy));widget.style.setProperty('left',x+'px','important');widget.style.setProperty('top',y+'px','important');}"
+            . "function up(e){e.preventDefault();e.stopPropagation();document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('touchmove',move,true);document.removeEventListener('touchend',up,true);var r=widget.getBoundingClientRect();var x=Math.max(0,Math.round(r.left));var y=Math.max(0,Math.round(r.top));if(eqId){var body=new URLSearchParams();body.append('action','savePositionFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',planId);body.append('x',String(x));body.append('y',String(y));fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(function(){});}return false;}"
+            . "document.addEventListener('pointermove',move,true);document.addEventListener('pointerup',up,true);document.addEventListener('touchmove',move,{capture:true,passive:false});document.addEventListener('touchend',up,{capture:true,passive:false});"
             . "return false;";
 
         $lineClickJs = <<<'POSTITDESIGN_LINE_CLICK_JS'
@@ -473,8 +300,6 @@ event.preventDefault();
 event.stopPropagation();
 
 var msg=this;
-if(msg.getAttribute('contenteditable')==='true'){return true;}
-
 var line=event.target&&event.target.closest?event.target.closest('.postitdesign-line-force'):null;
 if(!line){return false;}
 
@@ -506,27 +331,88 @@ fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{
   credentials:'same-origin',
   headers:{'Content-Type':'application/x-www-form-urlencoded'},
   body:body.toString()
-})
-.then(function(r){return r.json();})
-.then(function(d){
-  if(d.state==='ok'){
-    if(st){st.textContent=struck ? 'OK ligne barrée' : 'OK ligne réactivée';}
-  }else{
-    alert(d.result||'Erreur ligne');
-  }
-})
-.catch(function(e){alert(e.message||e);});
+}).catch(function(){});
 
 return false;
 POSTITDESIGN_LINE_CLICK_JS;
 
+        $rotateJs = "var ev=event||window.event;"
+            . "ev.preventDefault();ev.stopPropagation();"
+            . "var btn=this;"
+            . "var now=Date.now();"
+            . "if(btn.__ptRotateLockUntil && now<btn.__ptRotateLockUntil){return false;}"
+            . "btn.__ptRotateLockUntil=now+900;"
+            . "var widget=btn.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var note=widget.querySelector('.postitdesign-note-force');"
+            . "var f=widget.querySelector('.postitdesign-footer-force');"
+            . "var st=widget.querySelector('.postitdesign-status-force');"
+            . "var eqId=widget.getAttribute('data-eqLogic_id')||'';"
+            . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'0';"
+            . "var key='postitdesign.rotate.v2.'+planId+'.'+eqId;"
+            . "var angle=parseInt(widget.getAttribute('data-rotate')||'0',10);"
+            . "if(isNaN(angle)){angle=0;}"
+            . "var next=angle+3;"
+            . "if(next>9){next=-9;}"
+            . "widget.setAttribute('data-rotate',String(next));"
+            . "try{localStorage.setItem(key,String(next));}catch(e){}"
+            . "if(note){note.style.setProperty('transform','rotate('+next+'deg)','important');note.style.setProperty('transform-origin','center center','important');}"
+            . "if(f){f.setAttribute('data-open','1');f.style.setProperty('display','flex','important');f.style.setProperty('visibility','visible','important');f.style.setProperty('opacity','1','important');}"
+            . "if(st){st.style.setProperty('display','block','important');st.textContent='Rotation '+next+'°';}"
+            . "if(eqId){var body=new URLSearchParams();body.append('action','saveRotationFromDesign');body.append('eqLogic_id',eqId);body.append('rotate',String(next));fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(function(){});}"
+            . "/* POSTITDESIGN_ROTATE_LOCAL_RENDER_V2 */"
+            . "return false;";
+
+        $completeJs = "event.preventDefault();event.stopPropagation();"
+            . "var widget=this.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var msgEl=widget.querySelector('.postitdesign-message-force');"
+            . "var oldText=msgEl?msgEl.innerText:'';"
+            . "var txt=prompt('Texte du post-it',oldText);"
+            . "if(txt===null){return false;}"
+            . "var body=new URLSearchParams();"
+            . "body.append('action','setMessageFromDesign');"
+            . "body.append('eqLogic_id',eqId);"
+            . "body.append('text',txt);"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).then(function(){window.location.reload();}).catch(function(){});"
+            . "return false;";
+
+        $newJs = "event.preventDefault();event.stopPropagation();"
+            . "var widget=this.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
+            . "var r=widget.getBoundingClientRect();"
+            . "var body=new URLSearchParams();"
+            . "body.append('action','createFromDesign');"
+            . "body.append('planHeader_id',planId);"
+            . "body.append('title','Nouveau post-it');"
+            . "body.append('message','Nouveau post-it');"
+            . "body.append('x',String(Math.round(r.left+35)));"
+            . "body.append('y',String(Math.round(r.top+35)));"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).then(function(){window.location.reload();}).catch(function(){});"
+            . "return false;";
+
+        $decollerJs = "event.preventDefault();event.stopPropagation();"
+            . "var widget=this.closest('.postitdesign-widget');"
+            . "if(!widget){return false;}"
+            . "if(!confirm('Décoller ce post-it du Design ?')){return false;}"
+            . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
+            . "var body=new URLSearchParams();"
+            . "body.append('action','removeFromDesign');"
+            . "body.append('eqLogic_id',eqId);"
+            . "body.append('planHeader_id',planId);"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).then(function(){window.location.reload();}).catch(function(){});"
+            . "return false;";
+
         $toggleOptionsJsAttr = htmlspecialchars($toggleOptionsJs, ENT_QUOTES, 'UTF-8');
         $dragJsAttr = htmlspecialchars($dragJs, ENT_QUOTES, 'UTF-8');
-        $completeJsAttr = htmlspecialchars($completeJs, ENT_QUOTES, 'UTF-8');
+        $lineClickJsAttr = htmlspecialchars($lineClickJs, ENT_QUOTES, 'UTF-8');
         $rotateJsAttr = htmlspecialchars($rotateJs, ENT_QUOTES, 'UTF-8');
+        $completeJsAttr = htmlspecialchars($completeJs, ENT_QUOTES, 'UTF-8');
         $newJsAttr = htmlspecialchars($newJs, ENT_QUOTES, 'UTF-8');
         $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
-        $lineClickJsAttr = htmlspecialchars($lineClickJs, ENT_QUOTES, 'UTF-8');
 
         $html = '';
         $html .= '<div class="eqLogic-widget eqLogic postitdesign-widget" ';
@@ -539,30 +425,65 @@ POSTITDESIGN_LINE_CLICK_JS;
 
         $html .= '<div class="postitdesign-note-force" style="' . $noteStyle . '">';
         $html .= '<div class="postitdesign-drag-handle-force" onpointerdown="' . $dragJsAttr . '" title="Maintenir pour déplacer" style="' . $dragHandleStyle . '">↕</div>';
-        $html .= '<div class="postitdesign-options-handle-force" onclick="' . $toggleOptionsJsAttr . '" title="Options" style="' . $optionsHandleStyle . '">⋯</div>';
-        $html .= $visualTape;
-        $html .= $visualFold;
+        $html .= '<div class="postitdesign-options-handle-force" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="' . $toggleOptionsJsAttr . '" onclick="' . $toggleOptionsJsAttr . '" title="Options" style="' . $optionsHandleStyle . '">⋯</div>';
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
         $html .= '<div class="postitdesign-message-force" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
-
-        $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
-        $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
-        $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
-        $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation : appui simple">⟳</button>';
-        $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
+        $html .= '<div class="postitdesign-footer-force" data-open="0" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="event.preventDefault();event.stopPropagation();return false;" style="' . $footerStyle . '">';
+        $html .= '<button type="button" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
+        $html .= '<button type="button" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
+        $html .= '<button type="button" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation">⟳</button>';
+        $html .= '<button type="button" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
-
         $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;line-height:1.2 !important;word-break:break-word !important;"></div>';
-
         $html .= '</div>';
         $html .= '</div>';
 
-        return $this->postToHtml($_version, $html);
+        $html .= <<<'POSTITDESIGN_ROTATION_APPLY_ON_RENDER_V2'
+<script>
+(function(){
+  function pid(widget){
+    try {
+      var p = new URLSearchParams(window.location.search || '');
+      return p.get('plan_id') || p.get('id') || p.get('planHeader_id') || widget.getAttribute('data-target-planheader') || '0';
+    } catch(e) {
+      return widget.getAttribute('data-target-planheader') || '0';
+    }
+  }
+
+  var widgets = document.querySelectorAll('.postitdesign-widget');
+  for (var i = 0; i < widgets.length; i++) {
+    var widget = widgets[i];
+    var eqId = widget.getAttribute('data-eqLogic_id') || '';
+    var key = 'postitdesign.rotate.v2.' + pid(widget) + '.' + eqId;
+    var raw = widget.getAttribute('data-rotate') || '0';
+    try {
+      var saved = localStorage.getItem(key);
+      if (saved !== null && saved !== '') { raw = saved; }
+    } catch(e) {}
+    var angle = parseInt(raw, 10);
+    if (isNaN(angle)) { angle = 0; }
+    if (angle < -9) { angle = -9; }
+    if (angle > 9) { angle = 9; }
+    widget.setAttribute('data-rotate', String(angle));
+    var note = widget.querySelector('.postitdesign-note-force');
+    if (note) {
+      note.style.setProperty('transform', 'rotate(' + angle + 'deg)', 'important');
+      note.style.setProperty('transform-origin', 'center center', 'important');
+    }
+  }
+  /* POSTITDESIGN_ROTATION_APPLY_ON_RENDER_V2 */
+})();
+</script>
+POSTITDESIGN_ROTATION_APPLY_ON_RENDER_V2;
+
+        return $html;
     }
 }
 
-class postitdesignCmd extends cmd {
-    public function execute($_options = array()) {
+class postitdesignCmd extends cmd
+{
+    public function execute($_options = array())
+    {
         return null;
     }
 }
