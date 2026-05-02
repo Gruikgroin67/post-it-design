@@ -113,7 +113,7 @@ class postitdesign extends eqLogic
                 . 'border-radius:3px !important;'
                 . 'text-decoration:' . ($isStruck ? 'line-through' : 'none') . ' !important;'
                 . 'opacity:' . ($isStruck ? '.55' : '1') . ' !important;';
-            $messageHtml .= '<div class="postitdesign-line-force" data-line-index="' . intval($lineIndex) . '" data-struck="' . ($isStruck ? '1' : '0') . '" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLineTouchLast||Date.now()-this.__ptLineTouchLast>600){this.__ptLineTouchLast=Date.now();this.click();}return false;" style="' . $lineStyle . '">' . ($lineSafe === '' ? '&nbsp;' : $lineSafe) . '</div>'; /* POSTITDESIGN_LINE_TOUCH_TABLET_V1 */
+            $messageHtml .= '<div class="postitdesign-line-force" data-line-index="' . intval($lineIndex) . '" data-struck="' . ($isStruck ? '1' : '0') . '" ontouchend="return postitdesignTabletRunClickV4(this,event);" style="' . $lineStyle . '">' . ($lineSafe === '' ? '&nbsp;' : $lineSafe) . '</div>'; /* POSTITDESIGN_LINE_TOUCH_TABLET_V1 */
         }
         /* POSTITDESIGN_HANDLES_LINE_STRIKE_V1 */
 
@@ -286,12 +286,14 @@ class postitdesign extends eqLogic
             . "var eqId=widget.getAttribute('data-eqLogic_id')||'';"
             . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
             . "function point(e){if(e.touches&&e.touches.length){return{x:e.touches[0].clientX,y:e.touches[0].clientY};}if(e.changedTouches&&e.changedTouches.length){return{x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};}return{x:e.clientX||0,y:e.clientY||0};}"
+            . "function designRect(){var sels=['#div_displayObject','.div_displayObject','#div_designDisplay','.div_designDisplay','#div_pageContainer','.planContainer','.plan-container'];for(var i=0;i<sels.length;i++){var el=document.querySelector(sels[i]);if(el){var r=el.getBoundingClientRect();if(r.width>80&&r.height>80){return r;}}}var parent=widget.parentElement;while(parent&&parent!==document.body){var pr=parent.getBoundingClientRect();if(pr.width>80&&pr.height>80&&pr.width<window.innerWidth*1.05&&pr.height<window.innerHeight*1.05){return pr;}parent=parent.parentElement;}return{left:0,top:0,right:window.innerWidth,bottom:window.innerHeight,width:window.innerWidth,height:window.innerHeight};}"
+            . "function clampXY(x,y){var b=designRect();var wr=widget.getBoundingClientRect();var w=Math.max(40,wr.width||widget.offsetWidth||220);var h=Math.max(40,wr.height||widget.offsetHeight||160);var minX=Math.round(b.left);var minY=Math.round(b.top);var maxX=Math.round(b.right-w);var maxY=Math.round(b.bottom-h);if(maxX<minX){maxX=minX;}if(maxY<minY){maxY=minY;}x=Math.round(x);y=Math.round(y);if(x<minX){x=minX;}if(y<minY){y=minY;}if(x>maxX){x=maxX;}if(y>maxY){y=maxY;}return{x:x,y:y};}"
             . "var p0=point(ev);"
             . "var rect=widget.getBoundingClientRect();"
             . "var ox=p0.x-rect.left;"
             . "var oy=p0.y-rect.top;"
-            . "function move(e){e.preventDefault();e.stopPropagation();var p=point(e);var x=Math.max(0,Math.round(p.x-ox));var y=Math.max(0,Math.round(p.y-oy));widget.style.setProperty('left',x+'px','important');widget.style.setProperty('top',y+'px','important');}"
-            . "function up(e){e.preventDefault();e.stopPropagation();document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('touchmove',move,true);document.removeEventListener('touchend',up,true);var r=widget.getBoundingClientRect();var x=Math.max(0,Math.round(r.left));var y=Math.max(0,Math.round(r.top));if(eqId){var body=new URLSearchParams();body.append('action','savePositionFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',planId);body.append('x',String(x));body.append('y',String(y));fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(function(){});}return false;}"
+            . "function move(e){e.preventDefault();e.stopPropagation();var p=point(e);var c=clampXY(p.x-ox,p.y-oy);widget.style.setProperty('left',c.x+'px','important');widget.style.setProperty('top',c.y+'px','important');}"
+            . "function up(e){e.preventDefault();e.stopPropagation();document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('touchmove',move,true);document.removeEventListener('touchend',up,true);var r=widget.getBoundingClientRect();var c=clampXY(r.left,r.top);widget.style.setProperty('left',c.x+'px','important');widget.style.setProperty('top',c.y+'px','important');if(eqId){var body=new URLSearchParams();body.append('action','savePositionFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',planId);body.append('x',String(c.x));body.append('y',String(c.y));fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(function(){});}/* POSTITDESIGN_DESIGN_BOUNDS_V1 */return false;}"
             . "document.addEventListener('pointermove',move,true);document.addEventListener('pointerup',up,true);document.addEventListener('touchmove',move,{capture:true,passive:false});document.addEventListener('touchend',up,{capture:true,passive:false});"
             . "return false;";
 
@@ -363,11 +365,10 @@ POSTITDESIGN_LINE_CLICK_JS;
             . "/* POSTITDESIGN_ROTATE_LOCAL_RENDER_V2 */"
             . "return false;";
 
-        $completeJs = "event.preventDefault();event.stopPropagation();"
-            . "var widget=this.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "var eqId=widget.getAttribute('data-eqLogic_id');"
-            . "var msgEl=widget.querySelector('.postitdesign-message-force');"
+        $completeJs = "var ev=event||window.event;ev.preventDefault();ev.stopPropagation();"
+            . "var eqId='" . intval($this->getId()) . "';"
+            . "var widget=document.querySelector('.postitdesign-widget[data-eqLogic_id=\"'+eqId+'\"]');"
+            . "var msgEl=widget?widget.querySelector('.postitdesign-message-force'):null;"
             . "var oldText=msgEl?msgEl.innerText:'';"
             . "var txt=prompt('Texte du post-it',oldText);"
             . "if(txt===null){return false;}"
@@ -376,9 +377,10 @@ POSTITDESIGN_LINE_CLICK_JS;
             . "body.append('eqLogic_id',eqId);"
             . "body.append('text',txt);"
             . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).then(function(){window.location.reload();}).catch(function(){});"
+            . "/* POSTITDESIGN_EDIT_DELETE_DIRECT_IDS_V1 */"
             . "return false;";
 
-        $newJs = "event.preventDefault();event.stopPropagation();"
+        $newJs = "var ev=event||window.event;ev.preventDefault();ev.stopPropagation();"
             . "var widget=this.closest('.postitdesign-widget');"
             . "if(!widget){return false;}"
             . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
@@ -393,12 +395,9 @@ POSTITDESIGN_LINE_CLICK_JS;
             . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).then(function(){window.location.reload();}).catch(function(){});"
             . "return false;";
 
-        $decollerJs = "event.preventDefault();event.stopPropagation();"
-            . "var widget=this.closest('.postitdesign-widget');"
-            . "if(!widget){return false;}"
-            . "if(!confirm('Décoller ce post-it du Design ?')){return false;}"
-            . "var eqId=widget.getAttribute('data-eqLogic_id');"
-            . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
+        $decollerJs = "var ev=event||window.event;ev.preventDefault();ev.stopPropagation();"
+            . "var eqId='" . intval($this->getId()) . "';"
+            . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||'" . intval($targetPlanHeaderId) . "';"
             . "var body=new URLSearchParams();"
             . "body.append('action','removeFromDesign');"
             . "body.append('eqLogic_id',eqId);"
@@ -427,12 +426,13 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= '<div class="postitdesign-drag-handle-force" onpointerdown="' . $dragJsAttr . '" title="Maintenir pour déplacer" style="' . $dragHandleStyle . '">↕</div>';
         $html .= '<div class="postitdesign-options-handle-force" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="' . $toggleOptionsJsAttr . '" onclick="' . $toggleOptionsJsAttr . '" title="Options" style="' . $optionsHandleStyle . '">⋯</div>';
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
-        $html .= '<div class="postitdesign-message-force" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
+        $html .= '<div class="postitdesign-message-force" ontouchend="' . $lineClickJsAttr . '" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
         $html .= '<div class="postitdesign-footer-force" data-open="0" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="event.preventDefault();event.stopPropagation();return false;" style="' . $footerStyle . '">';
-        $html .= '<button type="button" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
-        $html .= '<button type="button" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
+        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
+        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
         $html .= '<button type="button" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation">⟳</button>';
-        $html .= '<button type="button" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
+        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $decollerJsAttr . '" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
+        /* POSTITDESIGN_TABLET_MINIMAL_DIRECT_V1 */
         $html .= '</div>';
         $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;line-height:1.2 !important;word-break:break-word !important;"></div>';
         $html .= '</div>';
@@ -471,6 +471,176 @@ POSTITDESIGN_LINE_CLICK_JS;
       note.style.setProperty('transform-origin', 'center center', 'important');
     }
   }
+  function postitdesignDesignBoundsV1(widget){
+    function rectOk(r){ return r && r.width > 80 && r.height > 80; }
+    var selectors = ['#div_displayObject','.div_displayObject','#div_designDisplay','.div_designDisplay','#div_pageContainer','.planContainer','.plan-container'];
+    for (var i = 0; i < selectors.length; i++) {
+      var el = document.querySelector(selectors[i]);
+      if (el) {
+        var r = el.getBoundingClientRect();
+        if (rectOk(r)) { return r; }
+      }
+    }
+    var parent = widget.parentElement;
+    while (parent && parent !== document.body) {
+      var pr = parent.getBoundingClientRect();
+      if (rectOk(pr) && pr.width < window.innerWidth * 1.05 && pr.height < window.innerHeight * 1.05) {
+        return pr;
+      }
+      parent = parent.parentElement;
+    }
+    return {left:0, top:0, right:window.innerWidth, bottom:window.innerHeight, width:window.innerWidth, height:window.innerHeight};
+  }
+
+  function postitdesignClampWidgetIntoDesignV1(widget){
+    if (!widget) { return; }
+    var b = postitdesignDesignBoundsV1(widget);
+    var r = widget.getBoundingClientRect();
+    var w = Math.max(40, r.width || widget.offsetWidth || 220);
+    var h = Math.max(40, r.height || widget.offsetHeight || 160);
+
+    var minX = Math.round(b.left);
+    var minY = Math.round(b.top);
+    var maxX = Math.round(b.right - w);
+    var maxY = Math.round(b.bottom - h);
+
+    if (maxX < minX) { maxX = minX; }
+    if (maxY < minY) { maxY = minY; }
+
+    var x = Math.round(r.left);
+    var y = Math.round(r.top);
+
+    if (x < minX) { x = minX; }
+    if (y < minY) { y = minY; }
+    if (x > maxX) { x = maxX; }
+    if (y > maxY) { y = maxY; }
+
+    widget.style.setProperty('left', x + 'px', 'important');
+    widget.style.setProperty('top', y + 'px', 'important');
+    widget.setAttribute('data-design-bounds', '1');
+  }
+
+  setTimeout(function(){
+    var bounded = document.querySelectorAll('.postitdesign-widget');
+    for (var b = 0; b < bounded.length; b++) {
+      postitdesignClampWidgetIntoDesignV1(bounded[b]);
+    }
+    /* POSTITDESIGN_DESIGN_BOUNDS_V1 */
+  }, 80);
+
+  setTimeout(function(){
+    var bounded = document.querySelectorAll('.postitdesign-widget');
+    for (var b = 0; b < bounded.length; b++) {
+      postitdesignClampWidgetIntoDesignV1(bounded[b]);
+    }
+  }, 600);
+
+  window.postitdesignTabletRunClickV4 = window.postitdesignTabletRunClickV4 || function(btn, ev){
+    if (!btn) { return false; }
+
+    if (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (ev.stopImmediatePropagation) { ev.stopImmediatePropagation(); }
+    }
+
+    var now = Date.now();
+    var last = parseInt(btn.getAttribute('data-postit-touch-last') || '0', 10);
+    if (now - last < 500) { return false; }
+    btn.setAttribute('data-postit-touch-last', String(now));
+
+    var code = btn.getAttribute('onclick') || '';
+    if (!code) { return false; }
+
+    try {
+      var fakeEvent = ev || window.event || {
+        preventDefault:function(){},
+        stopPropagation:function(){},
+        stopImmediatePropagation:function(){}
+      };
+      (new Function('event', code)).call(btn, fakeEvent);
+    } catch (e) {
+      if (window.console) { console.error('postitdesign tablet button error', e); }
+    }
+
+    return false;
+  };
+  /* POSTITDESIGN_TABLET_TOUCH_RUNNER_V4 */
+
+  (function(){
+    if (window.__postitdesignTabletCaptureFixV1) { return; }
+    window.__postitdesignTabletCaptureFixV1 = true;
+
+    function runInlineAction(el, ev) {
+      if (!el) { return false; }
+
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (ev.stopImmediatePropagation) { ev.stopImmediatePropagation(); }
+      }
+
+      var now = Date.now();
+      var last = parseInt(el.getAttribute('data-postit-touch-last') || '0', 10);
+      if (now - last < 450) { return false; }
+      el.setAttribute('data-postit-touch-last', String(now));
+
+      var code = el.getAttribute('onclick') || '';
+      if (!code) { return false; }
+
+      try {
+        var fakeEvent = ev || window.event || {
+          preventDefault:function(){},
+          stopPropagation:function(){},
+          stopImmediatePropagation:function(){}
+        };
+        (new Function('event', code)).call(el, fakeEvent);
+      } catch (e) {
+        if (window.console) { console.error('postitdesign tablet action error', e); }
+      }
+
+      return false;
+    }
+
+    document.addEventListener('touchend', function(ev){
+      var target = ev.target;
+      if (!target || !target.closest) { return; }
+
+      var btn = target.closest('.postitdesign-footer-force button');
+      if (btn) {
+        runInlineAction(btn, ev);
+        return false;
+      }
+
+      var msg = target.closest('.postitdesign-message-force');
+      if (msg) {
+        runInlineAction(msg, ev);
+        return false;
+      }
+    }, true);
+
+    document.addEventListener('pointerup', function(ev){
+      if (!ev || ev.pointerType !== 'touch') { return; }
+
+      var target = ev.target;
+      if (!target || !target.closest) { return; }
+
+      var btn = target.closest('.postitdesign-footer-force button');
+      if (btn) {
+        runInlineAction(btn, ev);
+        return false;
+      }
+
+      var msg = target.closest('.postitdesign-message-force');
+      if (msg) {
+        runInlineAction(msg, ev);
+        return false;
+      }
+    }, true);
+
+    /* POSTITDESIGN_TABLET_CAPTURE_FIX_V1 */
+  })();
+
   /* POSTITDESIGN_ROTATION_APPLY_ON_RENDER_V2 */
 })();
 </script>
