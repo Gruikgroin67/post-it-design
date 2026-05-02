@@ -31,3 +31,21 @@ Patch 20260502_103426 :
 - Pas de modification de table plan.
 - Pas de restart Apache.
 - Pas de MQTT.
+
+Patch 20260502_103616 :
+- Restauration des fonctions utiles depuis le Design :
+  - déplacement visuel par bouton ↕ ;
+  - sauvegarde X/Y uniquement sur la ligne plan existante du post-it ;
+  - ajout de texte par bouton ✎ ;
+  - rotation par bouton ⟳ ;
+  - décollage par bouton ✕.
+- Actions toujours désactivées :
+  - createDesign ;
+  - createFromDesign ;
+  - stickToDesign.
+- Pas de JS global.
+- Pas de top-layer.
+- Pas de création automatique de Design.
+- Pas de modification d’autres widgets.
+- Pas de PROD.
+- Pas de MQTT.
