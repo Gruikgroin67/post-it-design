@@ -65,6 +65,10 @@ try {
         $eqLogic->setConfiguration('postit_rotate', $rotate);
         $eqLogic->save();
 
+        if (method_exists($eqLogic, 'emptyCacheWidget')) {
+            $eqLogic->emptyCacheWidget(); /* POSTITDESIGN_ROTATION_CACHE_CLEAR_V1 */
+        }
+
         ajax::success(array('ok' => true, 'eqLogic_id' => $eqLogic->getId(), 'rotate' => $rotate));
     }
 
