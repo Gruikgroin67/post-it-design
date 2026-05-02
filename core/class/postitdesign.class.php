@@ -81,7 +81,7 @@ class postitdesign extends eqLogic {
             . 'margin:0 !important;'
             . 'overflow:visible !important;'
             . 'pointer-events:auto !important;'
-            . 'z-index:20000 !important;';
+            . 'z-index:auto !important;';
 
         $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
         $visualShadow = 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;';
@@ -209,11 +209,11 @@ class postitdesign extends eqLogic {
             . "var planHeaderId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
             . "var moveEl=widget;"
             . "var parent=widget.parentElement;"
-            . "for(var i=0;i<6 && parent && parent!==document.body;i++){"
-            . "var cs=window.getComputedStyle(parent);"
-            . "if(cs.position==='absolute'||parent.style.left||parent.style.top||parent.getAttribute('data-plan_id')){moveEl=parent;break;}"
+            . "for(var i=0;i<8 && parent && parent!==document.body;i++){"
+            . "if(parent.getAttribute('data-plan_id')){moveEl=parent;break;}"
             . "parent=parent.parentElement;"
             . "}"
+            . "if(moveEl===widget){alert('Conteneur Jeedom du post-it introuvable. Ajoute le post-it au Design via Jeedom natif puis recharge.');return false;}"
             . "var startX=ev.clientX;"
             . "var startY=ev.clientY;"
             . "var startLeft=parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0;"
@@ -326,7 +326,8 @@ class postitdesign extends eqLogic {
             . "if(color===null){return false;}"
             . "var moveEl=widget;"
             . "var parent=widget.parentElement;"
-            . "for(var i=0;i<6 && parent && parent!==document.body;i++){var cs=window.getComputedStyle(parent);if(cs.position==='absolute'||parent.style.left||parent.style.top||parent.getAttribute('data-plan_id')){moveEl=parent;break;}parent=parent.parentElement;}"
+            . "for(var i=0;i<8 && parent && parent!==document.body;i++){if(parent.getAttribute('data-plan_id')){moveEl=parent;break;}parent=parent.parentElement;}"
+            . "if(moveEl===widget){alert('Conteneur Jeedom du post-it introuvable.');return false;}"
             . "var x=(parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0)+35;"
             . "var y=(parseInt(moveEl.style.top||moveEl.offsetTop||0,10)||0)+35;"
             . "if(st){st.style.setProperty('display','block','important');st.textContent='Création du post-it...';}"

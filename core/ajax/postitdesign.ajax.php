@@ -97,7 +97,7 @@ try {
         $plan->setPosition('height', $height);
         $plan->setDisplay('name', 0);
         if (method_exists($plan, 'setCss')) {
-            $plan->setCss('z-index', '20000');
+            $plan->setCss('z-index', 'auto');
         }
         $plan->save();
 
@@ -158,16 +158,7 @@ try {
                 $eqLogic->save();
             }
         } else {
-            $plans = plan::byLinkTypeLinkId('eqLogic', $eqLogic->getId());
-            foreach ($plans as $plan) {
-                if (is_object($plan)) {
-                    $plan->remove();
-                    $removed++;
-                }
-            }
-
-            $eqLogic->setConfiguration('target_planHeader_id', '');
-            $eqLogic->save();
+            throw new Exception('{{Design cible obligatoire : décollage limité au Design courant}}');
         }
 
         ajax::success(array(
@@ -224,17 +215,14 @@ try {
 
         $plan = plan::byLinkTypeLinkIdPlanHeaderId('eqLogic', $eqLogic->getId(), $planHeader->getId());
         if (!is_object($plan)) {
-            $plan = new plan();
-            $plan->setPlanHeader_id($planHeader->getId());
-            $plan->setLink_type('eqLogic');
-            $plan->setLink_id($eqLogic->getId());
+            throw new Exception('{{Ligne Design existante introuvable : ajoute le post-it au Design via Jeedom natif puis recharge}}');
         }
 
         $plan->setPosition('left', $x);
         $plan->setPosition('top', $y);
         $plan->setDisplay('name', 0);
         if (method_exists($plan, 'setCss')) {
-            $plan->setCss('z-index', '20000');
+            $plan->setCss('z-index', 'auto');
         }
         $plan->save();
 

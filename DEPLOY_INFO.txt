@@ -32,3 +32,13 @@ Dernière vérification :
 - CREATE_DESIGN_OK=1
 - OUTER_OK=1
 - Date : 20260502_092134
+
+
+v1.0.12-prod-safe-patch-reel
+- Patch basé sur audit réel du code DEV HEAD=e8362c4.
+- Fonctions conservées : déplacement, édition, rotation, décollage, collage depuis page plugin, styles.
+- Correction : z-index 20000 supprimé du rendu, du CSS et des écritures plan.
+- Correction : déplacement limité au conteneur Jeedom data-plan_id.
+- Correction : savePositionFromDesign ne crée plus de ligne plan.
+- Correction : removeFromDesign exige le Design courant.
+- Aucun démon requis : plugin HTML/AJAX, pas de service permanent.
