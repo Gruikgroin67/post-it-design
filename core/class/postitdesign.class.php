@@ -404,6 +404,81 @@ class postitdesign extends eqLogic {
         $touchButtonGuardJsAttr = htmlspecialchars($touchButtonGuardJs, ENT_QUOTES, 'UTF-8');
         $touchButtonDownJsAttr = htmlspecialchars($touchButtonDownJs, ENT_QUOTES, 'UTF-8');
 
+        $postitdesignOpenNewPanelJs = "event.preventDefault();event.stopPropagation();"
+            . "var widget=this.closest('.postitdesign-widget');if(!widget){return false;}"
+            . "var panel=widget.querySelector('.postitdesign-touch-panel');var input=widget.querySelector('.postitdesign-touch-input');var title=widget.querySelector('.postitdesign-touch-title');"
+            . "if(!panel||!input){return false;}"
+            . "panel.setAttribute('data-mode','new');"
+            . "if(title){title.textContent='Nouveau post-it';}"
+            . "input.style.display='block';input.value='';input.placeholder='Texte du nouveau post-it';"
+            . "panel.style.setProperty('display','block','important');"
+            . "setTimeout(function(){try{input.focus();}catch(e){}},60);"
+            . "return false;";
+
+        $postitdesignOpenCompletePanelJs = "event.preventDefault();event.stopPropagation();"
+            . "var widget=this.closest('.postitdesign-widget');if(!widget){return false;}"
+            . "var panel=widget.querySelector('.postitdesign-touch-panel');var input=widget.querySelector('.postitdesign-touch-input');var title=widget.querySelector('.postitdesign-touch-title');"
+            . "if(!panel||!input){return false;}"
+            . "panel.setAttribute('data-mode','complete');"
+            . "if(title){title.textContent='Compléter le post-it';}"
+            . "input.style.display='block';input.value='';input.placeholder='Texte à ajouter';"
+            . "panel.style.setProperty('display','block','important');"
+            . "setTimeout(function(){try{input.focus();}catch(e){}},60);"
+            . "return false;";
+
+        $postitdesignOpenDeletePanelJs = "event.preventDefault();event.stopPropagation();"
+            . "var widget=this.closest('.postitdesign-widget');if(!widget){return false;}"
+            . "var panel=widget.querySelector('.postitdesign-touch-panel');var input=widget.querySelector('.postitdesign-touch-input');var title=widget.querySelector('.postitdesign-touch-title');"
+            . "if(!panel){return false;}"
+            . "panel.setAttribute('data-mode','delete');"
+            . "if(title){title.textContent='Décoller ce post-it ?';}"
+            . "if(input){input.style.display='none';input.value='';}"
+            . "panel.style.setProperty('display','block','important');"
+            . "return false;";
+
+        $postitdesignTouchPanelCancelJs = "event.preventDefault();event.stopPropagation();"
+            . "var panel=this.closest('.postitdesign-touch-panel');"
+            . "if(panel){panel.style.setProperty('display','none','important');panel.setAttribute('data-mode','');}"
+            . "return false;";
+
+        $postitdesignTouchPanelOkJs = "event.preventDefault();event.stopPropagation();"
+            . "var panel=this.closest('.postitdesign-touch-panel');var widget=this.closest('.postitdesign-widget');"
+            . "if(!panel||!widget){return false;}"
+            . "var mode=panel.getAttribute('data-mode')||'';"
+            . "var input=panel.querySelector('.postitdesign-touch-input');"
+            . "var text=input&&input.value?input.value.trim():'';"
+            . "var eqId=widget.getAttribute('data-eqLogic_id');"
+            . "var p=new URLSearchParams(window.location.search);"
+            . "var pid=p.get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
+            . "var status=widget.querySelector('.postitdesign-status-force');"
+            . "var body=new URLSearchParams();"
+            . "if(mode==='complete'){"
+            . "if(!text){if(status){status.style.setProperty('display','block','important');status.textContent='Texte vide';}return false;}"
+            . "body.append('action','completeFromDesign');body.append('eqLogic_id',eqId);body.append('text',text);"
+            . "}else if(mode==='new'){"
+            . "body.append('action','createFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',pid);body.append('text',text||'Nouveau post-it');"
+            . "body.append('x',(parseInt(widget.style.left||widget.offsetLeft||0,10)||0)+35);"
+            . "body.append('y',(parseInt(widget.style.top||widget.offsetTop||0,10)||0)+35);"
+            . "}else if(mode==='delete'){"
+            . "body.append('action','removeFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',pid);"
+            . "}else{return false;}"
+            . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
+            . ".then(function(r){return r.json();})"
+            . ".then(function(d){"
+            . "if(d.state==='ok'){"
+            . "if(mode==='complete'){var msg=widget.querySelector('.postitdesign-message-force');if(msg&&d.result&&d.result.message_html){msg.innerHTML=d.result.message_html;}panel.style.setProperty('display','none','important');if(status){status.style.setProperty('display','block','important');status.textContent='Message sauvegardé';}}"
+            . "else{window.location.reload();}"
+            . "}else{alert(d.result||'Erreur action post-it');}"
+            . "})"
+            . ".catch(function(e){alert(e.message||e);});"
+            . "return false;";
+
+        $postitdesignOpenNewPanelJsAttr = htmlspecialchars($postitdesignOpenNewPanelJs, ENT_QUOTES, 'UTF-8');
+        $postitdesignOpenCompletePanelJsAttr = htmlspecialchars($postitdesignOpenCompletePanelJs, ENT_QUOTES, 'UTF-8');
+        $postitdesignOpenDeletePanelJsAttr = htmlspecialchars($postitdesignOpenDeletePanelJs, ENT_QUOTES, 'UTF-8');
+        $postitdesignTouchPanelCancelJsAttr = htmlspecialchars($postitdesignTouchPanelCancelJs, ENT_QUOTES, 'UTF-8');
+        $postitdesignTouchPanelOkJsAttr = htmlspecialchars($postitdesignTouchPanelOkJs, ENT_QUOTES, 'UTF-8');
+
         $html = '';
         $html .= '<div class="eqLogic-widget eqLogic postitdesign-widget" ';
         $html .= 'data-eqLogic_id="' . $this->getId() . '" ';
@@ -420,10 +495,10 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
 
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
-        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $newJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
-        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $completeJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
+        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $postitdesignOpenNewPanelJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $postitdesignOpenNewPanelJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
+        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $postitdesignOpenCompletePanelJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $postitdesignOpenCompletePanelJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
         $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $rotateJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation : appui simple">⟳</button>';
-        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $decollerJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
+        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $postitdesignOpenDeletePanelJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $postitdesignOpenDeletePanelJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
 
         $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;line-height:1.2 !important;word-break:break-word !important;"></div>';

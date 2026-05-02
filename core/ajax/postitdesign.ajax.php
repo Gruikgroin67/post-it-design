@@ -315,7 +315,97 @@ try {
     }
 
     if (init('action') == 'createFromDesign') {
-        ajax::error('Action createFromDesign désactivée : création depuis Design interdite en version safe.');
+        if (!isConnect('admin')) {
+            throw new Exception('{{401 - Accès non autorisé}}');
+        }
+
+        $source_id = intval(init('eqLogic_id'));
+        $planHeader_id = intval(init('planHeader_id'));
+        $text = trim(init('text'));
+        $x = intval(init('x'));
+        $y = intval(init('y'));
+
+        if ($source_id <= 0) {
+            throw new Exception('{{Post-it source invalide}}');
+        }
+
+        if ($planHeader_id <= 0) {
+            throw new Exception('{{Design cible obligatoire}}');
+        }
+
+        if ($x < 0) { $x = 100; }
+        if ($y < 0) { $y = 100; }
+        if ($x > 5000) { $x = 5000; }
+        if ($y > 5000) { $y = 5000; }
+
+        $source = eqLogic::byId($source_id);
+        if (!is_object($source)) {
+            throw new Exception('{{Post-it source introuvable}}');
+        }
+
+        if ($source->getEqType_name() != 'postitdesign') {
+            throw new Exception('{{Equipement source invalide pour Post-it Design}}');
+        }
+
+        $planHeader = planHeader::byId($planHeader_id);
+        if (!is_object($planHeader)) {
+            throw new Exception('{{Design cible introuvable}}');
+        }
+
+        if (method_exists($planHeader, 'hasRight') && !$planHeader->hasRight('w')) {
+            throw new Exception('{{Vous n’avez pas le droit de modifier ce Design}}');
+        }
+
+        if ($text == '') {
+            $text = 'Nouveau post-it';
+        }
+
+        $width = intval($source->getConfiguration('postit_width', 220));
+        $height = intval($source->getConfiguration('postit_height', 160));
+        if ($width < 120) { $width = 220; }
+        if ($height < 80) { $height = 160; }
+
+        $newEqLogic = new postitdesign();
+        $newEqLogic->setEqType_name('postitdesign');
+        $newEqLogic->setName('Post-it ' . date('H:i:s'));
+        $newEqLogic->setIsEnable(1);
+        $newEqLogic->setIsVisible(1);
+
+        if (method_exists($source, 'getObject_id') && method_exists($newEqLogic, 'setObject_id')) {
+            $newEqLogic->setObject_id($source->getObject_id());
+        }
+
+        $copyKeys = array('postit_color', 'postit_width', 'postit_height', 'postit_rotate', 'visual_style');
+        foreach ($copyKeys as $key) {
+            $newEqLogic->setConfiguration($key, $source->getConfiguration($key, ''));
+        }
+
+        $newEqLogic->setConfiguration('postit_title', 'Post-it');
+        $newEqLogic->setConfiguration('postit_message', $text);
+        $newEqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
+        $newEqLogic->setConfiguration('target_x', $x);
+        $newEqLogic->setConfiguration('target_y', $y);
+        $newEqLogic->save();
+
+        $plan = new plan();
+        $plan->setPlanHeader_id($planHeader->getId());
+        $plan->setLink_type('eqLogic');
+        $plan->setLink_id($newEqLogic->getId());
+        $plan->setPosition('left', 0);
+        $plan->setPosition('top', 0);
+        $plan->setPosition('width', $width);
+        $plan->setPosition('height', $height);
+        $plan->setDisplay('name', 0);
+        $plan->save();
+
+        ajax::success(array(
+            'ok' => true,
+            'eqLogic_id' => $newEqLogic->getId(),
+            'plan_id' => $plan->getId(),
+            'planHeader_id' => $planHeader->getId(),
+            'x' => $x,
+            'y' => $y
+        ));
     }
 
     throw new Exception('{{Aucune méthode correspondante à}} : ' . init('action'));

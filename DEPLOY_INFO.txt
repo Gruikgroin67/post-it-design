@@ -69,3 +69,11 @@ v1.0.12-tablet-touch-buttons
 - onpointerdown/ontouchstart stoppent la propagation pour éviter que le drag capture les boutons.
 - Le click PC reste conservé avec garde anti-double exécution après touch.
 - Fonctions conservées : ajouter, compléter, rotation, décoller, déplacement fluide.
+
+
+v1.0.12-tablet-touch-panel
+- Correction tablette : remplacement des prompt/confirm par un panneau tactile interne au post-it.
+- Les boutons +, compléter et décoller ouvrent un panneau avec OK/Annuler.
+- Rotation inchangée.
+- createFromDesign est réactivé de façon ciblée : nouveau post-it uniquement dans le Design courant.
+- Déplacement fixed fluide conservé.
