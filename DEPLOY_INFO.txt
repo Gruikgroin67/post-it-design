@@ -64,24 +64,10 @@ v1.0.12-drag-fluide-bandeau-fixed
 - Aucun démon requis : plugin HTML/AJAX uniquement.
 
 
-v1.0.12-tablet-touch-buttons
-- Correction tablette : les boutons du post-it ont maintenant ontouchend dédié.
-- onpointerdown/ontouchstart stoppent la propagation pour éviter que le drag capture les boutons.
-- Le click PC reste conservé avec garde anti-double exécution après touch.
-- Fonctions conservées : ajouter, compléter, rotation, décoller, déplacement fluide.
-
-
-v1.0.12-tablet-touch-panel
-- Correction tablette : remplacement des prompt/confirm par un panneau tactile interne au post-it.
-- Les boutons +, compléter et décoller ouvrent un panneau avec OK/Annuler.
+v1.0.12-simple-tablet-panel-from-df23caf
+- Base restaurée depuis df23caf, dernier état validé : déplacement fluide + PC OK.
+- Suppression des patchs tactiles fragiles précédents.
+- Les boutons +, compléter et décoller ouvrent un panneau interne OK/Annuler.
+- Plus de prompt/confirm pour ces actions.
 - Rotation inchangée.
-- createFromDesign est réactivé de façon ciblée : nouveau post-it uniquement dans le Design courant.
-- Déplacement fixed fluide conservé.
-
-
-v1.0.12-tablet-pointerup-event-safe-robust
-- Correction tablette robuste : remplacement complet du bloc touchButtonGuardJs, sans motif exact fragile.
-- Ajout de onpointerup sur les boutons tactiles.
-- Garde anti-double exécution touch/pointer/click.
-- Déplacement fluide conservé.
-- Fonctions conservées : +, compléter, rotation, décoller.
+- createFromDesign réactivé de façon ciblée dans le Design courant.

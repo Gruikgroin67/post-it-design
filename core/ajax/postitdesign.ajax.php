@@ -375,8 +375,7 @@ try {
             $newEqLogic->setObject_id($source->getObject_id());
         }
 
-        $copyKeys = array('postit_color', 'postit_width', 'postit_height', 'postit_rotate', 'visual_style');
-        foreach ($copyKeys as $key) {
+        foreach (array('postit_color', 'postit_width', 'postit_height', 'postit_rotate', 'visual_style') as $key) {
             $newEqLogic->setConfiguration($key, $source->getConfiguration($key, ''));
         }
 
