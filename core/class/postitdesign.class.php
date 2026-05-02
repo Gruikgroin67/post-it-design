@@ -189,6 +189,8 @@ class postitdesign extends eqLogic {
             . 'color:#ffffff !important;'
             . 'font-family:Arial, sans-serif !important;'
             . 'pointer-events:auto !important;'
+            . 'touch-action:manipulation !important;'
+            . 'user-select:none !important;'
             . 'white-space:nowrap !important;';
 
         $newBtnStyle = $btnStyle . 'background:#3cae45 !important;';
@@ -396,6 +398,12 @@ class postitdesign extends eqLogic {
         $newJsAttr = htmlspecialchars($newJs, ENT_QUOTES, 'UTF-8');
         $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
 
+        $touchButtonGuardJs = "if(event&&event.type==='touchend'){this.__postitTouchHandled=Date.now();}"
+            . "if(event&&event.type==='click'&&this.__postitTouchHandled&&Date.now()-this.__postitTouchHandled<900){event.preventDefault();event.stopPropagation();return false;}";
+        $touchButtonDownJs = "event.stopPropagation();";
+        $touchButtonGuardJsAttr = htmlspecialchars($touchButtonGuardJs, ENT_QUOTES, 'UTF-8');
+        $touchButtonDownJsAttr = htmlspecialchars($touchButtonDownJs, ENT_QUOTES, 'UTF-8');
+
         $html = '';
         $html .= '<div class="eqLogic-widget eqLogic postitdesign-widget" ';
         $html .= 'data-eqLogic_id="' . $this->getId() . '" ';
@@ -412,10 +420,10 @@ class postitdesign extends eqLogic {
         $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
 
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
-        $html .= '<button type="button" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
-        $html .= '<button type="button" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
-        $html .= '<button type="button" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation : appui simple">⟳</button>';
-        $html .= '<button type="button" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
+        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $newJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
+        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $completeJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
+        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $rotateJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation : appui simple">⟳</button>';
+        $html .= '<button type="button" onpointerdown="' . $touchButtonDownJsAttr . '" ontouchstart="' . $touchButtonDownJsAttr . '" ontouchend="' . $touchButtonGuardJsAttr . $decollerJsAttr . '" onclick="' . $touchButtonGuardJsAttr . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
         $html .= '</div>';
 
         $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;line-height:1.2 !important;word-break:break-word !important;"></div>';

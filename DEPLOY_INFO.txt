@@ -62,3 +62,10 @@ v1.0.12-drag-fluide-bandeau-fixed
 - Sauvegarde target_x/target_y uniquement au relâchement.
 - Fonctions conservées : déplacement, édition, rotation, décollage, collage, styles.
 - Aucun démon requis : plugin HTML/AJAX uniquement.
+
+
+v1.0.12-tablet-touch-buttons
+- Correction tablette : les boutons du post-it ont maintenant ontouchend dédié.
+- onpointerdown/ontouchstart stoppent la propagation pour éviter que le drag capture les boutons.
+- Le click PC reste conservé avec garde anti-double exécution après touch.
+- Fonctions conservées : ajouter, compléter, rotation, décoller, déplacement fluide.
