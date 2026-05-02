@@ -6,46 +6,29 @@ Projet :
 - Dossier DEV : /var/www/html/plugins/postitdesign
 - Hôte de validation : jeedom-dev
 
-Etat construit le 20260502_103254 :
-- Version simple isolée.
-- Le rendu du widget ne contient aucun script.
-- Le rendu du widget ne modifie aucun parent Jeedom.
-- Le rendu du widget n’écrit pas dans les Designs.
-- Le CSS est limité aux classes postitdesign.
-- Le JS admin agit uniquement si la racine postitdesign_admin_root existe.
-- L’AJAX ne garde qu’un ping de diagnostic.
-- Le fichier de placement externe est neutralisé.
+Etat validé :
+- Le rendu Design ne contient plus postitdesign-safe-top-layer.
+- Le rendu Design ne contient plus postitdesign-top-only-local.
+- Le rendu Design ne contient plus postitdesign-touch-inline.
+- Aucun script de rendu ne remonte dans les parents DOM Jeedom.
+- Le post-it reste cliquable : pointer-events:auto dans outerStyle.
+- Le post-it passe au-dessus via z-index local raisonnable.
+- Le z-index 20000 est appliqué sur la ligne plan du post-it.
+- La création directe de Design depuis le plugin est bloquée.
+- Le déplacement du post-it fonctionne en DEV.
+- Les options au clic fonctionnent en DEV.
 
-Règles :
-- Tester uniquement sur DEV.
-- Ne pas toucher PROD sans demande explicite.
+Règles à ne pas refaire :
+- Ne pas injecter de script global dans toHtml.
+- Ne pas modifier le parent DOM du widget Jeedom.
+- Ne pas utiliser de z-index extrême : 999999, 1000000, 2147483647.
+- Ne pas tester directement sur la PROD sans backup.
 - Ne pas modifier le Design 86 en PROD.
-- Ne pas toucher MQTT.
-- Ne pas redémarrer Apache PROD.
+- Ne pas modifier la table plan en PROD sans diagnostic + sauvegarde.
 
-Patch 20260502_103426 :
-- Restauration du rendu visuel directement dans toHtml().
-- Les couleurs, tailles, rotation et styles classic/paper/tape sont rendus en inline.
-- Pas de JS dans le widget.
-- Pas de modification du parent Jeedom.
-- Pas de modification de table plan.
-- Pas de restart Apache.
-- Pas de MQTT.
-
-Patch 20260502_103616 :
-- Restauration des fonctions utiles depuis le Design :
-  - déplacement visuel par bouton ↕ ;
-  - sauvegarde X/Y uniquement sur la ligne plan existante du post-it ;
-  - ajout de texte par bouton ✎ ;
-  - rotation par bouton ⟳ ;
-  - décollage par bouton ✕.
-- Actions toujours désactivées :
-  - createDesign ;
-  - createFromDesign ;
-  - stickToDesign.
-- Pas de JS global.
-- Pas de top-layer.
-- Pas de création automatique de Design.
-- Pas de modification d’autres widgets.
-- Pas de PROD.
-- Pas de MQTT.
+Dernière vérification :
+- REAL_DANGER=0
+- PLAN_ZINDEX_OK=1
+- CREATE_DESIGN_OK=1
+- OUTER_OK=1
+- Date : 20260502_092134

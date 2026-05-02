@@ -1,4 +1,1 @@
-(function () {
-    'use strict';
-    return true;
-}());
+/* Mobile Post-it Design */
