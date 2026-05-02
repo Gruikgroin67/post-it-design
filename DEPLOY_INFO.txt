@@ -42,3 +42,14 @@ v1.0.12-prod-safe-patch-reel
 - Correction : savePositionFromDesign ne crée plus de ligne plan.
 - Correction : removeFromDesign exige le Design courant.
 - Aucun démon requis : plugin HTML/AJAX, pas de service permanent.
+
+
+v1.0.12-mode-bandeau-fixed-from-current
+- Patch appliqué depuis l’état réel courant, après commit 8772269.
+- Modèle retenu : bandeau fixed autonome, comme l’exemple fourni par Emmanuel.
+- Fonctions conservées : déplacement, édition, rotation, décollage, collage depuis page plugin, styles.
+- Déplacement : le post-it bouge lui-même, pas son parent Jeedom.
+- Sauvegarde : target_x/target_y dans configuration eqLogic.
+- Le drag ne modifie plus left/top dans table plan.
+- Aucun z-index n’est écrit dans table plan.
+- Aucun démon requis : plugin HTML/AJAX uniquement.

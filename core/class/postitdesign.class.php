@@ -47,6 +47,8 @@ class postitdesign extends eqLogic {
         $height = intval($this->cfg('postit_height', 160));
         $rotate = intval($this->cfg('postit_rotate', 0));
         $targetPlanHeaderId = intval($this->cfg('target_planHeader_id', 0));
+        $targetX = intval($this->cfg('target_x', 100));
+        $targetY = intval($this->cfg('target_y', 100));
         $visualStyle = $this->cfg('visual_style', 'classic');
 
         if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
@@ -61,6 +63,11 @@ class postitdesign extends eqLogic {
 
         if ($rotate < -15) { $rotate = -15; }
         if ($rotate > 15) { $rotate = 15; }
+
+        if ($targetX < 0) { $targetX = 0; }
+        if ($targetY < 0) { $targetY = 0; }
+        if ($targetX > 5000) { $targetX = 5000; }
+        if ($targetY > 5000) { $targetY = 5000; }
 
         if (!in_array($visualStyle, array('classic', 'paper', 'tape'), true)) {
             $visualStyle = 'classic';
@@ -81,7 +88,10 @@ class postitdesign extends eqLogic {
             . 'margin:0 !important;'
             . 'overflow:visible !important;'
             . 'pointer-events:auto !important;'
-            . 'z-index:auto !important;';
+            . 'position:fixed !important;'
+            . 'left:' . $targetX . 'px !important;'
+            . 'top:' . $targetY . 'px !important;'
+            . 'z-index:9999 !important;';
 
         $visualBackground = 'background:' . $color . ' !important;background-color:' . $color . ' !important;';
         $visualShadow = 'box-shadow:0 10px 24px rgba(0,0,0,.24) !important;';
@@ -208,12 +218,6 @@ class postitdesign extends eqLogic {
             . "var eqId=widget.getAttribute('data-eqLogic_id');"
             . "var planHeaderId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
             . "var moveEl=widget;"
-            . "var parent=widget.parentElement;"
-            . "for(var i=0;i<8 && parent && parent!==document.body;i++){"
-            . "if(parent.getAttribute('data-plan_id')){moveEl=parent;break;}"
-            . "parent=parent.parentElement;"
-            . "}"
-            . "if(moveEl===widget){alert('Conteneur Jeedom du post-it introuvable. Ajoute le post-it au Design via Jeedom natif puis recharge.');return false;}"
             . "var startX=ev.clientX;"
             . "var startY=ev.clientY;"
             . "var startLeft=parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0;"
@@ -238,9 +242,8 @@ class postitdesign extends eqLogic {
             . "var dy=e.clientY-startY;"
             . "if(Math.abs(dx)<3 && Math.abs(dy)<3){return;}"
             . "moved=true;"
-            . "var box=moveEl.offsetParent||moveEl.parentElement;"
-            . "var maxX=box?Math.max(0,box.clientWidth-moveEl.offsetWidth):5000;"
-            . "var maxY=box?Math.max(0,box.clientHeight-moveEl.offsetHeight):5000;"
+            . "var maxX=Math.max(0,(window.innerWidth||document.documentElement.clientWidth||5000)-moveEl.offsetWidth);"
+            . "var maxY=Math.max(0,(window.innerHeight||document.documentElement.clientHeight||5000)-moveEl.offsetHeight);"
             . "var x=clamp(startLeft+dx,0,maxX);"
             . "var y=clamp(startTop+dy,0,maxY);"
             . "moveEl.style.left=x+'px';"
@@ -325,9 +328,7 @@ class postitdesign extends eqLogic {
             . "var color=prompt('Couleur : jaune, vert, rose, bleu ou code #RRGGBB','jaune');"
             . "if(color===null){return false;}"
             . "var moveEl=widget;"
-            . "var parent=widget.parentElement;"
-            . "for(var i=0;i<8 && parent && parent!==document.body;i++){if(parent.getAttribute('data-plan_id')){moveEl=parent;break;}parent=parent.parentElement;}"
-            . "if(moveEl===widget){alert('Conteneur Jeedom du post-it introuvable.');return false;}"
+            . "var moveEl=widget;"
             . "var x=(parseInt(moveEl.style.left||moveEl.offsetLeft||0,10)||0)+35;"
             . "var y=(parseInt(moveEl.style.top||moveEl.offsetTop||0,10)||0)+35;"
             . "if(st){st.style.setProperty('display','block','important');st.textContent='Création du post-it...';}"

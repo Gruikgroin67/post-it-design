@@ -97,7 +97,7 @@ try {
         $plan->setPosition('height', $height);
         $plan->setDisplay('name', 0);
         if (method_exists($plan, 'setCss')) {
-            $plan->setCss('z-index', 'auto');
+            /* Mode bandeau fixed : pas de z-index écrit dans la table plan. */
         }
         $plan->save();
 
@@ -217,14 +217,7 @@ try {
         if (!is_object($plan)) {
             throw new Exception('{{Ligne Design existante introuvable : ajoute le post-it au Design via Jeedom natif puis recharge}}');
         }
-
-        $plan->setPosition('left', $x);
-        $plan->setPosition('top', $y);
-        $plan->setDisplay('name', 0);
-        if (method_exists($plan, 'setCss')) {
-            $plan->setCss('z-index', 'auto');
-        }
-        $plan->save();
+        /* Mode bandeau fixed : on ne modifie plus left/top dans la table plan au déplacement. */
 
         $eqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
         $eqLogic->setConfiguration('target_x', $x);
