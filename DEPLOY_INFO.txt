@@ -4,33 +4,31 @@ Projet :
 - Plugin Jeedom : postitdesign
 - Repo : Gruikgroin67/post-it-design
 - Dossier DEV : /var/www/html/plugins/postitdesign
+- Hôte de validation : jeedom-dev
 
-Etat validé avant tag :
-- Le script de rendu global postitdesign-safe-top-layer a été supprimé.
-- Le plugin ne doit plus modifier le parent DOM Jeedom du widget.
-- Le post-it repasse cliquable et déplaçable via pointer-events:auto sur outerStyle.
-- Les décorations internes comme coin plié / scotch peuvent rester en pointer-events:none.
-- Le z-index du post-it est local au widget / plan du post-it, sans toucher aux autres éléments du Design.
-- Le test DEV confirme : clic options OK, déplacement OK.
+Etat validé :
+- Le rendu Design ne contient plus postitdesign-safe-top-layer.
+- Le rendu Design ne contient plus postitdesign-top-only-local.
+- Le rendu Design ne contient plus postitdesign-touch-inline.
+- Aucun script de rendu ne remonte dans les parents DOM Jeedom.
+- Le post-it reste cliquable : pointer-events:auto dans outerStyle.
+- Le post-it passe au-dessus via z-index local raisonnable.
+- Le z-index 20000 est appliqué sur la ligne plan du post-it.
+- La création directe de Design depuis le plugin est bloquée.
+- Le déplacement du post-it fonctionne en DEV.
+- Les options au clic fonctionnent en DEV.
 
 Règles à ne pas refaire :
-- Ne pas injecter de script global qui remonte dans les parents DOM Jeedom.
-- Ne pas utiliser de z-index extrême type 999999, 1000000 ou 2147483647.
+- Ne pas injecter de script global dans toHtml.
+- Ne pas modifier le parent DOM du widget Jeedom.
+- Ne pas utiliser de z-index extrême : 999999, 1000000, 2147483647.
+- Ne pas tester directement sur la PROD sans backup.
 - Ne pas modifier le Design 86 en PROD.
-- Ne pas modifier la table plan en PROD sans diagnostic et sauvegarde.
-- Ne pas tester directement sur le Jeedom réel tant que la DEV n’est pas validée.
+- Ne pas modifier la table plan en PROD sans diagnostic + sauvegarde.
 
-Méthode correcte :
-- Développer et tester sur jeedom-dev.
-- Vérifier PHP avec php -l.
-- Vider le cache Jeedom après patch.
-- Redémarrer Apache.
-- Tag uniquement après validation visuelle DEV.
-
-Dernier changement avant tag :
-- Correction du bloc outerStyle dans core/class/postitdesign.class.php :
-  pointer-events:auto et z-index local raisonnable.
-- Conservation du déplacement et du clic options sur post-it.
-
-Date du mémo :
-20260501_133735
+Dernière vérification :
+- REAL_DANGER=0
+- PLAN_ZINDEX_OK=1
+- CREATE_DESIGN_OK=1
+- OUTER_OK=1
+- Date : 20260502_092134
