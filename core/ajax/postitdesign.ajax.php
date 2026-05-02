@@ -176,6 +176,68 @@ try {
         ajax::success(array('ok' => true, 'eqLogic_id' => $eqLogic->getId()));
     }
 
+    if (init('action') == 'stickToDesign') { /* POSTITDESIGN_STICK_TO_DESIGN_V1 */
+        $eqLogic_id = intval(init('eqLogic_id'));
+        $planHeader_id = intval(init('planHeader_id'));
+        $x = intval(init('x', 30));
+        $y = intval(init('y', 30));
+
+        if ($eqLogic_id <= 0) { throw new Exception('{{Post-it invalide}}'); }
+        if ($planHeader_id <= 0) { throw new Exception('{{Design cible introuvable}}'); }
+        if ($x < 0) { $x = 0; }
+        if ($y < 0) { $y = 0; }
+
+        $eqLogic = eqLogic::byId($eqLogic_id);
+        if (!is_object($eqLogic) || $eqLogic->getEqType_name() != 'postitdesign') {
+            throw new Exception('{{Equipement invalide pour Post-it Design}}');
+        }
+
+        $planHeader = planHeader::byId($planHeader_id);
+        if (!is_object($planHeader)) {
+            throw new Exception('{{Design cible introuvable}}');
+        }
+
+        $width = intval($eqLogic->getConfiguration('postit_width', 220));
+        $height = intval($eqLogic->getConfiguration('postit_height', 160));
+        if ($width < 80) { $width = 220; }
+        if ($height < 60) { $height = 160; }
+
+        $plan = plan::byLinkTypeLinkIdPlanHeaderId('eqLogic', $eqLogic->getId(), $planHeader->getId());
+        if (!is_object($plan)) {
+            $plan = new plan();
+            $plan->setPlanHeader_id($planHeader->getId());
+            $plan->setLink_type('eqLogic');
+            $plan->setLink_id($eqLogic->getId());
+            $plan->setDisplay('name', 0);
+        }
+
+        $plan->setPosition('left', $x);
+        $plan->setPosition('top', $y);
+        $plan->setPosition('width', $width);
+        $plan->setPosition('height', $height);
+        $plan->save();
+
+        $eqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
+        $eqLogic->setConfiguration('target_x', $x);
+        $eqLogic->setConfiguration('target_y', $y);
+        $eqLogic->save();
+
+        if (method_exists($eqLogic, 'emptyCacheWidget')) {
+            $eqLogic->emptyCacheWidget();
+        }
+
+        ajax::success(array(
+            'ok' => true,
+            'eqLogic_id' => $eqLogic->getId(),
+            'planHeader_id' => $planHeader->getId(),
+            'planHeader_name' => $planHeader->getName(),
+            'x' => $x,
+            'y' => $y,
+            'width' => $width,
+            'height' => $height
+        ));
+    }
+
     if (init('action') == 'removeFromDesign') {
         $eqLogic_id = intval(init('eqLogic_id'));
         $planHeader_id = intval(init('planHeader_id'));
