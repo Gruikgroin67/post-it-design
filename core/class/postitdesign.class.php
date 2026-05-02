@@ -261,9 +261,11 @@ class postitdesign extends eqLogic {
             . 'touch-action:manipulation !important;';
 
         $toggleOptionsJs = "event.stopPropagation();"
-            . "if(this.__postitMovedUntil && Date.now()<this.__postitMovedUntil){return false;}"
-            . "var f=this.querySelector('.postitdesign-footer-force');"
-            . "var st=this.querySelector('.postitdesign-status-force');"
+            . "var root=(this.closest&&this.closest('.postitdesign-note-force'))||this;"
+            . "if(root.__postitMovedUntil && Date.now()<root.__postitMovedUntil){return false;}"
+            . "var f=root.querySelector('.postitdesign-footer-force');"
+            . "var st=root.querySelector('.postitdesign-status-force');"
+            . "/* POSTITDESIGN_OPTIONS_CORNER_FIX_V1 */"
             . "if(!f){return false;}"
             . "var isOpen=f.getAttribute('data-open')==='1';"
             . "if(isOpen){"
