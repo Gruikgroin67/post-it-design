@@ -1,39 +1,17 @@
 Projet : Jeedom plugin postitdesign
 
-Chemin DEV :
-/var/www/html/plugins/postitdesign
+Version stable courante :
+stable apres poignees separees et lignes barrables
 
-Dépôt :
-Gruikgroin67/post-it-design
-
-Règles obligatoires :
-- Travailler d'abord sur DEV.
+Comportement valide :
+- Deplacement uniquement par le coin haut droit.
+- Affichage des boutons uniquement par le coin bas droit.
+- Clic sur une ligne du message : barrer / debarrer.
+- Creation, edition, rotation et decollage via boutons.
+- Reperes visuels discrets dans les coins.
 - Ne pas toucher MQTT.
-- Ne pas redémarrer Apache sauf nécessité absolue.
-- Ne pas modifier directement la DB Jeedom ni les Designs via script large.
-- Ne pas réinstaller les anciens commits cassés sur PROD.
-- Toujours lire ce fichier avant tout patch.
-- Toujours faire un backup avant modification.
-- Toujours tester PHP lint avant validation.
-- Toujours éviter les JS globaux non confinés.
-- Toujours préserver le déplacement basé sur df23caf.
+- Ne pas redemarrer Apache sauf necessite.
+- Toujours tester sur DEV avant PROD.
 
-État stable actuel :
-- Base fonctionnelle reprise depuis df23caf.
-- Déplacement fluide OK.
-- Boutons OK après patch validé sur PROD puis DEV :
-  + création directe d'un post-it
-  ✎ édition directe puis sauvegarde au second appui
-  ⟳ rotation
-  ✕ décollage avec second appui
-- Commit DEV stable connu : 722da2d
-
-Incidents à ne pas refaire :
-- Ne pas repartir de 899c432, f690d73, d299b23, 48d3120.
-- Ne pas reprendre le patch direct PROD 7c72e48 comme base.
-- Ne pas utiliser de panneau tactile complexe.
-- Ne pas casser le drag en ajoutant des handlers globaux.
-- Ne pas supposer que la PROD est un dépôt Git.
-
-Dernière mise à jour automatique :
-20260502_132759
+Derniere mise a jour :
+20260502_143914
