@@ -73,7 +73,36 @@ class postitdesign extends eqLogic {
             $visualStyle = 'classic';
         }
 
-        $messageHtml = nl2br($message);
+        $strikeRaw = (string) $this->cfg('postit_strikes', '');
+        $strikeIndexes = array();
+        foreach (explode(',', $strikeRaw) as $strikeIndex) {
+            $strikeIndex = trim($strikeIndex);
+            if ($strikeIndex !== '' && ctype_digit($strikeIndex)) {
+                $strikeIndexes[] = intval($strikeIndex);
+            }
+        }
+        $strikeIndexes = array_values(array_unique($strikeIndexes));
+
+        $messageLines = preg_split('/\r\n|\n|\r/', $message);
+        if (!is_array($messageLines) || count($messageLines) === 0) {
+            $messageLines = array('');
+        }
+
+        $messageHtml = '';
+        foreach ($messageLines as $lineIndex => $lineText) {
+            $isStruck = in_array(intval($lineIndex), $strikeIndexes, true);
+            $lineStyle = ''
+                . 'display:block !important;'
+                . 'min-height:18px !important;'
+                . 'padding:1px 2px !important;'
+                . 'margin:0 !important;'
+                . 'cursor:pointer !important;'
+                . 'border-radius:3px !important;'
+                . 'text-decoration:' . ($isStruck ? 'line-through' : 'none') . ' !important;'
+                . 'opacity:' . ($isStruck ? '.55' : '1') . ' !important;';
+            $messageHtml .= '<div class="postitdesign-line-force" data-line-index="' . intval($lineIndex) . '" data-struck="' . ($isStruck ? '1' : '0') . '" style="' . $lineStyle . '">' . ($lineText === '' ? '&nbsp;' : $lineText) . '</div>';
+        }
+        /* POSTITDESIGN_HANDLES_LINE_STRIKE_V1 */
 
         $outerStyle = ''
             . 'width:' . $width . 'px !important;'
@@ -194,6 +223,42 @@ class postitdesign extends eqLogic {
         $newBtnStyle = $btnStyle . 'background:#3cae45 !important;';
         $rotateBtnStyle = $btnStyle . 'background:#f0ad4e !important;';
         $deleteBtnStyle = $btnStyle . 'background:#d9534f !important;';
+
+        $dragHandleStyle = ''
+            . 'position:absolute !important;'
+            . 'top:4px !important;'
+            . 'right:4px !important;'
+            . 'width:22px !important;'
+            . 'height:22px !important;'
+            . 'line-height:22px !important;'
+            . 'text-align:center !important;'
+            . 'border-radius:50% !important;'
+            . 'background:rgba(0,0,0,.10) !important;'
+            . 'color:rgba(0,0,0,.55) !important;'
+            . 'font-size:12px !important;'
+            . 'font-weight:700 !important;'
+            . 'cursor:move !important;'
+            . 'z-index:3 !important;'
+            . 'user-select:none !important;'
+            . 'touch-action:none !important;';
+
+        $optionsHandleStyle = ''
+            . 'position:absolute !important;'
+            . 'right:4px !important;'
+            . 'bottom:4px !important;'
+            . 'width:22px !important;'
+            . 'height:22px !important;'
+            . 'line-height:22px !important;'
+            . 'text-align:center !important;'
+            . 'border-radius:50% !important;'
+            . 'background:rgba(0,0,0,.10) !important;'
+            . 'color:rgba(0,0,0,.55) !important;'
+            . 'font-size:13px !important;'
+            . 'font-weight:700 !important;'
+            . 'cursor:pointer !important;'
+            . 'z-index:3 !important;'
+            . 'user-select:none !important;'
+            . 'touch-action:manipulation !important;';
 
         $toggleOptionsJs = "event.stopPropagation();"
             . "if(this.__postitMovedUntil && Date.now()<this.__postitMovedUntil){return false;}"
@@ -401,12 +466,65 @@ class postitdesign extends eqLogic {
             . ".catch(function(e){alert(e.message||e);if(st){st.textContent='Erreur décollage';}});"
             . "return false;";
 
+        $lineClickJs = <<<'POSTITDESIGN_LINE_CLICK_JS'
+event.preventDefault();
+event.stopPropagation();
+
+var msg=this;
+if(msg.getAttribute('contenteditable')==='true'){return true;}
+
+var line=event.target&&event.target.closest?event.target.closest('.postitdesign-line-force'):null;
+if(!line){return false;}
+
+var widget=msg.closest('.postitdesign-widget');
+if(!widget){return false;}
+
+var eqId=widget.getAttribute('data-eqLogic_id');
+var idx=line.getAttribute('data-line-index');
+var struck=line.getAttribute('data-struck')==='1' ? 0 : 1;
+
+line.setAttribute('data-struck', String(struck));
+line.style.setProperty('text-decoration', struck ? 'line-through' : 'none', 'important');
+line.style.setProperty('opacity', struck ? '.55' : '1', 'important');
+
+var st=widget.querySelector('.postitdesign-status-force');
+if(st){
+  st.style.setProperty('display','block','important');
+  st.textContent=struck ? 'Ligne barrée' : 'Ligne réactivée';
+}
+
+var body=new URLSearchParams();
+body.append('action','toggleStrikeLineFromDesign');
+body.append('eqLogic_id',eqId);
+body.append('line_index',idx);
+body.append('struck',struck ? '1' : '0');
+
+fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{
+  method:'POST',
+  credentials:'same-origin',
+  headers:{'Content-Type':'application/x-www-form-urlencoded'},
+  body:body.toString()
+})
+.then(function(r){return r.json();})
+.then(function(d){
+  if(d.state==='ok'){
+    if(st){st.textContent=struck ? 'OK ligne barrée' : 'OK ligne réactivée';}
+  }else{
+    alert(d.result||'Erreur ligne');
+  }
+})
+.catch(function(e){alert(e.message||e);});
+
+return false;
+POSTITDESIGN_LINE_CLICK_JS;
+
         $toggleOptionsJsAttr = htmlspecialchars($toggleOptionsJs, ENT_QUOTES, 'UTF-8');
         $dragJsAttr = htmlspecialchars($dragJs, ENT_QUOTES, 'UTF-8');
         $completeJsAttr = htmlspecialchars($completeJs, ENT_QUOTES, 'UTF-8');
         $rotateJsAttr = htmlspecialchars($rotateJs, ENT_QUOTES, 'UTF-8');
         $newJsAttr = htmlspecialchars($newJs, ENT_QUOTES, 'UTF-8');
         $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
+        $lineClickJsAttr = htmlspecialchars($lineClickJs, ENT_QUOTES, 'UTF-8');
 
         $html = '';
         $html .= '<div class="eqLogic-widget eqLogic postitdesign-widget" ';
@@ -417,11 +535,13 @@ class postitdesign extends eqLogic {
         $html .= 'data-version="' . $_version . '" ';
         $html .= 'style="' . $outerStyle . '">';
 
-        $html .= '<div class="postitdesign-note-force" onpointerdown="' . $dragJsAttr . '" onclick="' . $toggleOptionsJsAttr . '" style="' . $noteStyle . '">';
+        $html .= '<div class="postitdesign-note-force" style="' . $noteStyle . '">';
+        $html .= '<div class="postitdesign-drag-handle-force" onpointerdown="' . $dragJsAttr . '" title="Maintenir pour déplacer" style="' . $dragHandleStyle . '">↕</div>';
+        $html .= '<div class="postitdesign-options-handle-force" onclick="' . $toggleOptionsJsAttr . '" title="Options" style="' . $optionsHandleStyle . '">⋯</div>';
         $html .= $visualTape;
         $html .= $visualFold;
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
-        $html .= '<div class="postitdesign-message-force" style="' . $messageStyle . '">' . $messageHtml . '</div>';
+        $html .= '<div class="postitdesign-message-force" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
 
         $html .= '<div class="postitdesign-footer-force" data-open="0" onclick="event.stopPropagation();" style="' . $footerStyle . '">';
         $html .= '<button type="button" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="event.preventDefault();event.stopPropagation();if(!this.__ptLast||Date.now()-this.__ptLast>600){this.__ptLast=Date.now();this.click();}return false;" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';

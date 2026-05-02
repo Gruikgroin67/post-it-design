@@ -443,6 +443,67 @@ try {
     }
 
 
+
+    if (init('action') == 'toggleStrikeLineFromDesign') {
+        if (!isConnect('admin')) {
+            throw new Exception('{{401 - Accès non autorisé}}');
+        }
+
+        $eqLogic_id = intval(init('eqLogic_id'));
+        $lineIndex = intval(init('line_index'));
+        $struck = intval(init('struck'));
+
+        if ($eqLogic_id <= 0) {
+            throw new Exception('{{Post-it invalide}}');
+        }
+
+        if ($lineIndex < 0 || $lineIndex > 500) {
+            throw new Exception('{{Ligne invalide}}');
+        }
+
+        $eqLogic = eqLogic::byId($eqLogic_id);
+        if (!is_object($eqLogic)) {
+            throw new Exception('{{Post-it introuvable}}');
+        }
+
+        if ($eqLogic->getEqType_name() != 'postitdesign') {
+            throw new Exception('{{Equipement invalide pour Post-it Design}}');
+        }
+
+        $current = array();
+        foreach (explode(',', (string) $eqLogic->getConfiguration('postit_strikes', '')) as $idx) {
+            $idx = trim($idx);
+            if ($idx !== '' && ctype_digit($idx)) {
+                $current[] = intval($idx);
+            }
+        }
+        $current = array_values(array_unique($current));
+
+        if ($struck === 1) {
+            if (!in_array($lineIndex, $current, true)) {
+                $current[] = $lineIndex;
+            }
+        } else {
+            $current = array_values(array_diff($current, array($lineIndex)));
+        }
+
+        sort($current);
+        $eqLogic->setConfiguration('postit_strikes', implode(',', $current));
+        $eqLogic->save();
+
+        if (method_exists($eqLogic, 'emptyCacheWidget')) {
+            $eqLogic->emptyCacheWidget();
+        }
+
+        ajax::success(array(
+            'ok' => true,
+            'eqLogic_id' => $eqLogic->getId(),
+            'line_index' => $lineIndex,
+            'struck' => $struck,
+            'postit_strikes' => implode(',', $current)
+        ));
+    }
+
     throw new Exception('{{Aucune méthode correspondante à}} : ' . init('action'));
 
 } catch (Exception $e) {
