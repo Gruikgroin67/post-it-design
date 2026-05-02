@@ -53,3 +53,12 @@ v1.0.12-mode-bandeau-fixed-from-current
 - Le drag ne modifie plus left/top dans table plan.
 - Aucun z-index n’est écrit dans table plan.
 - Aucun démon requis : plugin HTML/AJAX uniquement.
+
+
+v1.0.12-drag-fluide-bandeau-fixed
+- Correction du drag : déplacement attaché au document, comme le bandeau HTML fourni.
+- Le mouvement reste fluide quand la souris sort du post-it.
+- Le post-it reste en position fixed et bouge lui-même.
+- Sauvegarde target_x/target_y uniquement au relâchement.
+- Fonctions conservées : déplacement, édition, rotation, décollage, collage, styles.
+- Aucun démon requis : plugin HTML/AJAX uniquement.
