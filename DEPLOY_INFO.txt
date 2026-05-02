@@ -77,3 +77,11 @@ v1.0.12-tablet-touch-panel
 - Rotation inchangée.
 - createFromDesign est réactivé de façon ciblée : nouveau post-it uniquement dans le Design courant.
 - Déplacement fixed fluide conservé.
+
+
+v1.0.12-tablet-pointerup-event-safe-robust
+- Correction tablette robuste : remplacement complet du bloc touchButtonGuardJs, sans motif exact fragile.
+- Ajout de onpointerup sur les boutons tactiles.
+- Garde anti-double exécution touch/pointer/click.
+- Déplacement fluide conservé.
+- Fonctions conservées : +, compléter, rotation, décoller.
