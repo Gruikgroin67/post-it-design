@@ -286,14 +286,12 @@ class postitdesign extends eqLogic
             . "var eqId=widget.getAttribute('data-eqLogic_id')||'';"
             . "var planId=(new URLSearchParams(window.location.search)).get('plan_id')||widget.getAttribute('data-target-planheader')||'';"
             . "function point(e){if(e.touches&&e.touches.length){return{x:e.touches[0].clientX,y:e.touches[0].clientY};}if(e.changedTouches&&e.changedTouches.length){return{x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};}return{x:e.clientX||0,y:e.clientY||0};}"
-            . "function designRect(){var sels=['#div_displayObject','.div_displayObject','#div_designDisplay','.div_designDisplay','#div_pageContainer','.planContainer','.plan-container'];for(var i=0;i<sels.length;i++){var el=document.querySelector(sels[i]);if(el){var r=el.getBoundingClientRect();if(r.width>80&&r.height>80){return r;}}}var parent=widget.parentElement;while(parent&&parent!==document.body){var pr=parent.getBoundingClientRect();if(pr.width>80&&pr.height>80&&pr.width<window.innerWidth*1.05&&pr.height<window.innerHeight*1.05){return pr;}parent=parent.parentElement;}return{left:0,top:0,right:window.innerWidth,bottom:window.innerHeight,width:window.innerWidth,height:window.innerHeight};}"
-            . "function clampXY(x,y){var b=designRect();var wr=widget.getBoundingClientRect();var w=Math.max(40,wr.width||widget.offsetWidth||220);var h=Math.max(40,wr.height||widget.offsetHeight||160);var minX=Math.round(b.left);var minY=Math.round(b.top);var maxX=Math.round(b.right-w);var maxY=Math.round(b.bottom-h);if(maxX<minX){maxX=minX;}if(maxY<minY){maxY=minY;}x=Math.round(x);y=Math.round(y);if(x<minX){x=minX;}if(y<minY){y=minY;}if(x>maxX){x=maxX;}if(y>maxY){y=maxY;}return{x:x,y:y};}"
             . "var p0=point(ev);"
             . "var rect=widget.getBoundingClientRect();"
             . "var ox=p0.x-rect.left;"
             . "var oy=p0.y-rect.top;"
-            . "function move(e){e.preventDefault();e.stopPropagation();var p=point(e);var c=clampXY(p.x-ox,p.y-oy);widget.style.setProperty('left',c.x+'px','important');widget.style.setProperty('top',c.y+'px','important');}"
-            . "function up(e){e.preventDefault();e.stopPropagation();document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('touchmove',move,true);document.removeEventListener('touchend',up,true);var r=widget.getBoundingClientRect();var c=clampXY(r.left,r.top);widget.style.setProperty('left',c.x+'px','important');widget.style.setProperty('top',c.y+'px','important');if(eqId){var body=new URLSearchParams();body.append('action','savePositionFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',planId);body.append('x',String(c.x));body.append('y',String(c.y));fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(function(){});}/* POSTITDESIGN_DESIGN_BOUNDS_V1 */return false;}"
+            . "function move(e){e.preventDefault();e.stopPropagation();var p=point(e);var x=Math.max(0,Math.round(p.x-ox));var y=Math.max(0,Math.round(p.y-oy));widget.style.setProperty('left',x+'px','important');widget.style.setProperty('top',y+'px','important');}"
+            . "function up(e){e.preventDefault();e.stopPropagation();document.removeEventListener('pointermove',move,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('touchmove',move,true);document.removeEventListener('touchend',up,true);var r=widget.getBoundingClientRect();var x=Math.max(0,Math.round(r.left));var y=Math.max(0,Math.round(r.top));if(eqId){var body=new URLSearchParams();body.append('action','savePositionFromDesign');body.append('eqLogic_id',eqId);body.append('planHeader_id',planId);body.append('x',String(x));body.append('y',String(y));fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(function(){});}return false;}"
             . "document.addEventListener('pointermove',move,true);document.addEventListener('pointerup',up,true);document.addEventListener('touchmove',move,{capture:true,passive:false});document.addEventListener('touchend',up,{capture:true,passive:false});"
             . "return false;";
 
@@ -473,70 +471,6 @@ POSTITDESIGN_LINE_CLICK_JS;
       note.style.setProperty('transform-origin', 'center center', 'important');
     }
   }
-  function postitdesignDesignBoundsV1(widget){
-    function rectOk(r){ return r && r.width > 80 && r.height > 80; }
-    var selectors = ['#div_displayObject','.div_displayObject','#div_designDisplay','.div_designDisplay','#div_pageContainer','.planContainer','.plan-container'];
-    for (var i = 0; i < selectors.length; i++) {
-      var el = document.querySelector(selectors[i]);
-      if (el) {
-        var r = el.getBoundingClientRect();
-        if (rectOk(r)) { return r; }
-      }
-    }
-    var parent = widget.parentElement;
-    while (parent && parent !== document.body) {
-      var pr = parent.getBoundingClientRect();
-      if (rectOk(pr) && pr.width < window.innerWidth * 1.05 && pr.height < window.innerHeight * 1.05) {
-        return pr;
-      }
-      parent = parent.parentElement;
-    }
-    return {left:0, top:0, right:window.innerWidth, bottom:window.innerHeight, width:window.innerWidth, height:window.innerHeight};
-  }
-
-  function postitdesignClampWidgetIntoDesignV1(widget){
-    if (!widget) { return; }
-    var b = postitdesignDesignBoundsV1(widget);
-    var r = widget.getBoundingClientRect();
-    var w = Math.max(40, r.width || widget.offsetWidth || 220);
-    var h = Math.max(40, r.height || widget.offsetHeight || 160);
-
-    var minX = Math.round(b.left);
-    var minY = Math.round(b.top);
-    var maxX = Math.round(b.right - w);
-    var maxY = Math.round(b.bottom - h);
-
-    if (maxX < minX) { maxX = minX; }
-    if (maxY < minY) { maxY = minY; }
-
-    var x = Math.round(r.left);
-    var y = Math.round(r.top);
-
-    if (x < minX) { x = minX; }
-    if (y < minY) { y = minY; }
-    if (x > maxX) { x = maxX; }
-    if (y > maxY) { y = maxY; }
-
-    widget.style.setProperty('left', x + 'px', 'important');
-    widget.style.setProperty('top', y + 'px', 'important');
-    widget.setAttribute('data-design-bounds', '1');
-  }
-
-  setTimeout(function(){
-    var bounded = document.querySelectorAll('.postitdesign-widget');
-    for (var b = 0; b < bounded.length; b++) {
-      postitdesignClampWidgetIntoDesignV1(bounded[b]);
-    }
-    /* POSTITDESIGN_DESIGN_BOUNDS_V1 */
-  }, 80);
-
-  setTimeout(function(){
-    var bounded = document.querySelectorAll('.postitdesign-widget');
-    for (var b = 0; b < bounded.length; b++) {
-      postitdesignClampWidgetIntoDesignV1(bounded[b]);
-    }
-  }, 600);
-
   /* POSTITDESIGN_ROTATION_APPLY_ON_RENDER_V2 */
 })();
 </script>
