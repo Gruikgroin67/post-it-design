@@ -22,3 +22,12 @@ Règles :
 - Ne pas modifier le Design 86 en PROD.
 - Ne pas toucher MQTT.
 - Ne pas redémarrer Apache PROD.
+
+Patch 20260502_103426 :
+- Restauration du rendu visuel directement dans toHtml().
+- Les couleurs, tailles, rotation et styles classic/paper/tape sont rendus en inline.
+- Pas de JS dans le widget.
+- Pas de modification du parent Jeedom.
+- Pas de modification de table plan.
+- Pas de restart Apache.
+- Pas de MQTT.

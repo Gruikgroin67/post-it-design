@@ -1,4 +1,9 @@
-.postitdesign-widget {
+.postitdesign-admin-root .postitdesign-admin-preview {
+    padding: 12px;
+    min-height: 230px;
+}
+
+.postitdesign-admin-root .postitdesign-admin-preview .postitdesign-widget {
     box-sizing: border-box;
     display: inline-block;
     position: relative;
@@ -6,77 +11,72 @@
     padding: 0;
     margin: 0;
     background: transparent;
-    color: #2b2b2b;
+    color: #262626;
     font-family: "Trebuchet MS", Arial, sans-serif;
     transform: rotate(var(--postitdesign-rotate, -1deg));
     transform-origin: center center;
     pointer-events: auto;
 }
 
-.postitdesign-widget .postitdesign-note {
+.postitdesign-admin-root .postitdesign-admin-preview .postitdesign-note {
     box-sizing: border-box;
     display: block;
     position: relative;
     width: 100%;
     min-height: inherit;
-    padding: 14px 16px;
+    padding: 16px 18px;
     background: var(--postitdesign-bg, #fff475);
-    border: 1px solid rgba(120, 95, 15, .18);
-    border-radius: 5px;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, .20);
+    border: 1px solid rgba(120, 95, 15, .25);
+    border-radius: 6px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, .28);
     overflow: hidden;
 }
 
-.postitdesign-widget .postitdesign-title {
+.postitdesign-admin-root .postitdesign-admin-preview .postitdesign-title {
     display: block;
     margin: 0 0 10px 0;
-    padding: 0 0 6px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, .18);
-    font-size: 16px;
+    padding: 0 0 7px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .20);
+    font-size: 17px;
     font-weight: 700;
     line-height: 1.2;
-    color: #2b2b2b;
+    color: #262626;
     background: transparent;
 }
 
-.postitdesign-widget .postitdesign-message {
+.postitdesign-admin-root .postitdesign-admin-preview .postitdesign-message {
     display: block;
     margin: 0;
     padding: 0;
     font-size: 15px;
     line-height: 1.35;
-    color: #2b2b2b;
+    color: #262626;
     background: transparent;
     white-space: normal;
     word-wrap: break-word;
 }
 
-.postitdesign-widget.postitdesign-style-paper .postitdesign-note {
+.postitdesign-admin-root .postitdesign-admin-preview .postitdesign-style-paper .postitdesign-note {
     background-image: repeating-linear-gradient(
         to bottom,
         rgba(0, 0, 0, 0) 0,
         rgba(0, 0, 0, 0) 23px,
-        rgba(80, 70, 40, .10) 24px
+        rgba(80, 70, 40, .12) 24px
     );
 }
 
-.postitdesign-widget.postitdesign-style-tape .postitdesign-note {
-    padding-top: 24px;
+.postitdesign-admin-root .postitdesign-admin-preview .postitdesign-style-tape .postitdesign-note {
+    padding-top: 28px;
 }
 
-.postitdesign-widget .postitdesign-tape {
+.postitdesign-admin-root .postitdesign-admin-preview .postitdesign-tape {
     position: absolute;
-    top: 6px;
+    top: 7px;
     left: 50%;
-    width: 76px;
+    width: 78px;
     height: 18px;
-    margin-left: -38px;
-    background: rgba(255, 255, 255, .45);
+    margin-left: -39px;
+    background: rgba(255, 255, 255, .55);
     border-radius: 2px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
-}
-
-.postitdesign-admin-root .postitdesign-admin-preview {
-    padding: 12px;
-    min-height: 210px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .16);
 }
