@@ -1,1 +1,4 @@
-/* Mobile Post-it Design */
+(function () {
+    'use strict';
+    return true;
+}());

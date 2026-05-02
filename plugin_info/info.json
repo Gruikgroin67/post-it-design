@@ -1,7 +1,7 @@
 {
   "id": "postitdesign",
   "name": "Post-it Design",
-  "description": "Affiche des post-it sur les designs Jeedom.",
+  "description": "Affiche des post-it simples et isolés sur les Designs Jeedom.",
   "licence": "AGPL",
   "author": "Emmanuel",
   "require": "4.4",

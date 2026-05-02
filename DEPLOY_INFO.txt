@@ -6,29 +6,19 @@ Projet :
 - Dossier DEV : /var/www/html/plugins/postitdesign
 - Hôte de validation : jeedom-dev
 
-Etat validé :
-- Le rendu Design ne contient plus postitdesign-safe-top-layer.
-- Le rendu Design ne contient plus postitdesign-top-only-local.
-- Le rendu Design ne contient plus postitdesign-touch-inline.
-- Aucun script de rendu ne remonte dans les parents DOM Jeedom.
-- Le post-it reste cliquable : pointer-events:auto dans outerStyle.
-- Le post-it passe au-dessus via z-index local raisonnable.
-- Le z-index 20000 est appliqué sur la ligne plan du post-it.
-- La création directe de Design depuis le plugin est bloquée.
-- Le déplacement du post-it fonctionne en DEV.
-- Les options au clic fonctionnent en DEV.
+Etat construit le 20260502_103254 :
+- Version simple isolée.
+- Le rendu du widget ne contient aucun script.
+- Le rendu du widget ne modifie aucun parent Jeedom.
+- Le rendu du widget n’écrit pas dans les Designs.
+- Le CSS est limité aux classes postitdesign.
+- Le JS admin agit uniquement si la racine postitdesign_admin_root existe.
+- L’AJAX ne garde qu’un ping de diagnostic.
+- Le fichier de placement externe est neutralisé.
 
-Règles à ne pas refaire :
-- Ne pas injecter de script global dans toHtml.
-- Ne pas modifier le parent DOM du widget Jeedom.
-- Ne pas utiliser de z-index extrême : 999999, 1000000, 2147483647.
-- Ne pas tester directement sur la PROD sans backup.
+Règles :
+- Tester uniquement sur DEV.
+- Ne pas toucher PROD sans demande explicite.
 - Ne pas modifier le Design 86 en PROD.
-- Ne pas modifier la table plan en PROD sans diagnostic + sauvegarde.
-
-Dernière vérification :
-- REAL_DANGER=0
-- PLAN_ZINDEX_OK=1
-- CREATE_DESIGN_OK=1
-- OUTER_OK=1
-- Date : 20260502_092134
+- Ne pas toucher MQTT.
+- Ne pas redémarrer Apache PROD.
