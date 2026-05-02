@@ -1,3 +1,21 @@
+/*
+ * POSTITDESIGN_HARD_SAFE_PAGE_GUARD
+ * Le JS admin ne doit rien faire hors de la page du plugin.
+ */
+(function () {
+  var qs = String(window.location.search || '');
+  var body = document.body || document.documentElement;
+  var isPluginPage =
+    /[?&]p=postitdesign(?:&|$)/.test(qs) ||
+    /[?&]m=postitdesign(?:&|$)/.test(qs) ||
+    document.getElementById('postitdesign_admin_root') ||
+    document.querySelector('.postitdesign-admin-root') ||
+    document.querySelector('[data-page="postitdesign"]');
+
+  if (!isPluginPage) {
+    return;
+  }
+
 function postitdesignValue(selector, fallback) {
     var el = $(selector);
     if (!el.length) {
@@ -687,4 +705,7 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
       setTimeout(applyColorAndStyle, 80);
     }, true);
   });
+})();
+
+
 })();

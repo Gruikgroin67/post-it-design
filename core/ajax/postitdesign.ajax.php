@@ -36,7 +36,7 @@ try {
     }
 
     if (init('action') == 'createDesign') {
-        throw new Exception('{{Création de Design désactivée : crée le Design directement dans Jeedom.}}');
+        ajax::error('Action createDesign désactivée : le plugin Post-it ne doit pas créer de Design.');
     }
 
     if (init('action') == 'stickToDesign') {
@@ -334,101 +334,7 @@ try {
     }
 
     if (init('action') == 'createFromDesign') {
-        if (!isConnect('admin')) {
-            throw new Exception('{{401 - Accès non autorisé}}');
-        }
-
-        $planHeader_id = intval(init('planHeader_id'));
-        $title = trim(init('title'));
-        $message = trim(init('message'));
-        $color = trim(init('color'));
-        $rotate = intval(init('rotate'));
-        $x = intval(init('x'));
-        $y = intval(init('y'));
-        $width = intval(init('width'));
-        $height = intval(init('height'));
-
-        if ($planHeader_id <= 0) {
-            throw new Exception('{{Design cible introuvable}}');
-        }
-
-        $planHeader = planHeader::byId($planHeader_id);
-        if (!is_object($planHeader)) {
-            throw new Exception('{{Design cible introuvable}}');
-        }
-
-        if (method_exists($planHeader, 'hasRight') && !$planHeader->hasRight('w')) {
-            throw new Exception('{{Vous n’avez pas le droit de modifier ce Design}}');
-        }
-
-        if ($title == '') {
-            $title = 'Nouveau post-it';
-        }
-
-        $colors = array(
-            'jaune' => '#fff475',
-            'vert' => '#b8f7ad',
-            'rose' => '#ffc0cb',
-            'bleu' => '#bfe7ff'
-        );
-
-        $colorKey = strtolower($color);
-        if (isset($colors[$colorKey])) {
-            $color = $colors[$colorKey];
-        }
-
-        if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
-            $color = '#fff475';
-        }
-
-        if ($rotate < -15) { $rotate = -15; }
-        if ($rotate > 15) { $rotate = 15; }
-
-        if ($width < 120) { $width = 220; }
-        if ($width > 900) { $width = 900; }
-
-        if ($height < 80) { $height = 160; }
-        if ($height > 700) { $height = 700; }
-
-        if ($x < 0) { $x = 0; }
-        if ($y < 0) { $y = 0; }
-
-        $eqLogic = new postitdesign();
-        $eqLogic->setName($title);
-        $eqLogic->setEqType_name('postitdesign');
-        $eqLogic->setIsEnable(1);
-        $eqLogic->setIsVisible(1);
-        $eqLogic->setConfiguration('postit_title', $title);
-        $eqLogic->setConfiguration('postit_message', $message);
-        $eqLogic->setConfiguration('postit_color', $color);
-        $eqLogic->setConfiguration('postit_width', $width);
-        $eqLogic->setConfiguration('postit_height', $height);
-        $eqLogic->setConfiguration('postit_rotate', $rotate);
-        $eqLogic->setConfiguration('target_planHeader_id', $planHeader->getId());
-        $eqLogic->setConfiguration('target_x', $x);
-        $eqLogic->setConfiguration('target_y', $y);
-        $eqLogic->save();
-
-        $plan = new plan();
-        $plan->setPlanHeader_id($planHeader->getId());
-        $plan->setLink_type('eqLogic');
-        $plan->setLink_id($eqLogic->getId());
-        $plan->setPosition('left', $x);
-        $plan->setPosition('top', $y);
-        $plan->setDisplay('name', 0);
-        if (method_exists($plan, 'setCss')) {
-            $plan->setCss('z-index', '20000');
-        }
-        $plan->save();
-
-        ajax::success(array(
-            'ok' => true,
-            'eqLogic_id' => $eqLogic->getId(),
-            'planHeader_id' => $planHeader->getId(),
-            'x' => $x,
-            'y' => $y,
-            'rotate' => $rotate
-        ));
+        ajax::error('Action createFromDesign désactivée : création depuis Design interdite en version safe.');
     }
 
     throw new Exception('{{Aucune méthode correspondante à}} : ' . init('action'));

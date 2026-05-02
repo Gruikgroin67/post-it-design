@@ -1,9 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/../../core/php/core.inc.php';
-include_file('core', 'authentification', 'php');
-
-if (!isConnect('admin')) {
-    throw new Exception('{{401 - Accès non autorisé}}');
-}
-
-throw new Exception('{{Placement dynamique désactivé temporairement : utiliser Coller sur ce Design depuis la page du plugin.}}');
+echo '<!doctype html><html><head><meta charset="utf-8"><title>Post-it Design</title></head><body style="font-family:Arial;padding:20px">';
+echo '<h3>Post-it Design</h3>';
+echo '<p>Placement externe désactivé en version safe.</p>';
+echo '<p>Objectif : aucune modification automatique des Designs Jeedom.</p>';
+echo '</body></html>';

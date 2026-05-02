@@ -1,268 +1,30 @@
-.eqLogicThumbnailContainer .eqLogicDisplayCard {
-    text-align: center;
+/*
+ * Post-it Design - CSS safe.
+ * Aucune règle globale Jeedom.
+ */
+
+.postitdesign-admin-root .postitdesign-preview,
+.postitdesign-page .postitdesign-preview {
+  position: relative;
+  display: inline-block;
+  min-width: 160px;
+  min-height: 100px;
+  padding: 12px;
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
-.postitColor {
-    margin-right: 5px;
-}
-
-.postitdesign-preview-wrap {
-    min-height: 320px;
-    padding: 12px 0 30px 0;
-    overflow: visible;
-}
-
-.postitdesign-live-preview {
-    position: relative;
-    display: inline-block;
-    width: 220px;
-    min-height: 160px;
-    background: #fff475;
-    padding: 14px 16px;
-    border-radius: 4px;
-    box-shadow: 0 8px 18px rgba(0,0,0,.28);
-    color: #2b2b2b;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-    transform: rotate(-1deg);
-    transform-origin: center center;
-    user-select: none;
-}
-
-.postitdesign-live-preview-title {
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 1.2;
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(0,0,0,.18);
-    padding-bottom: 6px;
-}
-
-.postitdesign-live-preview-message {
-    font-size: 15px;
-    line-height: 1.35;
-    white-space: normal;
-    word-wrap: break-word;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-handle {
-    position: absolute;
-    background: rgba(0,0,0,.35);
-    border: 2px solid rgba(255,255,255,.9);
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    z-index: 20;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-n {
-    top: -7px;
-    left: calc(50% - 6px);
-    cursor: n-resize;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-s {
-    bottom: -7px;
-    left: calc(50% - 6px);
-    cursor: s-resize;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-e {
-    right: -7px;
-    top: calc(50% - 6px);
-    cursor: e-resize;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-w {
-    left: -7px;
-    top: calc(50% - 6px);
-    cursor: w-resize;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-ne {
-    top: -7px;
-    right: -7px;
-    cursor: ne-resize;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-nw {
-    top: -7px;
-    left: -7px;
-    cursor: nw-resize;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-se {
-    bottom: -7px;
-    right: -7px;
-    cursor: se-resize;
-}
-
-.postitdesign-live-preview.ui-resizable .ui-resizable-sw {
-    bottom: -7px;
-    left: -7px;
-    cursor: sw-resize;
-}
-
-.postitdesign-live-preview.postitdesign-resizing {
-    box-shadow: 0 10px 22px rgba(0,0,0,.38);
-}
-
-
-.postitdesign-rotate-handle {
-    position: absolute;
-    top: -24px;
-    left: calc(50% - 10px);
-    width: 20px;
-    height: 20px;
-    background: rgba(0,0,0,.45);
-    border: 2px solid rgba(255,255,255,.95);
-    border-radius: 50%;
-    cursor: grab;
-    z-index: 30;
-}
-
-.postitdesign-rotate-handle:before {
-    content: "";
-    position: absolute;
-    left: 8px;
-    top: 18px;
-    width: 2px;
-    height: 18px;
-    background: rgba(0,0,0,.35);
-}
-
-.postitdesign-live-preview.postitdesign-rotating {
-    box-shadow: 0 12px 26px rgba(0,0,0,.45);
-}
-
-.postitdesign-live-preview.postitdesign-rotating .postitdesign-rotate-handle {
-    cursor: grabbing;
-}
-
-#bt_postitdesign_open_placer {
-    margin-right: 8px;
-}
-
-/* POSTITDESIGN_VISUAL_PREVIEW_PATCH_V2 */
-.postitdesign-preview-style-classic,
-.postitdesign-preview-style-paper,
-.postitdesign-preview-style-tape {
+.postitdesign-widget {
   position: relative !important;
-  overflow: hidden !important;
-  border-radius: 5px !important;
-  border: 1px solid rgba(120, 95, 15, .18) !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+  z-index: 20000 !important;
 }
 
-.postitdesign-preview-style-classic {
-  background: linear-gradient(180deg, #fff48c 0%, #f4df62 100%) !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,.24) !important;
-  background-image: radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px) !important;
-  background-size: 7px 7px !important;
-  font-family: "Trebuchet MS", Arial, sans-serif !important;
+.postitdesign-widget .postitdesign-note-force {
+  pointer-events: auto !important;
 }
 
-.postitdesign-preview-style-paper {
-  background: linear-gradient(180deg, #fff3a0 0%, #f4df70 100%) !important;
-  box-shadow: 0 9px 20px rgba(0,0,0,.22) !important;
-  background-image: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.10) 24px) !important;
-  font-family: Verdana, Arial, sans-serif !important;
-}
-
-.postitdesign-preview-style-tape {
-  background: linear-gradient(180deg, #ffe878 0%, #f0d24b 100%) !important;
-  box-shadow: 0 13px 28px rgba(0,0,0,.28) !important;
-}
-
-.postitdesign-preview-style-classic::after,
-.postitdesign-preview-style-paper::after,
-.postitdesign-preview-style-tape::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 0;
-  height: 0;
-  border-top: 22px solid rgba(255,255,255,.86);
-  border-left: 22px solid transparent;
-  filter: drop-shadow(-1px 1px 1px rgba(0,0,0,.13));
-  pointer-events: none;
-}
-
-.postitdesign-preview-style-tape::before {
-  content: "";
-  position: absolute;
-  top: -11px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 46px;
-  height: 18px;
-  background: rgba(250,250,235,.72);
-  border-left: 1px solid rgba(255,255,255,.45);
-  border-right: 1px solid rgba(200,200,180,.45);
-  box-shadow: 0 1px 2px rgba(0,0,0,.16);
-  pointer-events: none;
-  z-index: 20;
-}
-
-/* POSTITDESIGN_EXISTING_PREVIEW_STYLE_V4 */
-.postitdesign-live-visual-classic,
-.postitdesign-live-visual-paper,
-.postitdesign-live-visual-tape {
-  position: relative !important;
-  overflow: hidden !important;
-  border-radius: 5px !important;
-  border: 1px solid rgba(120,95,15,.18) !important;
-  color: #2b2b2b !important;
-}
-
-.postitdesign-live-visual-classic {
-  background: linear-gradient(180deg, #fff48c 0%, #f4df62 100%) !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,.24) !important;
-  background-image: radial-gradient(rgba(255,255,255,.22) .6px, transparent .8px) !important;
-  background-size: 7px 7px !important;
-  font-family: "Trebuchet MS", Arial, sans-serif !important;
-}
-
-.postitdesign-live-visual-paper {
-  background: linear-gradient(180deg, #fff3a0 0%, #f4df70 100%) !important;
-  box-shadow: 0 9px 20px rgba(0,0,0,.22) !important;
-  background-image: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 23px, rgba(80,70,40,.12) 24px) !important;
-  font-family: Verdana, Arial, sans-serif !important;
-}
-
-.postitdesign-live-visual-tape {
-  background: linear-gradient(180deg, #ffe878 0%, #f0d24b 100%) !important;
-  box-shadow: 0 13px 28px rgba(0,0,0,.28) !important;
-  font-family: "Trebuchet MS", Arial, sans-serif !important;
-}
-
-.postitdesign-live-visual-classic::after,
-.postitdesign-live-visual-paper::after,
-.postitdesign-live-visual-tape::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 0;
-  height: 0;
-  border-top: 22px solid rgba(255,255,255,.86);
-  border-left: 22px solid transparent;
-  filter: drop-shadow(-1px 1px 1px rgba(0,0,0,.13));
-  pointer-events: none;
-}
-
-.postitdesign-live-visual-tape::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 48px;
-  height: 18px;
-  background: rgba(250,250,235,.74);
-  border-left: 1px solid rgba(255,255,255,.45);
-  border-right: 1px solid rgba(200,200,180,.45);
-  box-shadow: 0 1px 2px rgba(0,0,0,.16);
-  pointer-events: none;
-  z-index: 20;
+.postitdesign-widget .postitdesign-footer-force {
+  pointer-events: auto !important;
 }
