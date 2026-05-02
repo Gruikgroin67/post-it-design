@@ -466,16 +466,17 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= 'style="' . $outerStyle . '">';
 
         $html .= '<div class="postitdesign-note-force" style="' . $noteStyle . '">';
-        $html .= '<div class="postitdesign-drag-handle-force" onpointerdown="' . $dragJsAttr . '" title="Maintenir pour déplacer" style="' . $dragHandleStyle . '">↕</div>';
-        $html .= '<div class="postitdesign-options-handle-force" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="' . $toggleOptionsJsAttr . '" onclick="' . $toggleOptionsJsAttr . '" title="Options" style="' . $optionsHandleStyle . '">⋯</div>';
+        $html .= '<div class="postitdesign-drag-handle-force" onpointerdown="' . $dragJsAttr . '" style="' . $dragHandleStyle . '">↕</div>';
+        $html .= '<div class="postitdesign-options-handle-force" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="' . $toggleOptionsJsAttr . '" onclick="' . $toggleOptionsJsAttr . '" style="' . $optionsHandleStyle . '">⋯</div>';
         $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
         $html .= '<div class="postitdesign-message-force" ontouchend="' . $lineClickJsAttr . '" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
         $html .= '<div class="postitdesign-footer-force" data-open="0" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="event.preventDefault();event.stopPropagation();return false;" style="' . $footerStyle . '">';
-        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '" title="Créer un nouveau post-it">+</button>';
-        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '" title="Compléter le post-it">✎</button>';
-        $html .= '<button type="button" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '" title="Rotation">⟳</button>';
-        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $decollerJsAttr . '" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '" title="Décoller du design">✕</button>';
+        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
+        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎</button>';
+        $html .= '<button type="button" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '">⟳</button>';
+        $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $decollerJsAttr . '" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '">✕</button>';
         /* POSTITDESIGN_TABLET_MINIMAL_DIRECT_V1 */
+        /* POSTITDESIGN_REMOVE_TITLE_BUBBLES_V1 */
         $html .= '</div>';
         $html .= '<div class="postitdesign-status-force" style="display:none !important;font-size:10px !important;margin-top:5px !important;color:#555 !important;background:transparent !important;line-height:1.2 !important;word-break:break-word !important;"></div>';
         $html .= '</div>';
