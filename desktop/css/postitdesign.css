@@ -1,30 +1,45 @@
-/*
- * Post-it Design - CSS safe.
- * Aucune règle globale Jeedom.
- */
+/* POSTITDESIGN_CONFINED_PLUGIN_ONLY */
 
-.postitdesign-admin-root .postitdesign-preview,
-.postitdesign-page .postitdesign-preview {
-  position: relative;
-  display: inline-block;
-  min-width: 160px;
-  min-height: 100px;
-  padding: 12px;
-  border-radius: 8px;
+.postitdesign-plugin-page .postitdesign-preview {
   box-sizing: border-box;
+  display: block;
+  padding: 14px;
+  border-radius: 3px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.18);
+  overflow: hidden;
+}
+
+.postitdesign-plugin-page .postitdesign-preview-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.postitdesign-plugin-page .postitdesign-preview-message {
+  white-space: pre-wrap;
 }
 
 .postitdesign-widget {
-  position: relative !important;
-  overflow: visible !important;
-  pointer-events: auto !important;
-  z-index: 20000 !important;
+  box-sizing: border-box;
+  display: block;
+  overflow: hidden;
 }
 
-.postitdesign-widget .postitdesign-note-force {
-  pointer-events: auto !important;
+.postitdesign-widget .postitdesign-note {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  border-radius: 3px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.18);
+  overflow: hidden;
 }
 
-.postitdesign-widget .postitdesign-footer-force {
-  pointer-events: auto !important;
+.postitdesign-widget .postitdesign-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.postitdesign-widget .postitdesign-message {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }

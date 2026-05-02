@@ -9,6 +9,12 @@ try {
     }
 
     ajax::init();
+    $__postitdesign_action = init('action');
+    if (in_array($__postitdesign_action, array('createDesign', 'createFromDesign', 'stickToDesign', 'savePositionFromDesign', 'removeFromDesign'), true)) {
+        ajax::error('Action désactivée : Post-it Design est cantonné au plugin et ne modifie pas les Designs Jeedom.');
+        return;
+    }
+
 
     if (init('action') == 'ping') {
         ajax::success(array(
