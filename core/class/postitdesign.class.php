@@ -85,7 +85,7 @@ class postitdesign extends eqLogic
         if ($targetX < 0) { $targetX = 0; }
         if ($targetY < 0) { $targetY = 0; }
 
-        $strikeRaw = (string)$this->cfg('postit_strikes', '');
+        $strikeRaw = (string)$this->cfg('postit_strikes', ''); $syncRev = sha1($title . "\n" . $message . "\n" . $strikeRaw . "\n" . $rotate); /* POSTITDESIGN_SYNC_REV_ATTR_V1 */
         $strikeIndexes = array();
         foreach (explode(',', $strikeRaw) as $strikePart) {
             $strikePart = trim($strikePart);
@@ -460,7 +460,7 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= '<div class="eqLogic-widget eqLogic postitdesign-widget" ';
         $html .= 'data-eqLogic_id="' . $this->getId() . '" ';
         $html .= 'data-target-planheader="' . $targetPlanHeaderId . '" ';
-        $html .= 'data-rotate="' . $rotate . '" ';
+        $html .= 'data-rotate="' . $rotate . '" ';$html .= 'data-sync-rev="' . htmlspecialchars($syncRev, ENT_QUOTES, 'UTF-8') . '" ';
         $html .= 'data-eqLogic_uid="#uid#" ';
         $html .= 'data-version="' . $_version . '" ';
         $html .= 'style="' . $outerStyle . '">';
@@ -690,11 +690,120 @@ POSTITDESIGN_LINE_CLICK_JS;
 </script>
 POSTITDESIGN_ROTATION_APPLY_ON_RENDER_V2;
 
-        return $html;
-    }
-}
+        
+$html .= <<<'POSTITDESIGN_SYNC_POLLING_POSTITS_V1'
+<script>
+(function(){
+  if (window.__postitdesignSyncPollingPostitsV1) { return; }
+  window.__postitdesignSyncPollingPostitsV1 = true;
 
-class postitdesignCmd extends cmd
+  function buildLine(messageEl, lineText, index, struck) {
+    var sp = document.createElement('span');
+    sp.className = 'postitdesign-line-force';
+    sp.setAttribute('data-line-index', String(index));
+    sp.setAttribute('data-struck', struck ? '1' : '0');
+    sp.style.setProperty('display', 'block', 'important');
+    sp.style.setProperty('min-height', '18px', 'important');
+    sp.style.setProperty('padding', '1px 2px', 'important');
+    sp.style.setProperty('margin', '0', 'important');
+    sp.style.setProperty('cursor', 'pointer', 'important');
+    sp.style.setProperty('border-radius', '3px', 'important');
+    sp.style.setProperty('text-decoration', struck ? 'line-through' : 'none', 'important');
+    sp.style.setProperty('opacity', struck ? '.55' : '1', 'important');
+    sp.textContent = lineText === '' ? '\u00a0' : lineText;
+    messageEl.appendChild(sp);
+  }
+
+  function renderState(widget, data) {
+    if (!widget || !data || !data.ok) { return; }
+    if (widget.querySelector('.postitdesign-inline-edit-v2')) { return; }
+
+    var msgEl = widget.querySelector('.postitdesign-message-force');
+    if (msgEl && typeof data.message !== 'undefined') {
+      var strikes = {};
+      String(data.postit_strikes || '').split(',').forEach(function(v){
+        v = String(v).trim();
+        if (v !== '' && /^\d+$/.test(v)) { strikes[parseInt(v, 10)] = true; }
+      });
+
+      while (msgEl.firstChild) { msgEl.removeChild(msgEl.firstChild); }
+
+      var lines = String(data.message || '').split(/\r?\n/);
+      if (!lines.length) { lines = ['']; }
+
+      for (var i = 0; i < lines.length; i++) {
+        buildLine(msgEl, lines[i], i, !!strikes[i]);
+      }
+    }
+
+    if (typeof data.rotate !== 'undefined') {
+      var rotate = parseInt(data.rotate, 10);
+      if (!isNaN(rotate)) {
+        widget.setAttribute('data-rotate', String(rotate));
+        var note = widget.querySelector('.postitdesign-note-force');
+        if (note) {
+          note.style.setProperty('transform', 'rotate(' + rotate + 'deg)', 'important');
+          note.style.setProperty('transform-origin', 'center center', 'important');
+        }
+      }
+    }
+
+    if (data.rev) {
+      widget.setAttribute('data-sync-rev', String(data.rev));
+    }
+  }
+
+  function pollOne(widget) {
+    if (!widget || widget.__postitdesignSyncBusy) { return; }
+    if (widget.querySelector('.postitdesign-inline-edit-v2')) { return; }
+
+    var eqId = widget.getAttribute('data-eqLogic_id');
+    if (!eqId) { return; }
+
+    widget.__postitdesignSyncBusy = true;
+
+    var body = new URLSearchParams();
+    body.append('action', 'getStateFromDesign');
+    body.append('eqLogic_id', eqId);
+
+    fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: body.toString()
+    })
+    .then(function(resp){ return resp.json(); })
+    .then(function(json){
+      var data = json && typeof json.result !== 'undefined' ? json.result : json;
+      if (!data || !data.ok) { return; }
+
+      var currentRev = widget.getAttribute('data-sync-rev') || '';
+      var incomingRev = String(data.rev || '');
+
+      if (incomingRev !== '' && incomingRev !== currentRev) {
+        renderState(widget, data);
+      }
+    })
+    .catch(function(){})
+    .then(function(){ widget.__postitdesignSyncBusy = false; }, function(){ widget.__postitdesignSyncBusy = false; });
+  }
+
+  function pollAll() {
+    var widgets = document.querySelectorAll('.postitdesign-widget[data-eqLogic_id]');
+    if (!widgets || !widgets.length) { return; }
+    for (var i = 0; i < widgets.length; i++) {
+      pollOne(widgets[i]);
+    }
+  }
+
+  setTimeout(pollAll, 1200);
+  setInterval(pollAll, 5000);
+})();
+</script>
+POSTITDESIGN_SYNC_POLLING_POSTITS_V1;
+
+return $html; } } class postitdesignCmd extends cmd
 {
     public function execute($_options = array())
     {
