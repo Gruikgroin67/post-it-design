@@ -71,3 +71,32 @@ v1.0.12-simple-tablet-panel-from-df23caf
 - Plus de prompt/confirm pour ces actions.
 - Rotation inchangée.
 - createFromDesign réactivé de façon ciblée dans le Design courant.
+
+================================================================================
+TAG v1.0.24 - 2026-05-03 09:53:50
+================================================================================
+Projet : Jeedom plugin postitdesign
+Environnement DEV : /var/www/html/plugins/postitdesign sur jeedom-dev 192.168.2.41
+Environnement PROD : /var/www/html/plugins/postitdesign sur jeedom 192.168.2.66
+Workflow obligatoire : DEV -> tag GitHub -> déploiement PROD code-only -> test tablette PROD.
+Règles : ne pas toucher MQTT, ne pas redémarrer Apache sauf nécessité explicite, ne pas modifier la DB directement.
+
+Changement v1.0.24 :
+- Ajout d’un polling léger limité aux widgets .postitdesign-widget.
+- Synchro automatique toutes les 5 secondes des post-it déjà affichés.
+- Synchronise texte/message, lignes barrées/débarrées et rotation.
+- Ne recharge pas tout le Design.
+- Ne synchronise pas encore la création + ni la suppression X entre écrans ouverts.
+
+Marqueurs à vérifier :
+- POSTITDESIGN_SYNC_POLLING_POSTITS_V1 dans core/class/postitdesign.class.php
+- POSTITDESIGN_SYNC_STATE_AJAX_V1 dans core/ajax/postitdesign.ajax.php
+
+Méthode de déploiement PROD :
+- cloner le tag GitHub dans /tmp/postitdesign_deploy_<TAG>_<timestamp>/src
+- vérifier php -l et marqueurs
+- rsync -a --delete --exclude='.git/' vers /var/www/html/plugins/postitdesign
+- chown -R www-data:www-data
+- pas de restart Apache
+- pas d’action MQTT
+- pas de modification DB directe
