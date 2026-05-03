@@ -801,3 +801,157 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
     });
   });
 })();
+
+
+/* POSTITDESIGN_COMMAND_PANEL_PERSISTENT_AFTER_DELETE_V1 */
+(function () {
+  if (window.__postitdesignCommandPanelPersistentV1) return;
+  window.__postitdesignCommandPanelPersistentV1 = true;
+
+  function isPluginPage() {
+    return /[?&]p=postitdesign\b/.test(window.location.href);
+  }
+
+  function ajaxPostit(action, data) {
+    var body = new URLSearchParams();
+    body.append('action', action);
+    Object.keys(data || {}).forEach(function (k) { body.append(k, data[k]); });
+    return fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: body.toString()
+    }).then(function (r) { return r.json(); });
+  }
+
+  function findStableAnchor() {
+    return document.querySelector('.eqLogicThumbnailContainer')
+      || document.querySelector('.pluginListContainer')
+      || document.querySelector('#div_pageContainer')
+      || document.querySelector('.container-fluid')
+      || document.body;
+  }
+
+  function setStatus(panel, txt, ok) {
+    var status = panel.querySelector('#postitdesign-native-create-cmd-status');
+    if (!status) return;
+    status.textContent = txt;
+    status.style.color = ok ? '#1d7f35' : '#b00020';
+  }
+
+  function loadDesigns(panel) {
+    if (panel.getAttribute('data-loaded') === '1') return;
+    panel.setAttribute('data-loaded', '1');
+
+    var select = panel.querySelector('#postitdesign-native-create-cmd-plan');
+    if (!select) return;
+
+    ajaxPostit('listPlanHeadersForCreateCommand', {}).then(function (res) {
+      var rows = res.result || [];
+      select.innerHTML = '';
+      rows.forEach(function (h) {
+        var opt = document.createElement('option');
+        opt.value = h.id;
+        opt.textContent = h.name + ' (#' + h.id + ')';
+        select.appendChild(opt);
+      });
+      if (!rows.length) setStatus(panel, 'Aucun Design trouvé', false);
+    }).catch(function () {
+      setStatus(panel, 'Erreur chargement Designs', false);
+    });
+  }
+
+  function bindInstall(panel) {
+    if (panel.getAttribute('data-bound') === '1') return;
+    panel.setAttribute('data-bound', '1');
+
+    var btn = panel.querySelector('#postitdesign-native-create-cmd-install');
+    var select = panel.querySelector('#postitdesign-native-create-cmd-plan');
+    if (!btn || !select) return;
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var planId = select.value || '';
+      if (!planId) {
+        setStatus(panel, 'Choisis un Design', false);
+        return false;
+      }
+
+      btn.disabled = true;
+      setStatus(panel, 'Installation...', true);
+
+      ajaxPostit('installCreateCommandOnDesign', {planHeader_id: planId}).then(function (res) {
+        btn.disabled = false;
+        if (res.state && res.state !== 'ok') {
+          setStatus(panel, 'Erreur installation', false);
+          return;
+        }
+        setStatus(panel, 'Commande + Post-it installée. Ouvre le Design puis Ctrl+F5.', true);
+      }).catch(function () {
+        btn.disabled = false;
+        setStatus(panel, 'Erreur installation', false);
+      });
+
+      return false;
+    });
+  }
+
+  function ensurePanel() {
+    if (!isPluginPage() || !document.body) return;
+
+    var panel = document.getElementById('postitdesign-native-create-cmd-panel');
+    if (!panel) {
+      var anchor = findStableAnchor();
+
+      panel = document.createElement('div');
+      panel.id = 'postitdesign-native-create-cmd-panel';
+      panel.className = 'alert alert-info postitdesign-command-panel-persistent';
+      panel.style.margin = '10px 0';
+      panel.style.position = 'relative';
+      panel.style.zIndex = '1';
+      panel.innerHTML =
+        '<strong>Commande Design</strong><br>' +
+        '<span>Installer une vraie commande Jeedom <b>+ Post-it</b> dans un Design :</span> ' +
+        '<select id="postitdesign-native-create-cmd-plan" class="form-control input-sm" style="display:inline-block;width:auto;min-width:220px;margin:4px;"></select> ' +
+        '<button id="postitdesign-native-create-cmd-install" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Installer + Post-it</button> ' +
+        '<span id="postitdesign-native-create-cmd-status" style="margin-left:8px;"></span>';
+
+      if (anchor && anchor.parentNode) {
+        anchor.parentNode.insertBefore(panel, anchor);
+      } else {
+        document.body.insertBefore(panel, document.body.firstChild);
+      }
+    }
+
+    bindInstall(panel);
+    loadDesigns(panel);
+  }
+
+  function scheduleEnsure() {
+    window.clearTimeout(window.__postitdesignCommandPanelEnsureTimer);
+    window.__postitdesignCommandPanelEnsureTimer = window.setTimeout(ensurePanel, 120);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ensurePanel);
+  } else {
+    ensurePanel();
+  }
+
+  var obs = new MutationObserver(function () {
+    if (isPluginPage() && !document.getElementById('postitdesign-native-create-cmd-panel')) {
+      scheduleEnsure();
+    }
+  });
+
+  obs.observe(document.documentElement || document.body, {childList: true, subtree: true});
+
+  window.setInterval(function () {
+    if (isPluginPage() && !document.getElementById('postitdesign-native-create-cmd-panel')) {
+      ensurePanel();
+    }
+  }, 1500);
+})();
+
