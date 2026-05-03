@@ -172,6 +172,10 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
         if ($height > 700) { $height = 700; }
 
         $rotate = intval($this->cfg('postit_rotate', -1));
+        $visualStyle = strtolower(trim(strval($this->cfg('visual_style', 'classic')))); /* POSTITDESIGN_DESIGN_VISUAL_STYLE_V1 */
+        if (!in_array($visualStyle, array('classic', 'paper', 'tape'), true)) {
+            $visualStyle = 'classic';
+        }
         if ($rotate < -9) { $rotate = -9; }
         if ($rotate > 9) { $rotate = 9; }
 
@@ -331,6 +335,26 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
         $newBtnStyle = $btnStyle . 'background:#3cae45 !important;';
         $rotateBtnStyle = $btnStyle . 'background:#f0ad4e !important;';
         $deleteBtnStyle = $btnStyle . 'background:#d9534f !important;';
+
+        if ($visualStyle === 'paper') { /* POSTITDESIGN_DESIGN_VISUAL_STYLE_APPLY_V1 */
+            $noteStyle .= 'background:' . $color . ' !important;';
+            $noteStyle .= 'background-image:repeating-linear-gradient(to bottom, rgba(255,255,255,0) 0px, rgba(255,255,255,0) 22px, rgba(80,70,40,.18) 23px, rgba(80,70,40,.18) 24px) !important;';
+            $noteStyle .= 'border-radius:2px !important;';
+            $noteStyle .= 'box-shadow:0 7px 16px rgba(0,0,0,.24) !important;';
+        } elseif ($visualStyle === 'tape') {
+            $noteStyle .= 'background:' . $color . ' !important;';
+            $noteStyle .= 'background-image:linear-gradient(to bottom, rgba(255,255,255,.58) 0px, rgba(255,255,255,.25) 24px, rgba(255,255,255,0) 25px), linear-gradient(135deg, rgba(255,255,255,.22), rgba(0,0,0,.04)) !important;';
+            $noteStyle .= 'border-top:8px solid rgba(245,230,140,.70) !important;';
+            $noteStyle .= 'border-radius:3px !important;';
+            $noteStyle .= 'box-shadow:0 9px 18px rgba(0,0,0,.28) !important;';
+        } else {
+            $noteStyle .= 'background:' . $color . ' !important;';
+            $noteStyle .= 'background-image:radial-gradient(rgba(255,255,255,.28) .7px, transparent .9px), linear-gradient(160deg, rgba(255,255,255,.30), rgba(0,0,0,.04)) !important;';
+            $noteStyle .= 'background-size:7px 7px, 100% 100% !important;';
+            $noteStyle .= 'border-radius:4px !important;';
+            $noteStyle .= 'box-shadow:0 6px 14px rgba(0,0,0,.22) !important;';
+        }
+
 
         $dragHandleStyle = ''
             . 'position:absolute !important;'
