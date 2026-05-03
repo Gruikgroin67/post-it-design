@@ -492,7 +492,7 @@ POSTITDESIGN_LINE_CLICK_JS;
             . "var next=0;"
             . "if(cur===0){next=15;}else if(cur===15){next=-15;}else{next=0;}"
             . "widget.setAttribute('data-postit-rotate',String(next));"
-            . "widget.setAttribute('data-rotate',String(next));"
+            . "widget.setAttribute('data-rotate',String(next));widget.setAttribute('data-postitdesign-local-rotate',String(next));widget.setAttribute('data-postitdesign-rotate-lock-until',String(Date.now()+2500));/* POSTITDESIGN_ROTATION_IMMEDIATE_SAFE_V1 */"
             . "if(note){note.style.setProperty('transform','rotate('+next+'deg)','important');note.style.setProperty('transform-origin','center center','important');}"
             . "var st=widget.querySelector('.postitdesign-status-force');"
             . "if(st){st.style.setProperty('display','block','important');st.textContent='Rotation '+next+'°';}"
@@ -884,7 +884,7 @@ $html .= <<<'POSTITDESIGN_SYNC_POLLING_POSTITS_V1'
         widget.setAttribute('data-rotate', String(rotate));
         var note = widget.querySelector('.postitdesign-note-force');
         if (note) {
-          note.style.setProperty('transform', 'rotate(' + rotate + 'deg)', 'important');
+          if(parseInt(widget.getAttribute('data-postitdesign-rotate-lock-until')||'0',10)>Date.now()){var localRotate=widget.getAttribute('data-postitdesign-local-rotate')||String(rotate);note.style.setProperty('transform','rotate('+localRotate+'deg)','important');}else{note.style.setProperty('transform', 'rotate(' + rotate + 'deg)', 'important');}
           note.style.setProperty('transform-origin', 'center center', 'important');
         }
       }
