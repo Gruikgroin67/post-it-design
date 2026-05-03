@@ -922,6 +922,40 @@ POSTITDESIGN_SYNC_POLLING_POSTITS_V1;
 
 return $html; } } class postitdesignCmd extends cmd
 {
+    /* POSTITDESIGN_CREATE_CMD_MINI_POSTIT_TOHTML_V1 */
+    public function toHtml($_version = 'dashboard', $_options = '')
+    {
+        if ($this->getLogicalId() != 'create_postit') {
+            return parent::toHtml($_version, $_options);
+        }
+
+        $cmdId = intval($this->getId());
+        $uid = 'postitdesign_create_cmd_' . $cmdId . '_' . mt_rand(1000, 9999);
+
+        $js = "event.preventDefault();event.stopPropagation();"
+            . "if(window.jeedom&&window.jeedom.cmd&&window.jeedom.cmd.disableExecute){return false;}"
+            . "var w=this;var s=w.querySelector('.postitdesign-create-mini-status');"
+            . "if(s){s.textContent='Création...';}"
+            . "if(window.jeedom&&window.jeedom.cmd&&typeof window.jeedom.cmd.execute==='function'){"
+            . "window.jeedom.cmd.execute({id:" . $cmdId . ",success:function(){if(s){s.textContent='Créé';}setTimeout(function(){window.location.reload();},450);},error:function(){if(s){s.textContent='Erreur';}}});"
+            . "}"
+            . "return false;";
+
+        $html = '<div class="cmd-widget cmd action postitdesign-create-mini-widget" ';
+        $html .= 'data-cmd_id="' . $cmdId . '" ';
+        $html .= 'data-cmd_uid="' . $uid . '" ';
+        $html .= 'data-version="' . htmlspecialchars($_version, ENT_QUOTES, 'UTF-8') . '" ';
+        $html .= 'onclick="' . htmlspecialchars($js, ENT_QUOTES, 'UTF-8') . '" ';
+        $html .= 'style="width:92px !important;min-height:68px !important;cursor:pointer !important;box-sizing:border-box !important;padding:8px 7px 6px 7px !important;background:#fff475 !important;border:1px solid rgba(0,0,0,.14) !important;border-radius:3px !important;box-shadow:0 5px 10px rgba(0,0,0,.22) !important;transform:rotate(-2deg) !important;font-family:Arial,sans-serif !important;color:#2d2d2d !important;text-align:center !important;line-height:1.1 !important;">';
+        $html .= '<div style="font-size:18px !important;font-weight:800 !important;line-height:18px !important;margin-bottom:3px !important;">+</div>';
+        $html .= '<div style="font-size:12px !important;font-weight:700 !important;">Post-it</div>';
+        $html .= '<div class="postitdesign-create-mini-status" style="font-size:9px !important;margin-top:5px !important;opacity:.70 !important;white-space:nowrap !important;">Créer</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+
     public function execute($_options = array())
     {
         
