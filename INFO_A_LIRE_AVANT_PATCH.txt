@@ -15,3 +15,13 @@ Comportement valide :
 
 Derniere mise a jour :
 20260502_143914
+
+
+[v1.0.25 - 2026-05-03]
+- Commande Jeedom native  validée en DEV.
+- Installation depuis l'interface du plugin dans le Design choisi.
+- Isolation des vrais post-it hors  Jeedom validée.
+- Ne pas réintroduire  sur les vrais post-it.
+- Ne pas utiliser  pour la commande .
+- Tests validés : DNS Jeedom ne déplace plus , commande visible/déplaçable, création post-it OK.
+- PROD non touchée, MQTT non touché, Apache non redémarré.

@@ -40,3 +40,16 @@ https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/
 https://github.com/Gruikgroin67/post-it-design
 
 Dernière mise à jour : 20260501_130525
+
+## Commande  dans un Design
+
+Depuis v1.0.25, le plugin peut installer une vraie commande Jeedom  dans un Design depuis l'interface du plugin.
+
+Principe retenu :
+
+- les vrais post-it sont isolés du  natif Jeedom ;
+- les vrais post-it ne portent pas la classe  ;
+- la commande  est une commande Jeedom séparée ;
+- déplacer un autre widget du Design ne doit pas déplacer les post-it existants.
+
+Documentation détaillée : .
