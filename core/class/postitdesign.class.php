@@ -390,7 +390,7 @@ POSTITDESIGN_LINE_CLICK_JS;
             . "save.style.cssText='padding:7px 10px;border-radius:8px;border:1px solid #444;background:#222;color:#fff;font-size:13px;';"
             . "row.appendChild(cancel);row.appendChild(save);box.appendChild(ta);box.appendChild(row);note.appendChild(box);"
             . "function stop(e){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation){e.stopImmediatePropagation();}}"
-            . "box.addEventListener('touchstart',function(e){e.stopPropagation();},true);box.addEventListener('click',function(e){e.stopPropagation();},true);ta.addEventListener('touchstart',function(e){e.stopPropagation();},true);ta.addEventListener('touchend',function(e){e.stopPropagation();},true);/* POSTITDESIGN_INLINE_EDIT_BUTTONS_FIX_V1 */"
+            . "box.addEventListener('touchstart',function(e){e.stopPropagation();},true);box.addEventListener('click',function(e){e.stopPropagation();},false);ta.addEventListener('touchstart',function(e){e.stopPropagation();},true);ta.addEventListener('touchend',function(e){e.stopPropagation();},true);/* POSTITDESIGN_INLINE_EDIT_BUTTONS_FIX_V1 */ /* POSTITDESIGN_CANCEL_MOUSE_CLICK_FIX_V1 */"
             . "cancel.addEventListener('click',function(e){stop(e);box.remove();},true);"
             . "cancel.addEventListener('touchend',function(e){stop(e);box.remove();},true);"
             . "function esc(v){return String(v).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}"
