@@ -75,8 +75,8 @@ try {
         $rotate = intval(init('rotate'));
 
         if ($eqLogic_id <= 0) { throw new Exception('{{Post-it invalide}}'); }
-        if ($rotate < -9) { $rotate = -9; }
-        if ($rotate > 9) { $rotate = 9; }
+        if ($rotate < -15) { $rotate = -15; } /* POSTITDESIGN_ROTATION_15_PERSISTENCE_CLAMP_V1 */
+        if ($rotate > 15) { $rotate = 15; }
 
         $eqLogic = eqLogic::byId($eqLogic_id);
         if (!is_object($eqLogic) || $eqLogic->getEqType_name() != 'postitdesign') {
@@ -136,7 +136,7 @@ try {
         ));
     }
 
-    if (init('action') == 'getStateFromDesign') { /* POSTITDESIGN_SYNC_STATE_AJAX_V1 */ $eqLogic_id = intval(init('eqLogic_id')); if ($eqLogic_id <= 0) { throw new Exception('{{Post-it invalide}}'); } $eqLogic = eqLogic::byId($eqLogic_id); if (!is_object($eqLogic) || $eqLogic->getEqType_name() != 'postitdesign') { throw new Exception('{{Equipement invalide pour Post-it Design}}'); } $title = (string)$eqLogic->getConfiguration('postit_title', $eqLogic->getName()); $message = (string)$eqLogic->getConfiguration('postit_message', ''); $strikes = (string)$eqLogic->getConfiguration('postit_strikes', ''); $rotate = intval($eqLogic->getConfiguration('postit_rotate', -1)); if ($rotate < -9) { $rotate = -9; } if ($rotate > 9) { $rotate = 9; } $rev = sha1($title . "\n" . $message . "\n" . $strikes . "\n" . $rotate); ajax::success(array('ok' => true, 'eqLogic_id' => $eqLogic->getId(), 'title' => $title, 'message' => $message, 'postit_strikes' => $strikes, 'rotate' => $rotate, 'rev' => $rev)); } if (init('action') == 'setMessageFromDesign') {
+    if (init('action') == 'getStateFromDesign') { /* POSTITDESIGN_SYNC_STATE_AJAX_V1 */ $eqLogic_id = intval(init('eqLogic_id')); if ($eqLogic_id <= 0) { throw new Exception('{{Post-it invalide}}'); } $eqLogic = eqLogic::byId($eqLogic_id); if (!is_object($eqLogic) || $eqLogic->getEqType_name() != 'postitdesign') { throw new Exception('{{Equipement invalide pour Post-it Design}}'); } $title = (string)$eqLogic->getConfiguration('postit_title', $eqLogic->getName()); $message = (string)$eqLogic->getConfiguration('postit_message', ''); $strikes = (string)$eqLogic->getConfiguration('postit_strikes', ''); $rotate = intval($eqLogic->getConfiguration('postit_rotate', -1)); if ($rotate < -15) { $rotate = -15; } /* POSTITDESIGN_ROTATION_15_PERSISTENCE_CLAMP_V1 */ if ($rotate > 15) { $rotate = 15; } $rev = sha1($title . "\n" . $message . "\n" . $strikes . "\n" . $rotate); ajax::success(array('ok' => true, 'eqLogic_id' => $eqLogic->getId(), 'title' => $title, 'message' => $message, 'postit_strikes' => $strikes, 'rotate' => $rotate, 'rev' => $rev)); } if (init('action') == 'setMessageFromDesign') {
         $eqLogic_id = intval(init('eqLogic_id'));
         $text = trim((string)init('text'));
 
