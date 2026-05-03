@@ -28,3 +28,29 @@
 .postitdesign-widget .postitdesign-footer-force {
   pointer-events: auto !important;
 }
+
+
+/* POSTITDESIGN_DYNAMIC_PREVIEW_VISUAL_FIX_V1 */
+.postitdesign-preview-style-classic,
+.postitdesign-live-visual-classic {
+  background-image: radial-gradient(rgba(255,255,255,.28) .7px, transparent .9px), linear-gradient(160deg, rgba(255,255,255,.30), rgba(0,0,0,.04)) !important;
+  background-size: 7px 7px, 100% 100% !important;
+  border-radius: 4px !important;
+  box-shadow: 0 6px 14px rgba(0,0,0,.22) !important;
+}
+
+.postitdesign-preview-style-paper,
+.postitdesign-live-visual-paper {
+  background-image: repeating-linear-gradient(to bottom, rgba(255,255,255,0) 0px, rgba(255,255,255,0) 22px, rgba(80,70,40,.18) 23px, rgba(80,70,40,.18) 24px) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 7px 16px rgba(0,0,0,.24) !important;
+}
+
+.postitdesign-preview-style-tape,
+.postitdesign-live-visual-tape {
+  background-image: linear-gradient(to bottom, rgba(255,255,255,.58) 0px, rgba(255,255,255,.25) 24px, rgba(255,255,255,0) 25px), linear-gradient(135deg, rgba(255,255,255,.22), rgba(0,0,0,.04)) !important;
+  border-top: 8px solid rgba(245,230,140,.70) !important;
+  border-radius: 3px !important;
+  box-shadow: 0 9px 18px rgba(0,0,0,.28) !important;
+}
+
