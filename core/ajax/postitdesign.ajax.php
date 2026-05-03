@@ -10,6 +10,27 @@ try {
 
     ajax::init();
 
+    if (init('action') == 'listPlanHeadersForCreateCommand') { /* POSTITDESIGN_NATIVE_CREATE_CMD_AJAX_V1 */
+        $headers = planHeader::all();
+        $result = array();
+        foreach ($headers as $header) {
+            if (is_object($header)) {
+                $result[] = array(
+                    'id' => $header->getId(),
+                    'name' => $header->getName()
+                );
+            }
+        }
+        ajax::success($result);
+    }
+
+    if (init('action') == 'installCreateCommandOnDesign') { /* POSTITDESIGN_NATIVE_CREATE_CMD_INSTALL_AJAX_V1 */
+        $planHeaderId = intval(init('planHeader_id'));
+        $result = postitdesign::ensureCreateCommandForPlan($planHeaderId);
+        ajax::success($result);
+    }
+
+
     if (init('action') == 'savePositionFromDesign') {
         $eqLogic_id = intval(init('eqLogic_id'));
         $planHeader_id = intval(init('planHeader_id'));

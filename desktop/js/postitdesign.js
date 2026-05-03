@@ -709,3 +709,95 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
 
 
 })();
+
+
+/* POSTITDESIGN_NATIVE_CREATE_CMD_UI_V1 */
+(function () {
+  if (window.__postitdesignNativeCreateCmdUiV1) return;
+  window.__postitdesignNativeCreateCmdUiV1 = true;
+
+  function ajaxPostit(action, data) {
+    var body = new URLSearchParams();
+    body.append('action', action);
+    Object.keys(data || {}).forEach(function (k) { body.append(k, data[k]); });
+    return fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: body.toString()
+    }).then(function (r) { return r.json(); });
+  }
+
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  ready(function () {
+    if (!document.body || !/p=postitdesign/.test(window.location.href)) return;
+    if (document.getElementById('postitdesign-native-create-cmd-panel')) return;
+
+    var anchor = document.querySelector('.eqLogicThumbnailContainer') || document.querySelector('.eqLogic') || document.querySelector('#div_pageContainer') || document.body;
+
+    var panel = document.createElement('div');
+    panel.id = 'postitdesign-native-create-cmd-panel';
+    panel.className = 'alert alert-info';
+    panel.style.margin = '10px 0';
+    panel.innerHTML =
+      '<strong>Commande Design</strong><br>' +
+      '<span>Installer une vraie commande Jeedom <b>+ Post-it</b> dans un Design :</span> ' +
+      '<select id="postitdesign-native-create-cmd-plan" class="form-control input-sm" style="display:inline-block;width:auto;min-width:220px;margin:4px;"></select> ' +
+      '<button id="postitdesign-native-create-cmd-install" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Installer + Post-it</button> ' +
+      '<span id="postitdesign-native-create-cmd-status" style="margin-left:8px;"></span>';
+
+    if (anchor.parentNode) anchor.parentNode.insertBefore(panel, anchor);
+    else document.body.insertBefore(panel, document.body.firstChild);
+
+    var select = panel.querySelector('#postitdesign-native-create-cmd-plan');
+    var status = panel.querySelector('#postitdesign-native-create-cmd-status');
+    var btn = panel.querySelector('#postitdesign-native-create-cmd-install');
+
+    function setStatus(txt, ok) {
+      status.textContent = txt;
+      status.style.color = ok ? '#1d7f35' : '#b00020';
+    }
+
+    ajaxPostit('listPlanHeadersForCreateCommand', {}).then(function (res) {
+      var rows = res.result || [];
+      select.innerHTML = '';
+      rows.forEach(function (h) {
+        var opt = document.createElement('option');
+        opt.value = h.id;
+        opt.textContent = h.name + ' (#' + h.id + ')';
+        select.appendChild(opt);
+      });
+      if (!rows.length) setStatus('Aucun Design trouvé', false);
+    }).catch(function () {
+      setStatus('Erreur chargement Designs', false);
+    });
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var planId = select.value || '';
+      if (!planId) {
+        setStatus('Choisis un Design', false);
+        return false;
+      }
+      btn.disabled = true;
+      setStatus('Installation...', true);
+      ajaxPostit('installCreateCommandOnDesign', {planHeader_id: planId}).then(function (res) {
+        btn.disabled = false;
+        if (res.state && res.state !== 'ok') {
+          setStatus('Erreur installation', false);
+          return;
+        }
+        setStatus('Commande + Post-it installée dans le Design. Ouvre le Design puis Ctrl+F5.', true);
+      }).catch(function () {
+        btn.disabled = false;
+        setStatus('Erreur installation', false);
+      });
+      return false;
+    });
+  });
+})();

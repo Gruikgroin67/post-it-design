@@ -40,10 +40,127 @@ class postitdesign extends eqLogic
             $this->setConfiguration('target_y', 40);
         }
     }
+    /* POSTITDESIGN_NATIVE_CREATE_CMD_V1 */
+    public static function createPostitForPlan($_planHeaderId = 0)
+    {
+        $_planHeaderId = intval($_planHeaderId);
+        if ($_planHeaderId <= 0) {
+            throw new Exception('{{Design invalide}}');
+        }
+
+        $planHeader = planHeader::byId($_planHeaderId);
+        if (!is_object($planHeader)) {
+            throw new Exception('{{Design introuvable}}');
+        }
+
+        $eq = new postitdesign();
+        $eq->setEqType_name('postitdesign');
+        $eq->setName('Nouveau post-it ' . date('His'));
+        $eq->setIsEnable(1);
+        $eq->setIsVisible(1);
+        $eq->setConfiguration('postit_title', 'Nouveau post-it');
+        $eq->setConfiguration('postit_message', 'Nouveau post-it');
+        $eq->setConfiguration('postit_color', '#fff4a8');
+        $eq->setConfiguration('postit_width', 220);
+        $eq->setConfiguration('postit_height', 160);
+        $eq->setConfiguration('postit_rotate', rand(-3, 3));
+        $eq->setConfiguration('target_planHeader_id', $_planHeaderId);
+        $eq->setConfiguration('target_x', 40);
+        $eq->setConfiguration('target_y', 40);
+        $eq->setConfiguration('createtime', date('Y-m-d H:i:s'));
+        $eq->setConfiguration('updatetime', date('Y-m-d H:i:s'));
+        $eq->save();
+
+        $plan = new plan();
+        $plan->setPlanHeader_id($_planHeaderId);
+        $plan->setLink_type('eqLogic');
+        $plan->setLink_id($eq->getId());
+        $plan->setPosition('left', 40);
+        $plan->setPosition('top', 40);
+        $plan->setPosition('width', 220);
+        $plan->setPosition('height', 160);
+        $plan->setDisplay('name', 0);
+        $plan->setDisplay('width', 220);
+        $plan->setDisplay('height', 160);
+        $plan->setCss('z-index', 1000);
+        $plan->save();
+
+        return array(
+            'eqLogic_id' => $eq->getId(),
+            'plan_id' => $plan->getId(),
+            'planHeader_id' => $_planHeaderId
+        );
+    }
+
+    public static function ensureCreateCommandForPlan($_planHeaderId)
+    {
+        $_planHeaderId = intval($_planHeaderId);
+        if ($_planHeaderId <= 0) {
+            throw new Exception('{{Design invalide}}');
+        }
+
+        $planHeader = planHeader::byId($_planHeaderId);
+        if (!is_object($planHeader)) {
+            throw new Exception('{{Design introuvable}}');
+        }
+
+        $logicalId = 'postitdesign_create_controller_' . $_planHeaderId;
+        $eq = self::byLogicalId($logicalId, 'postitdesign');
+
+        if (!is_object($eq)) {
+            $eq = new postitdesign();
+            $eq->setEqType_name('postitdesign');
+            $eq->setLogicalId($logicalId);
+            $eq->setName('+ Post-it - ' . $planHeader->getName());
+            $eq->setIsEnable(1);
+            $eq->setIsVisible(1);
+        }
+
+        $eq->setConfiguration('is_create_controller', 1);
+        $eq->setConfiguration('target_planHeader_id', $_planHeaderId);
+        $eq->save();
+
+        $cmd = $eq->getCmd(null, 'create_postit');
+        if (!is_object($cmd)) {
+            $cmd = new postitdesignCmd();
+            $cmd->setEqLogic_id($eq->getId());
+            $cmd->setEqType('postitdesign');
+            $cmd->setLogicalId('create_postit');
+            $cmd->setName('+ Post-it');
+            $cmd->setType('action');
+            $cmd->setSubType('other');
+            $cmd->setIsVisible(1);
+            $cmd->save();
+        }
+
+        $plan = plan::byLinkTypeLinkIdPlanHeaderId('cmd', $cmd->getId(), $_planHeaderId);
+        if (!is_object($plan)) {
+            $plan = new plan();
+            $plan->setPlanHeader_id($_planHeaderId);
+            $plan->setLink_type('cmd');
+            $plan->setLink_id($cmd->getId());
+            $plan->setPosition('left', 20);
+            $plan->setPosition('top', 20);
+            $plan->setDisplay('name', 1);
+            $plan->setCss('z-index', 1100);
+            $plan->save();
+        }
+
+        return array(
+            'eqLogic_id' => $eq->getId(),
+            'cmd_id' => $cmd->getId(),
+            'plan_id' => $plan->getId(),
+            'planHeader_id' => $_planHeaderId
+        );
+    }
+
+
 
     public function toHtml($_version = 'dashboard')
     {
-        $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), ENT_QUOTES, 'UTF-8');
+        
+        if (intval($this->getConfiguration('is_create_controller', 0)) === 1) { return parent::toHtml($_version); } /* POSTITDESIGN_CREATE_CONTROLLER_TOHTML_GUARD_V1 */
+$title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), ENT_QUOTES, 'UTF-8');
         $message = (string)$this->cfg('postit_message', 'Nouveau post-it');
         $color = preg_replace('/[^#a-zA-Z0-9(),.%\s-]/', '', (string)$this->cfg('postit_color', '#fff4a8'));
 
@@ -807,6 +924,17 @@ return $html; } } class postitdesignCmd extends cmd
 {
     public function execute($_options = array())
     {
+        
+        if ($this->getLogicalId() == 'create_postit') { /* POSTITDESIGN_NATIVE_CREATE_CMD_EXECUTE_V1 */
+            $eq = $this->getEqLogic();
+            if (!is_object($eq)) {
+                throw new Exception('{{Equipement introuvable}}');
+            }
+            $planHeaderId = intval($eq->getConfiguration('target_planHeader_id', 0));
+            $result = postitdesign::createPostitForPlan($planHeaderId);
+            return __('Post-it créé', __FILE__) . ' #' . $result['eqLogic_id'];
+        }
         return null;
+
     }
 }
