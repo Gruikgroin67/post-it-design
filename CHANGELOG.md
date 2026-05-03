@@ -1,5 +1,37 @@
 # Changelog
 
+## v1.0.26 - 2026-05-03
+
+### État DEV validé avant future PROD
+
+- Base DEV actuelle :  ().
+- Commande Jeedom native  fonctionnelle dans un Design.
+- La commande peut être installée depuis la page plugin via le bloc .
+- La commande est affichée sous forme de mini post-it plutôt qu’un bouton gris.
+- Le bloc  reste disponible après suppression d’un post-it sur la page plugin.
+- Les vrais post-it restent isolés du  natif Jeedom : déplacer  ne déplace plus .
+
+### Visuels et rotation
+
+- Les styles , ,  sont présents côté interface.
+- Le rendu Design applique maintenant les visuels.
+- L’aperçu dynamique a été renforcé côté CSS/JS.
+- Les raccourcis de rotation sont passés à , , .
+- Le bouton rotation du post-it suit le cycle .
+- La rotation  et  est conservée après actualisation du Design.
+
+### Limite assumée à ce stade
+
+- Un léger délai visuel peut encore apparaître au clic rotation avant resynchronisation.
+- Le comportement est laissé tel quel à la demande utilisateur, car la rotation sauvegardée est correcte après actualisation.
+
+### Sécurité
+
+- PROD non touchée.
+- MQTT non touché.
+- Apache non redémarré.
+- Aucun déploiement PROD effectué.
+
 ## v1.0.25 - 2026-05-03
 
 ### Ajout

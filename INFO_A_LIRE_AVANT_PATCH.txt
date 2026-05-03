@@ -25,3 +25,23 @@ Derniere mise a jour :
 - Ne pas utiliser  pour la commande .
 - Tests validés : DNS Jeedom ne déplace plus , commande visible/déplaçable, création post-it OK.
 - PROD non touchée, MQTT non touché, Apache non redémarré.
+
+
+[v1.0.26 - 2026-05-03]
+État DEV validé :
+- HEAD avant tag : cbf99e5
+- Describe avant tag : v1.0.25-9-gcbf99e5
+- Commande native + Post-it OK.
+- Mini post-it pour la commande OK.
+- Bloc Commande Design persistant OK.
+- Isolation des vrais post-it hors savePlan Jeedom OK.
+- Déplacement DNS Jeedom ne bouge plus courses.
+- Styles Classic / Paper / Tape présents et appliqués côté Design.
+- Rotation raccourcis -15 / 0 / +15.
+- Bouton rotation : cycle 0 / +15 / -15 / 0.
+- Rotation conservée après Ctrl+F5.
+- Léger délai visuel rotation accepté à ce stade.
+- Ne pas reprendre le patch de masquage contrôleur qui avait blanchi la page plugin.
+- PROD non touchée.
+- MQTT non touché.
+- Apache non redémarré.

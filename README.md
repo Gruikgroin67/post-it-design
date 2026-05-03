@@ -53,3 +53,22 @@ Principe retenu :
 - déplacer un autre widget du Design ne doit pas déplacer les post-it existants.
 
 Documentation détaillée : .
+
+## État v1.0.26
+
+Version DEV validée avant future PROD.
+
+Fonctions principales :
+
+- vrais post-it isolés du  Jeedom ;
+- commande Jeedom native  installable depuis l’interface plugin ;
+- commande visible et déplaçable dans un Design ;
+- création de nouveau post-it depuis le Design ;
+- rendu de commande en mini post-it ;
+- styles , ,  ;
+- rotation  ;
+- rotation conservée après actualisation.
+
+Documentation détaillée : .
+
+Sécurité : PROD non touchée, MQTT non touché, Apache non redémarré.
