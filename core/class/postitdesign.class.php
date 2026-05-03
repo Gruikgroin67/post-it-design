@@ -171,7 +171,7 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
         if ($height < 80) { $height = 160; }
         if ($height > 700) { $height = 700; }
 
-        $rotate = intval($this->cfg('postit_rotate', -1));
+        $rotate = intval($this->cfg('postit_rotate', -1)); /* POSTITDESIGN_ROTATION_15_STEP_V1 */
         $visualStyle = strtolower(trim(strval($this->cfg('visual_style', 'classic')))); /* POSTITDESIGN_DESIGN_VISUAL_STYLE_V1 */
         if (!in_array($visualStyle, array('classic', 'paper', 'tape'), true)) {
             $visualStyle = 'classic';

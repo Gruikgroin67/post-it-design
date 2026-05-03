@@ -186,9 +186,9 @@ $planHeaders = planHeader::all();
                                 <input type="range" id="postitdesign_rotate_range" class="form-control" min="-15" max="15" step="1" value="-1">
                             </div>
                             <div class="col-sm-3">
-                                <a class="btn btn-default btn-sm postitdesignRotateQuick" data-rotate="-5">-5°</a>
+                                <a class="btn btn-default btn-sm postitdesignRotateQuick" data-rotate="-15">-15°</a> <?php /* POSTITDESIGN_ROTATION_15_PRESETS_V1 */ ?>
                                 <a class="btn btn-default btn-sm postitdesignRotateQuick" data-rotate="0">0°</a>
-                                <a class="btn btn-default btn-sm postitdesignRotateQuick" data-rotate="5">+5°</a>
+                                <a class="btn btn-default btn-sm postitdesignRotateQuick" data-rotate="15">+15°</a>
                             </div>
                         </div>
 
