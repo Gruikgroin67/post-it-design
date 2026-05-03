@@ -457,7 +457,7 @@ POSTITDESIGN_LINE_CLICK_JS;
         $decollerJsAttr = htmlspecialchars($decollerJs, ENT_QUOTES, 'UTF-8');
 
         $html = '';
-        $html .= '<div class="eqLogic-widget eqLogic postitdesign-widget" ';
+        $html .= '<div class="eqLogic postitdesign-widget postitdesign-saveplan-isolated" '; /* POSTITDESIGN_SAVEPLAN_ISOLATED_V1 */
         $html .= 'data-eqLogic_id="' . $this->getId() . '" ';
         $html .= 'data-target-planheader="' . $targetPlanHeaderId . '" ';
         $html .= 'data-rotate="' . $rotate . '" ';$html .= 'data-sync-rev="' . htmlspecialchars($syncRev, ENT_QUOTES, 'UTF-8') . '" ';
