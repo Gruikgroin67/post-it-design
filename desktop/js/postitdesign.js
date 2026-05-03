@@ -1090,3 +1090,121 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
   setTimeout(applyPreviewVisual, 1500);
 })();
 
+
+/* POSTITDESIGN_ROTATE_BUTTON_IMMEDIATE_CAPTURE_JS_V1 */
+(function () {
+  if (window.__postitdesignRotateImmediateCaptureV1) return;
+  window.__postitdesignRotateImmediateCaptureV1 = true;
+
+  function normalize(v) {
+    v = parseInt(v, 10);
+    if (isNaN(v)) v = 0;
+    if (v > 7) return 15;
+    if (v < -7) return -15;
+    return 0;
+  }
+
+  function readRotate(widget, note) {
+    var v = widget.getAttribute('data-postit-rotate') || widget.getAttribute('data-rotate') || '';
+    if (v !== '') return normalize(v);
+
+    if (note && note.style && note.style.transform) {
+      var m = note.style.transform.match(/rotate\((-?\d+)deg\)/);
+      if (m) return normalize(m[1]);
+    }
+
+    return 0;
+  }
+
+  function nextRotate(cur) {
+    cur = normalize(cur);
+    if (cur === 0) return 15;
+    if (cur === 15) return -15;
+    return 0;
+  }
+
+  function applyNow(widget, next) {
+    var note = widget.querySelector('.postitdesign-note-force');
+    widget.setAttribute('data-postit-rotate', String(next));
+    widget.setAttribute('data-rotate', String(next));
+    widget.setAttribute('data-postitdesign-local-rotate', String(next));
+    widget.setAttribute('data-postitdesign-rotate-lock-until', String(Date.now() + 2500));
+
+    if (note) {
+      note.style.setProperty('transition', 'transform .06s linear', 'important');
+      note.style.setProperty('transform', 'rotate(' + next + 'deg)', 'important');
+      note.style.setProperty('transform-origin', 'center center', 'important');
+    }
+
+    var st = widget.querySelector('.postitdesign-status-force');
+    if (st) {
+      st.style.setProperty('display', 'block', 'important');
+      st.textContent = 'Rotation ' + next + '°';
+    }
+
+    var stopAt = Date.now() + 2200;
+    function force() {
+      var n = widget.querySelector('.postitdesign-note-force');
+      if (n) {
+        n.style.setProperty('transform', 'rotate(' + next + 'deg)', 'important');
+        n.style.setProperty('transform-origin', 'center center', 'important');
+      }
+      if (Date.now() < stopAt) {
+        window.requestAnimationFrame(force);
+      }
+    }
+    window.requestAnimationFrame(force);
+  }
+
+  function saveRotation(widget, next) {
+    var eqId = widget.getAttribute('data-eqLogic_id') || '';
+    if (!eqId) return;
+
+    var body = new URLSearchParams();
+    body.append('action', 'saveRotationFromDesign');
+    body.append('eqLogic_id', eqId);
+    body.append('rotate', String(next));
+
+    fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: body.toString()
+    }).catch(function () {});
+  }
+
+  function handle(e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.postitdesign-rotate-btn-force') : null;
+    if (!btn) return;
+
+    var now = Date.now();
+    var last = parseInt(btn.getAttribute('data-postitdesign-last-rotate-click') || '0', 10);
+    if (now - last < 250) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      return false;
+    }
+    btn.setAttribute('data-postitdesign-last-rotate-click', String(now));
+
+    var widget = btn.closest('.postitdesign-widget');
+    if (!widget) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+
+    var note = widget.querySelector('.postitdesign-note-force');
+    var cur = readRotate(widget, note);
+    var next = nextRotate(cur);
+
+    applyNow(widget, next);
+    saveRotation(widget, next);
+
+    return false;
+  }
+
+  document.addEventListener('click', handle, true);
+  document.addEventListener('touchend', handle, true);
+})();
+

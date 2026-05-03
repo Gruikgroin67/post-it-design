@@ -615,7 +615,7 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= '<div class="postitdesign-footer-force" data-open="0" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="event.preventDefault();event.stopPropagation();return false;" style="' . $footerStyle . '">';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎</button>';
-        $html .= '<button type="button" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '">⟳</button>';
+        $html .= '<button type="button" class="postitdesign-rotate-btn-force" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '">⟳</button>'; /* POSTITDESIGN_ROTATE_BUTTON_IMMEDIATE_CAPTURE_CLASS_V1 */
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $decollerJsAttr . '" onclick="' . $decollerJsAttr . '" style="' . $deleteBtnStyle . '">✕</button>';
         /* POSTITDESIGN_TABLET_MINIMAL_DIRECT_V1 */
         /* POSTITDESIGN_REMOVE_TITLE_BUBBLES_V1 */
