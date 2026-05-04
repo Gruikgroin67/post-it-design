@@ -63,3 +63,16 @@ Règles techniques validées :
 - garder le menu borné localement au conteneur du bouton ;
 - conserver la création immédiate sur clic principal ;
 - utiliser une pastille visible comme déclencheur fiable.
+
+## v1.0.34 - Masquage sans rechargement
+
+La pastille du bouton `+ Post-it` masque ou réaffiche les post-it sans recharger le Design. L’action reste sauvegardée côté plugin par AJAX.
+
+Règles techniques validées :
+
+- le clic principal du bouton `+ Post-it` reste réservé à la création immédiate ;
+- la pastille reste le déclencheur du menu ;
+- le menu reste cantonné au Design ;
+- les post-it ne sont pas supprimés du plan ;
+- le rendu ne doit pas utiliser `window.location.reload()` pour masquer/réafficher ;
+- les post-it restent dans le DOM et basculent en `display:none`.

@@ -5,6 +5,21 @@
 
 
 
+
+## v1.0.34 - 2026-05-04
+
+### Masquer/réafficher sans rechargement du Design
+
+- Le bouton `+ Post-it` conserve son clic principal : il crée immédiatement un post-it.
+- La pastille du bouton ouvre le menu `Masquer/Réafficher`.
+- Le masquage/réaffichage est maintenant immédiat côté navigateur, sans `window.location.reload()` pour cette action.
+- Les post-it restent dans le DOM et sont masqués/réaffichés via `display:none`, ce qui évite de recharger tout le Design.
+- L’état reste sauvegardé côté plugin via AJAX, afin de conserver le choix après rechargement manuel.
+- Le menu reste cantonné au Design.
+- Le masquage reste non destructif : aucune ligne `plan` n’est supprimée.
+- MQTT non touché.
+- Apache non redémarré.
+
 ## v1.0.33 - 2026-05-04
 
 ### Bouton + Post-it : pastille de menu cantonnée au Design

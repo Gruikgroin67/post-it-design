@@ -4,7 +4,7 @@ Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Je
 
 ## Version actuelle
 
-`v1.0.33`
+`v1.0.34`
 
 ## Fonctions
 
@@ -79,4 +79,4 @@ Sécurité : pas de dépendances, pas de démon, MQTT non utilisé, aucun redém
 
 ## Dernière évolution
 
-Le bouton `+ Post-it` conserve son clic principal de création. Une pastille intégrée au bouton ouvre maintenant un menu permettant de masquer ou réafficher les post-it du Design sans supprimer leur placement.
+Le menu de la pastille du bouton `+ Post-it` permet maintenant de masquer ou réafficher les post-it du Design sans rechargement complet de la page. Le clic principal du bouton continue de créer un post-it immédiatement.

@@ -141,3 +141,28 @@ Derniere mise a jour :
 - PROD uniquement après tag GitHub validé.
 - MQTT non touché.
 - Apache non redémarré.
+
+## Règle validée - masquage sans rechargement
+
+- Ne pas recharger le Design pour masquer/réafficher les post-it depuis la pastille.
+- Ne pas utiliser `window.location.reload()` dans l’action de masquage/réaffichage.
+- Les post-it doivent rester dans le DOM.
+- Le masquage côté navigateur se fait par `display:none`.
+- L’état reste sauvegardé côté plugin par AJAX.
+- Le clic principal sur `+ Post-it` doit continuer à créer immédiatement un post-it.
+- Le menu reste déclenché uniquement par la pastille.
+- Le menu doit rester cantonné au Design.
+- Ne pas supprimer les lignes `plan`.
+- Ne pas remplacer complètement le rendu natif Jeedom de la commande `create_postit`.
+- Remote GitHub obligatoire en SSH : `git@github.com:Gruikgroin67/post-it-design.git`.
+- Marqueur : POSTITDESIGN_CMD_MENU_NO_RELOAD_V7
+
+## v1.0.34 - 2026-05-04
+
+- Version validée DEV pour masquer/réafficher les post-it sans rechargement du Design.
+- Clic principal `+ Post-it` conservé : création immédiate.
+- Clic sur pastille : menu masquer/réafficher.
+- Masquage immédiat en DOM, état sauvegardé par AJAX.
+- PROD uniquement après tag GitHub validé.
+- MQTT non touché.
+- Apache non redémarré.
