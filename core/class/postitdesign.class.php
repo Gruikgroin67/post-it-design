@@ -1326,14 +1326,22 @@ POSTITDESIGN_LINE_CLICK_JS;
     panel.style.left = left + "px";
     panel.style.top = top + "px";
 
+    /* POSTITDESIGN_TITLE_SIDE_PANEL_OK_CLICK_FIX_V1
+     * Ne pas bloquer les boutons OK/Annuler en phase capture.
+     * Le panneau stoppe seulement la propagation vers Jeedom en phase bubble.
+     */
+    function panelBubbleStop(ev){
+      try { ev.stopPropagation(); } catch(x) {}
+    }
+
     ["touchstart","touchend","pointerdown","pointerup","mousedown","mouseup","click"].forEach(function(name){
-      try { panel.addEventListener(name, stop, {capture:true, passive:false}); }
-      catch(ex) { panel.addEventListener(name, stop, true); }
+      try { panel.addEventListener(name, panelBubbleStop, false); }
+      catch(ex) { panel.addEventListener(name, panelBubbleStop); }
 
       try {
         input.addEventListener(name, function(ev){
           try { ev.stopPropagation(); } catch(x) {}
-        }, {capture:true, passive:false});
+        }, false);
       } catch(ex2) {}
     });
 
