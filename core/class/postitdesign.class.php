@@ -157,7 +157,7 @@ class postitdesign extends eqLogic
 
 
 
-    /* POSTITDESIGN_CMD_MENU_INLINE_DOT_DESIGN_BOUND_V6 */
+    /* POSTITDESIGN_CMD_MENU_NO_RELOAD_V7 */
     public static function planHiddenConfigKey($_planHeaderId)
     {
         return 'hidden_plan_' . intval($_planHeaderId);
@@ -286,9 +286,7 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
         if ($targetX < 0) { $targetX = 0; }
         if ($targetY < 0) { $targetY = 0; }
 
-        if ($targetPlanHeaderId > 0 && self::arePostitsHiddenForPlan($targetPlanHeaderId)) {
-            return ''; /* POSTITDESIGN_CMD_MENU_INLINE_DOT_DESIGN_BOUND_V6 */
-        }
+        $postitPlanHidden = ($targetPlanHeaderId > 0 && self::arePostitsHiddenForPlan($targetPlanHeaderId)); /* POSTITDESIGN_CMD_MENU_NO_RELOAD_V7 */
 
         $strikeRaw = (string)$this->cfg('postit_strikes', ''); $syncRev = sha1($title . "\n" . $message . "\n" . $strikeRaw . "\n" . $rotate); /* POSTITDESIGN_SYNC_REV_ATTR_V1 */
         $strikeIndexes = array();
@@ -322,7 +320,7 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
         }
         /* POSTITDESIGN_HANDLES_LINE_STRIKE_V1 */
 
-        $outerStyle = ''
+        $outerStyle = ($postitPlanHidden ? 'display:none !important;' : '')
             . 'width:' . $width . 'px !important;'
             . 'min-width:' . $width . 'px !important;'
             . 'max-width:' . $width . 'px !important;'
@@ -1254,7 +1252,7 @@ return $html; } } class postitdesignCmd extends cmd
         $html .= '</div>';
 
 
-        if ($this->getLogicalId() == 'create_postit') { /* POSTITDESIGN_CMD_MENU_INLINE_DOT_DESIGN_BOUND_V6 */
+        if ($this->getLogicalId() == 'create_postit') { /* POSTITDESIGN_CMD_MENU_NO_RELOAD_V7 */
             $eqLogic = $this->getEqLogic();
             if (is_object($eqLogic) && $eqLogic->getEqType_name() == 'postitdesign') {
                 $planHeaderId = intval($eqLogic->getConfiguration('target_planHeader_id', 0));
@@ -1301,21 +1299,81 @@ return $html; } } class postitdesignCmd extends cmd
                         . "m.style.display=open?'none':'block';"
                         . "return false;";
 
-                    $toggleJs = ""
-                        . "var ev=event||window.event;"
-                        . "if(ev){if(ev.cancelable!==false){ev.preventDefault();}ev.stopPropagation();if(ev.stopImmediatePropagation){ev.stopImmediatePropagation();}}"
-                        . "var b=this;"
-                        . "var now=Date.now();"
-                        . "if(b.__ptMenuLock&&now<b.__ptMenuLock){return false;}"
-                        . "b.__ptMenuLock=now+900;"
-                        . "var body=new URLSearchParams();"
-                        . "body.append('action','togglePlanPostitsHiddenInlineDot');"
-                        . "body.append('planHeader_id','" . $planHeaderId . "');"
-                        . "body.append('hidden','" . ($hidden === 1 ? "0" : "1") . "');"
-                        . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
-                        . ".then(function(){window.location.reload();})"
-                        . ".catch(function(){window.location.reload();});"
-                        . "return false;";
+                    $toggleJs = <<<POSTITDESIGN_INLINE_DOT_TOGGLE_JS
+var ev=event||window.event;
+if(ev){
+  if(ev.cancelable!==false){ev.preventDefault();}
+  ev.stopPropagation();
+  if(ev.stopImmediatePropagation){ev.stopImmediatePropagation();}
+}
+
+var b=this;
+var now=Date.now();
+if(b.__ptMenuLock&&now<b.__ptMenuLock){return false;}
+b.__ptMenuLock=now+900;
+
+var m=document.getElementById('$menuId');
+var currentHidden=(m&&m.getAttribute('data-hidden'))?m.getAttribute('data-hidden'):'$hidden';
+var nextHidden=(currentHidden==='1')?'0':'1';
+
+var body=new URLSearchParams();
+body.append('action','togglePlanPostitsHiddenInlineDot');
+body.append('planHeader_id','$planHeaderId');
+body.append('hidden',nextHidden);
+
+fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{
+  method:'POST',
+  credentials:'same-origin',
+  headers:{'Content-Type':'application/x-www-form-urlencoded'},
+  body:body.toString()
+}).then(function(){
+  var nodes=document.querySelectorAll('.postitdesign-widget[data-target-planheader="$planHeaderId"]');
+
+  for(var i=0;i<nodes.length;i++){
+    if(nextHidden==='1'){
+      nodes[i].style.setProperty('display','none','important');
+    }else{
+      nodes[i].style.removeProperty('display');
+      nodes[i].style.setProperty('display','block','important');
+    }
+  }
+
+  if(m){
+    m.setAttribute('data-hidden',nextHidden);
+    m.setAttribute('data-open','0');
+    m.style.display='none';
+  }
+
+  var d=document.getElementById('$dotId');
+  if(d){
+    d.style.background=(nextHidden==='1')?'#3cae45':'rgba(0,0,0,.52)';
+  }
+
+  var labelBtn=m?m.querySelector('button'):null;
+  if(labelBtn){
+    if(nextHidden==='1'){
+      labelBtn.textContent='Réafficher les post-it';
+      labelBtn.style.background='#3cae45';
+      labelBtn.style.color='#fff';
+    }else{
+      labelBtn.textContent='Masquer les post-it';
+      labelBtn.style.background='#f0ad4e';
+      labelBtn.style.color='#2b2b2b';
+    }
+  }
+}).catch(function(){
+  var d=document.getElementById('$dotId');
+  if(d&&d.parentElement){
+    var st=document.createElement('div');
+    st.textContent='Erreur sauvegarde état post-it';
+    st.style.cssText='position:absolute;left:0;top:100%;background:#d9534f;color:#fff;padding:4px 6px;border-radius:5px;font-size:11px;z-index:2147483000;';
+    d.parentElement.appendChild(st);
+    setTimeout(function(){st.remove();},2500);
+  }
+});
+
+return false;
+POSTITDESIGN_INLINE_DOT_TOGGLE_JS;
 
                     $dotStyle = ''
                         . 'position:absolute;'
@@ -1371,8 +1429,8 @@ return $html; } } class postitdesignCmd extends cmd
                         . '-webkit-tap-highlight-color:transparent;';
 
                     $html .= '<button id="' . $dotId . '" type="button" title="Options des post-it" style="' . $dotStyle . '" onmousedown="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" onpointerdown="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" ontouchstart="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" onclick="' . htmlspecialchars($openJs, ENT_QUOTES, 'UTF-8') . '" onpointerup="' . htmlspecialchars($openJs, ENT_QUOTES, 'UTF-8') . '" ontouchend="' . htmlspecialchars($openJs, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($dotText, ENT_QUOTES, 'UTF-8') . '</button>';
-                    $html .= '<script>(function(){var d=document.getElementById("' . $dotId . '");if(d&&d.parentElement){d.parentElement.style.overflow="visible";d.parentElement.style.position=d.parentElement.style.position||"relative";}})();</script>'; /* POSTITDESIGN_CMD_MENU_INLINE_DOT_DESIGN_BOUND_V6 */
-                    $html .= '<div id="' . $menuId . '" data-open="0" class="postitdesign-inline-dot-menu" style="' . $menuStyle . '">';
+                    $html .= '<script>(function(){var d=document.getElementById("' . $dotId . '");if(d&&d.parentElement){d.parentElement.style.overflow="visible";d.parentElement.style.position=d.parentElement.style.position||"relative";}})();</script>'; /* POSTITDESIGN_CMD_MENU_NO_RELOAD_V7 */
+                    $html .= '<div id="' . $menuId . '" data-open="0" data-hidden="' . $hidden . '" data-planheader-id="' . $planHeaderId . '" class="postitdesign-inline-dot-menu" style="' . $menuStyle . '">';
                     $html .= '<button type="button" style="' . $btnStyle . '" onmousedown="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" onpointerdown="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" ontouchstart="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" onclick="' . htmlspecialchars($toggleJs, ENT_QUOTES, 'UTF-8') . '" onpointerup="' . htmlspecialchars($toggleJs, ENT_QUOTES, 'UTF-8') . '" ontouchend="' . htmlspecialchars($toggleJs, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($toggleText, ENT_QUOTES, 'UTF-8') . '</button>';
                     $html .= '</div>';
                 }
