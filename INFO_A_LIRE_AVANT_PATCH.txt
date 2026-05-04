@@ -81,3 +81,14 @@ Derniere mise a jour :
 - Conservation des pastilles de coin plus discrètes.
 - Aucun changement MQTT.
 - Aucun redémarrage Apache.
+
+## v1.0.31 - 2026-05-04
+
+- Correction tablette pour les boutons Classic, Paper et Tape dans les options du post-it.
+- Cause : les boutons avaient seulement un gestionnaire click ; sur tablette, le clic synthétique peut être intercepté par le Design Jeedom.
+- Correction : ajout touchend + pointerup + verrou anti double-déclenchement.
+- Développement/tag uniquement sur DEV.
+- Remote GitHub obligatoire en SSH.
+- PROD uniquement après tag GitHub validé.
+- MQTT non touché.
+- Apache non redémarré.

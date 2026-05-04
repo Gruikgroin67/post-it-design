@@ -2,6 +2,17 @@
 
 
 
+
+## v1.0.31 - 2026-05-04
+
+### Correction tablette
+
+- Correction des boutons de choix visuel dans les options du post-it sur tablette.
+- Les boutons Classic, Paper et Tape réagissent maintenant aussi aux événements touchend et pointerup.
+- Ajout d’un verrou anti double-déclenchement pour éviter les actions doublées sur écran tactile.
+- Cause : le clic souris fonctionnait sur PC, mais le clic synthétique tablette pouvait être intercepté par la couche tactile du Design Jeedom.
+- Aucun changement MQTT ni redémarrage Apache.
+
 ## v1.0.30 - 2026-05-04
 
 ### Options depuis le Design
