@@ -1207,3 +1207,233 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
   document.addEventListener('click', handle, true);
   document.addEventListener('touchend', handle, true);
 })();
+
+/* POSTITDESIGN_MESSAGE_INLINE_EDIT_SIDE_PANEL_V1
+ * Deplace l editeur "Remplir" existant dans un panneau lateral gauche/droite.
+ * La sauvegarde existante est conservee : on ne remplace pas les boutons OK/Annuler.
+ * Objectif tablette : eviter que le clavier masque les boutons dans le post-it.
+ */
+(function () {
+  if (window.__postitdesignMessageInlineEditSidePanelV1) return;
+  window.__postitdesignMessageInlineEditSidePanelV1 = true;
+
+  var lastWidget = null;
+
+  function closest(el, selector) {
+    while (el && el !== document) {
+      try {
+        if (el.matches && el.matches(selector)) return el;
+      } catch (e) {}
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  function stopBubble(ev) {
+    try { ev.stopPropagation(); } catch (e) {}
+  }
+
+  function findDesign(widget) {
+    return closest(widget, "#div_displayObject") ||
+           closest(widget, ".div_displayObject") ||
+           closest(widget, ".planDisplay") ||
+           closest(widget, ".planContainer") ||
+           closest(widget, ".div_plan") ||
+           closest(widget, ".eqLogicZone") ||
+           widget.offsetParent ||
+           document.body;
+  }
+
+  function installCss() {
+    if (document.getElementById("postitdesign-message-side-panel-v1-css")) return;
+
+    var st = document.createElement("style");
+    st.id = "postitdesign-message-side-panel-v1-css";
+    st.textContent =
+      ".postitdesign-message-side-panel-v1{" +
+        "position:absolute;" +
+        "width:310px;" +
+        "z-index:999998;" +
+        "font-family:Arial,sans-serif;" +
+        "box-sizing:border-box;" +
+        "touch-action:manipulation;" +
+      "}" +
+      ".postitdesign-message-side-panel-v1 *{" +
+        "box-sizing:border-box;" +
+      "}" +
+      ".postitdesign-message-side-panel-v1-card{" +
+        "background:#fff8a8;" +
+        "border:2px solid rgba(0,0,0,.25);" +
+        "border-radius:14px;" +
+        "box-shadow:0 8px 24px rgba(0,0,0,.32);" +
+        "padding:10px;" +
+      "}" +
+      ".postitdesign-message-side-panel-v1-label{" +
+        "font-size:15px;" +
+        "font-weight:800;" +
+        "color:#333;" +
+        "margin-bottom:8px;" +
+      "}" +
+      ".postitdesign-message-side-panel-v1 .postitdesign-inline-edit-v2{" +
+        "display:block !important;" +
+        "width:100% !important;" +
+        "max-width:100% !important;" +
+        "margin:0 !important;" +
+        "padding:0 !important;" +
+        "background:transparent !important;" +
+        "border:0 !important;" +
+        "box-shadow:none !important;" +
+        "transform:none !important;" +
+        "position:relative !important;" +
+        "left:auto !important;" +
+        "top:auto !important;" +
+      "}" +
+      ".postitdesign-message-side-panel-v1 textarea," +
+      ".postitdesign-message-side-panel-v1 input[type=text]{" +
+        "width:100% !important;" +
+        "min-height:130px !important;" +
+        "font-size:17px !important;" +
+        "line-height:1.25 !important;" +
+        "border-radius:9px !important;" +
+        "border:1px solid rgba(0,0,0,.30) !important;" +
+        "background:#fff !important;" +
+        "color:#111 !important;" +
+        "padding:8px !important;" +
+        "resize:vertical !important;" +
+      "}" +
+      ".postitdesign-message-side-panel-v1 button{" +
+        "min-height:40px !important;" +
+        "font-size:15px !important;" +
+        "font-weight:800 !important;" +
+        "border-radius:9px !important;" +
+        "touch-action:manipulation !important;" +
+        "-webkit-tap-highlight-color:transparent !important;" +
+      "}";
+    document.head.appendChild(st);
+  }
+
+  function rememberWidget(ev) {
+    var widget = closest(ev.target, ".postitdesign-widget");
+    if (widget) lastWidget = widget;
+  }
+
+  ["touchstart", "touchend", "pointerdown", "pointerup", "mousedown", "mouseup", "click"].forEach(function (name) {
+    document.addEventListener(name, rememberWidget, true);
+  });
+
+  function removeEmptyPanels() {
+    var panels = document.querySelectorAll(".postitdesign-message-side-panel-v1");
+    for (var i = 0; i < panels.length; i++) {
+      if (!panels[i].querySelector(".postitdesign-inline-edit-v2")) {
+        if (panels[i].parentNode) panels[i].parentNode.removeChild(panels[i]);
+      }
+    }
+  }
+
+  function positionPanel(panel, widget, design) {
+    var designRect = design.getBoundingClientRect();
+    var widgetRect = widget.getBoundingClientRect();
+
+    var cs = window.getComputedStyle(design);
+    if (cs.position === "static") design.style.position = "relative";
+
+    var panelW = 310;
+    var panelH = 245;
+    var gap = 12;
+
+    var designW = design.clientWidth || designRect.width || window.innerWidth;
+    var designH = design.clientHeight || designRect.height || window.innerHeight;
+
+    var leftInDesign = widgetRect.left - designRect.left + (design.scrollLeft || 0);
+    var topInDesign = widgetRect.top - designRect.top + (design.scrollTop || 0);
+    var rightInDesign = leftInDesign + widgetRect.width;
+
+    var roomRight = designW - rightInDesign;
+    var roomLeft = leftInDesign;
+
+    var left = (roomRight >= panelW + gap || roomRight >= roomLeft)
+      ? rightInDesign + gap
+      : leftInDesign - panelW - gap;
+
+    if (left < 8) left = 8;
+    if (left + panelW > designW - 8) left = Math.max(8, designW - panelW - 8);
+
+    var top = topInDesign;
+    if (top + panelH > designH - 8) top = Math.max(8, designH - panelH - 8);
+    if (top < 8) top = 8;
+
+    panel.style.left = left + "px";
+    panel.style.top = top + "px";
+  }
+
+  function mountEditor(editor) {
+    if (!editor || editor.getAttribute("data-postit-message-side-panel-v1") === "1") return;
+
+    var widget = closest(editor, ".postitdesign-widget") || lastWidget;
+    if (!widget) return;
+
+    installCss();
+
+    var design = findDesign(widget);
+    if (!design) design = document.body;
+
+    var oldPanels = document.querySelectorAll(".postitdesign-message-side-panel-v1");
+    for (var i = 0; i < oldPanels.length; i++) {
+      if (oldPanels[i].parentNode) oldPanels[i].parentNode.removeChild(oldPanels[i]);
+    }
+
+    var panel = document.createElement("div");
+    panel.className = "postitdesign-message-side-panel-v1";
+    panel.innerHTML =
+      '<div class="postitdesign-message-side-panel-v1-card">' +
+        '<div class="postitdesign-message-side-panel-v1-label">Remplir le post-it</div>' +
+      '</div>';
+
+    var card = panel.querySelector(".postitdesign-message-side-panel-v1-card");
+    design.appendChild(panel);
+
+    editor.setAttribute("data-postit-message-side-panel-v1", "1");
+    card.appendChild(editor);
+
+    ["touchstart", "touchend", "pointerdown", "pointerup", "mousedown", "mouseup", "click"].forEach(function (name) {
+      panel.addEventListener(name, stopBubble, false);
+    });
+
+    positionPanel(panel, widget, design);
+
+    setTimeout(function () {
+      var field = panel.querySelector("textarea, input[type=text]");
+      if (field) {
+        try {
+          field.focus({preventScroll:true});
+          field.select();
+        } catch (e) {
+          try { field.focus(); } catch (e2) {}
+        }
+      }
+    }, 120);
+  }
+
+  function processEditors() {
+    var editors = document.querySelectorAll(".postitdesign-inline-edit-v2:not([data-postit-message-side-panel-v1])");
+    for (var i = 0; i < editors.length; i++) {
+      mountEditor(editors[i]);
+    }
+    removeEmptyPanels();
+  }
+
+  var observer = new MutationObserver(function () {
+    setTimeout(processEditors, 30);
+  });
+
+  observer.observe(document.documentElement || document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  document.addEventListener("keydown", function () {
+    setTimeout(processEditors, 30);
+  }, true);
+
+  setInterval(removeEmptyPanels, 1500);
+})();
