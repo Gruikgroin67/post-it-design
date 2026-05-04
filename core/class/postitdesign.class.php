@@ -425,10 +425,10 @@ if(ev){
 
 var h=this;
 var now=Date.now();
-if(h.__postitTitleDirectLockUntil && now < h.__postitTitleDirectLockUntil){
+if(h.__postitTitleInlineLockUntil && now < h.__postitTitleInlineLockUntil){
   return false;
 }
-h.__postitTitleDirectLockUntil = now + 900;
+h.__postitTitleInlineLockUntil = now + 500;
 
 var widget=(h.closest&&h.closest('.postitdesign-widget'))||null;
 if(!widget){
@@ -437,9 +437,10 @@ if(!widget){
 
 var eqId=widget.getAttribute('data-eqLogic_id')||widget.getAttribute('data-eqlogic_id')||'';
 var titleEl=widget.querySelector('.postitdesign-title-force');
+var footer=(h.closest&&h.closest('.postitdesign-footer-force'))||widget.querySelector('.postitdesign-footer-force');
 var st=widget.querySelector('.postitdesign-status-force');
 
-if(!eqId || !titleEl){
+if(!eqId || !titleEl || !footer){
   if(st){
     st.style.setProperty('display','block','important');
     st.textContent='Titre non disponible';
@@ -447,49 +448,157 @@ if(!eqId || !titleEl){
   return false;
 }
 
-var currentTitle=(titleEl.textContent||'').trim();
-var nextTitle=window.prompt('Titre du post-it', currentTitle);
-
-if(nextTitle===null){
+var existing=footer.querySelector('.postitdesign-title-inline-form');
+if(existing){
+  var isOpen=existing.getAttribute('data-open')==='1';
+  existing.setAttribute('data-open',isOpen?'0':'1');
+  existing.style.setProperty('display',isOpen?'none':'inline-flex','important');
+  if(!isOpen){
+    var inp=existing.querySelector('input');
+    if(inp){
+      inp.focus();
+      try{inp.select();}catch(ex){}
+    }
+  }
   return false;
 }
 
-nextTitle=(nextTitle||'').trim();
+var box=document.createElement('span');
+box.className='postitdesign-title-inline-form';
+box.setAttribute('data-open','1');
+box.style.cssText='display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin-left:2px;padding:4px;border-radius:6px;background:rgba(255,255,255,.72);border:1px solid rgba(0,0,0,.18);pointer-events:auto;touch-action:manipulation;';
 
-if(nextTitle===''){
+var input=document.createElement('input');
+input.type='text';
+input.value=(titleEl.textContent||'').trim();
+input.style.cssText='width:120px;max-width:150px;padding:6px 7px;border-radius:5px;border:1px solid rgba(0,0,0,.25);font-size:12px;font-weight:700;background:#fff;color:#222;pointer-events:auto;user-select:text;-webkit-user-select:text;touch-action:auto;';
+
+var ok=document.createElement('button');
+ok.type='button';
+ok.textContent='OK';
+ok.style.cssText='padding:7px 8px;border:0;border-radius:5px;background:#3cae45;color:#fff;font-size:11px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;';
+
+var cancel=document.createElement('button');
+cancel.type='button';
+cancel.textContent='Annuler';
+cancel.style.cssText='padding:7px 8px;border:0;border-radius:5px;background:#777;color:#fff;font-size:11px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;';
+
+function stopTitleInline(e){
+  if(e){
+    if(e.cancelable!==false){e.preventDefault();}
+    e.stopPropagation();
+    if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
+  }
+}
+
+function stopOnly(e){
+  if(e){
+    e.stopPropagation();
+    if(e.stopImmediatePropagation){e.stopImmediatePropagation();}
+  }
+}
+
+function saveTitle(e){
+  stopTitleInline(e);
+
+  var nextTitle=(input.value||'').trim();
+  if(nextTitle===''){
+    if(st){
+      st.style.setProperty('display','block','important');
+      st.textContent='Titre vide ignoré';
+    }
+    return false;
+  }
+
+  var oldTitle=titleEl.textContent;
+  titleEl.textContent=nextTitle;
+  titleEl.setAttribute('title','Titre modifié depuis les options');
+
+  if(st){
+    st.style.setProperty('display','block','important');
+    st.textContent='Titre enregistré';
+  }
+
+  box.setAttribute('data-open','0');
+  box.style.setProperty('display','none','important');
+
+  var body=new URLSearchParams();
+  body.append('action','setTitleFromDesign');
+  body.append('eqLogic_id',eqId);
+  body.append('title',nextTitle);
+
+  fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{
+    method:'POST',
+    credentials:'same-origin',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:body.toString()
+  }).catch(function(){
+    titleEl.textContent=oldTitle;
+    if(st){
+      st.style.setProperty('display','block','important');
+      st.textContent='Erreur sauvegarde titre';
+    }
+  });
+
   return false;
 }
 
-var oldTitle=titleEl.textContent;
-titleEl.textContent=nextTitle;
-titleEl.setAttribute('title','Titre modifié depuis les options');
+function cancelTitle(e){
+  stopTitleInline(e);
+  box.setAttribute('data-open','0');
+  box.style.setProperty('display','none','important');
+  return false;
+}
+
+['mousedown','mouseup','pointerdown','pointerup','touchstart','touchend','click'].forEach(function(t){
+  box.addEventListener(t,stopOnly,true);
+  input.addEventListener(t,stopOnly,true);
+});
+
+ok.onclick=ok.ontouchend=ok.onpointerup=saveTitle;
+cancel.onclick=cancel.ontouchend=cancel.onpointerup=cancelTitle;
+
+ok.addEventListener('click',saveTitle,true);
+ok.addEventListener('pointerup',saveTitle,true);
+cancel.addEventListener('click',cancelTitle,true);
+cancel.addEventListener('pointerup',cancelTitle,true);
+
+try{
+  ok.addEventListener('touchend',saveTitle,{capture:true,passive:false});
+  cancel.addEventListener('touchend',cancelTitle,{capture:true,passive:false});
+}catch(ex){
+  ok.addEventListener('touchend',saveTitle,true);
+  cancel.addEventListener('touchend',cancelTitle,true);
+}
+
+input.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    saveTitle(e);
+  }else if(e.key==='Escape'){
+    cancelTitle(e);
+  }else{
+    e.stopPropagation();
+  }
+},true);
+
+box.appendChild(input);
+box.appendChild(ok);
+box.appendChild(cancel);
+footer.appendChild(box);
+
+setTimeout(function(){
+  input.focus();
+  try{input.select();}catch(ex){}
+},50);
 
 if(st){
   st.style.setProperty('display','block','important');
-  st.textContent='Titre enregistré';
+  st.textContent='Modifier le titre puis OK';
 }
-
-var body=new URLSearchParams();
-body.append('action','setTitleFromDesign');
-body.append('eqLogic_id',eqId);
-body.append('title',nextTitle);
-
-fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{
-  method:'POST',
-  credentials:'same-origin',
-  headers:{'Content-Type':'application/x-www-form-urlencoded'},
-  body:body.toString()
-}).catch(function(){
-  titleEl.textContent=oldTitle;
-  if(st){
-    st.style.setProperty('display','block','important');
-    st.textContent='Erreur sauvegarde titre';
-  }
-});
 
 return false;
 POSTITDESIGN_TITLE_DIRECT_BUTTON_JS;
-        $titleButtonJsAttr = htmlspecialchars($titleButtonJs, ENT_QUOTES, 'UTF-8'); /* POSTITDESIGN_TITLE_EDIT_OPTIONS_TOUCH_V3 */
+        $titleButtonJsAttr = htmlspecialchars($titleButtonJs, ENT_QUOTES, 'UTF-8'); /* POSTITDESIGN_TITLE_EDIT_INLINE_FORM_V4 */
 
         $newBtnStyle = $btnStyle . 'background:#3cae45 !important;';
         $rotateBtnStyle = $btnStyle . 'background:#f0ad4e !important;';
@@ -965,8 +1074,8 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= '<div class="postitdesign-title-force" ondblclick="' . $titleEditJsAttr . '" title="Titre modifiable depuis les options" style="' . $titleStyle . 'cursor:text !important;">' . $title . '</div>'; /* POSTITDESIGN_TITLE_EDIT_FROM_DESIGN_V1 */
         $html .= '<div class="postitdesign-message-force" ontouchend="' . $lineClickJsAttr . '" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
         $html .= '<div class="postitdesign-footer-force" data-open="0" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="event.preventDefault();event.stopPropagation();return false;" style="' . $footerStyle . '">';
-        $html .= '<button type="button" class="postitdesign-title-edit-btn" onclick="' . $titleButtonJsAttr . '" ontouchend="' . $titleButtonJsAttr . '" onpointerup="' . $titleButtonJsAttr . '" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" ontouchstart="event.stopPropagation();" style="' . $titleBtnStyle . '">Titre</button>'; /* POSTITDESIGN_TITLE_EDIT_OPTIONS_TOUCH_V3 */
-        $html .= '<script>(function(){var s=document.currentScript;var b=s?s.previousElementSibling:null;if(!b||!b.classList||!b.classList.contains("postitdesign-title-edit-btn")){return;}if(b.getAttribute("data-postit-title-touch-v3")==="1"){return;}b.setAttribute("data-postit-title-touch-v3","1");function stop(e){if(e){if(e.cancelable!==false){e.preventDefault();}e.stopPropagation();if(e.stopImmediatePropagation){e.stopImmediatePropagation();}}}function run(e){stop(e);var now=Date.now();if(b.__postitTitleTouchLockUntil&&now<b.__postitTitleTouchLockUntil){return false;}b.__postitTitleTouchLockUntil=now+900;if(typeof b.onclick==="function"){return b.onclick(e||window.event);}return false;}b.addEventListener("pointerdown",stop,true);b.addEventListener("mousedown",stop,true);try{b.addEventListener("touchstart",stop,{capture:true,passive:false});}catch(ex){b.addEventListener("touchstart",stop,true);}b.addEventListener("click",run,true);b.addEventListener("pointerup",run,true);b.addEventListener("mouseup",run,true);try{b.addEventListener("touchend",run,{capture:true,passive:false});}catch(ex){b.addEventListener("touchend",run,true);}})();</script>'; /* POSTITDESIGN_TITLE_EDIT_OPTIONS_TOUCH_V3 */
+        $html .= '<button type="button" class="postitdesign-title-edit-btn" onclick="' . $titleButtonJsAttr . '" ontouchend="' . $titleButtonJsAttr . '" onpointerup="' . $titleButtonJsAttr . '" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" ontouchstart="event.stopPropagation();" style="' . $titleBtnStyle . '">Titre</button>'; /* POSTITDESIGN_TITLE_EDIT_INLINE_FORM_V4 */
+        $html .= '<script>(function(){var s=document.currentScript;var b=s?s.previousElementSibling:null;if(!b||!b.classList||!b.classList.contains("postitdesign-title-edit-btn")){return;}if(b.getAttribute("data-postit-title-inline-v4")==="1"){return;}b.setAttribute("data-postit-title-inline-v4","1");function stop(e){if(e){if(e.cancelable!==false){e.preventDefault();}e.stopPropagation();if(e.stopImmediatePropagation){e.stopImmediatePropagation();}}}function run(e){stop(e);var now=Date.now();if(b.__postitTitleInlineLockUntil&&now<b.__postitTitleInlineLockUntil){return false;}b.__postitTitleInlineLockUntil=now+900;if(typeof b.onclick==="function"){return b.onclick(e||window.event);}return false;}b.addEventListener("pointerdown",stop,true);b.addEventListener("mousedown",stop,true);try{b.addEventListener("touchstart",stop,{capture:true,passive:false});}catch(ex){b.addEventListener("touchstart",stop,true);}b.addEventListener("click",run,true);b.addEventListener("pointerup",run,true);b.addEventListener("mouseup",run,true);try{b.addEventListener("touchend",run,{capture:true,passive:false});}catch(ex){b.addEventListener("touchend",run,true);}})();</script>'; /* POSTITDESIGN_TITLE_EDIT_INLINE_FORM_V4 */
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎</button>';
         $html .= '<button type="button" class="postitdesign-rotate-btn-force" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '">⟳</button>'; /* POSTITDESIGN_ROTATE_BUTTON_IMMEDIATE_CAPTURE_CLASS_V1 */
