@@ -406,7 +406,7 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
   if(!f.querySelector('.postitdesign-visual-style-row')){
     var row=document.createElement('span');
     row.className='postitdesign-visual-style-row';
-    row.style.cssText='display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap;margin-left:2px;';
+    row.style.cssText='display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap;margin-left:2px;touch-action:manipulation;';
 
     function applyStyle(style){
       var eqId=widget.getAttribute('data-eqLogic_id')||'';
@@ -471,13 +471,36 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
       b.className='postitdesign-visual-style-btn';
       b.textContent=pair[1];
       b.setAttribute('data-visual-style',pair[0]);
-      b.style.cssText='font-size:11px;font-weight:700;line-height:1;padding:5px 6px;border-radius:4px;border:0;cursor:pointer;background:rgba(35,35,35,.46);color:#fff;font-family:Arial,sans-serif;white-space:nowrap;';
-      b.addEventListener('click',function(e){
-        e.preventDefault();
-        e.stopPropagation();
+      b.style.cssText='font-size:11px;font-weight:700;line-height:1;padding:7px 8px;border-radius:5px;border:0;cursor:pointer;background:rgba(35,35,35,.52);color:#fff;font-family:Arial,sans-serif;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;';
+      function runVisualStyleButton(e){
+        if(e){
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        var now=Date.now();
+        if(b.__postitVisualTouchLockUntil && now < b.__postitVisualTouchLockUntil){
+          return false;
+        }
+        b.__postitVisualTouchLockUntil = now + 800;
+
         applyStyle(pair[0]);
         return false;
+      }
+
+      b.addEventListener('pointerdown',function(e){
+        e.stopPropagation();
       },true);
+
+      b.addEventListener('touchstart',function(e){
+        e.stopPropagation();
+      },{capture:true,passive:false});
+
+      b.addEventListener('click',runVisualStyleButton,true);
+      b.addEventListener('pointerup',runVisualStyleButton,true);
+      b.addEventListener('touchend',runVisualStyleButton,{capture:true,passive:false});
+
+      /* POSTITDESIGN_VISUAL_STYLE_TABLET_TOUCH_V1 */
       row.appendChild(b);
     });
 
