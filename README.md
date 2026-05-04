@@ -4,7 +4,7 @@ Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Je
 
 ## Version actuelle
 
-`v1.0.8`
+`v1.0.27`
 
 ## Fonctions
 
@@ -23,7 +23,7 @@ Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Je
 
 Le post-it doit rester isolé dans son propre widget.
 
-La version `v1.0.8` conserve le correctif local `postitdesign-safe-top-layer` : seul le post-it et son parent Jeedom direct sont relevés dans l’ordre d’affichage.
+Le plugin conserve une logique d’affichage isolée : seul le post-it et son parent Jeedom direct sont relevés dans l’ordre d’affichage.
 
 ## Documentation
 
@@ -52,11 +52,11 @@ Principe retenu :
 - la commande  est une commande Jeedom séparée ;
 - déplacer un autre widget du Design ne doit pas déplacer les post-it existants.
 
-Documentation détaillée : .
+Documentation détaillée : voir la documentation GitHub Pages du plugin.
 
 ## État v1.0.26
 
-Version DEV validée avant future PROD.
+Version stable préparée pour publication sur le Market Jeedom.
 
 Fonctions principales :
 
@@ -69,6 +69,10 @@ Fonctions principales :
 - rotation  ;
 - rotation conservée après actualisation.
 
-Documentation détaillée : .
+Documentation détaillée : voir la documentation GitHub Pages du plugin.
 
-Sécurité : PROD non touchée, MQTT non touché, Apache non redémarré.
+Sécurité : pas de dépendances, pas de démon, MQTT non utilisé, aucun redémarrage Apache requis.
+
+## Préparation Market Jeedom
+
+`v1.0.27` nettoie les métadonnées publiques, la documentation et le changelog pour une publication propre sur le Market Jeedom.

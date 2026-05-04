@@ -1,8 +1,17 @@
 # Changelog
 
+## v1.0.27 - 2026-05-04
+
+### Préparation Market Jeedom
+
+- Description Market enrichie dans `plugin_info/info.json`.
+- Liens documentation et changelog normalisés pour GitHub Pages avec `#language#`.
+- README et documentation publique mis à jour.
+- Base stable conservée : commande Jeedom `+ Post-it`, styles Classic/Paper/Tape, rotation 0°/+15°/-15° et persistance après actualisation.
+
 ## v1.0.26 - 2026-05-03
 
-### État DEV validé avant future PROD
+### État validé avant publication stable
 
 - Base DEV actuelle :  ().
 - Commande Jeedom native  fonctionnelle dans un Design.
@@ -27,7 +36,7 @@
 
 ### Sécurité
 
-- PROD non touchée.
+- Version validée avant publication stable.
 - MQTT non touché.
 - Apache non redémarré.
 - Aucun déploiement PROD effectué.
@@ -48,5 +57,5 @@
 - Test validé : déplacement de  puis sauvegarde et Ctrl+F5, le post-it  ne bouge plus.
 - Test validé : installation de la commande  depuis la page plugin.
 - Test validé : commande  visible, déplaçable et fonctionnelle dans le Design.
-- PROD non touchée, MQTT non touché, Apache non redémarré.
+- MQTT non utilisé, aucun redémarrage Apache requis.
 

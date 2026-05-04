@@ -24,7 +24,7 @@ Derniere mise a jour :
 - Ne pas réintroduire  sur les vrais post-it.
 - Ne pas utiliser  pour la commande .
 - Tests validés : DNS Jeedom ne déplace plus , commande visible/déplaçable, création post-it OK.
-- PROD non touchée, MQTT non touché, Apache non redémarré.
+- MQTT non utilisé, aucun redémarrage Apache requis.
 
 
 [v1.0.26 - 2026-05-03]
@@ -42,6 +42,16 @@ Derniere mise a jour :
 - Rotation conservée après Ctrl+F5.
 - Léger délai visuel rotation accepté à ce stade.
 - Ne pas reprendre le patch de masquage contrôleur qui avait blanchi la page plugin.
-- PROD non touchée.
+- Version validée avant publication stable.
 - MQTT non touché.
+- Apache non redémarré.
+
+
+## v1.0.27 - Préparation Market Jeedom
+
+- Description `plugin_info/info.json` rallongée au format langue `fr_FR`.
+- Liens documentation/changelog normalisés avec `#language#`.
+- README, documentation et changelog nettoyés pour publication.
+- Aucun changement fonctionnel sur les post-it.
+- MQTT non utilisé.
 - Apache non redémarré.

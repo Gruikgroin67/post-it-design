@@ -4,7 +4,7 @@ Post-it Design est un plugin Jeedom permettant d’afficher des post-it directem
 
 ## Version actuelle
 
-`v1.0.8`
+`v1.0.27`
 
 ## Fonctions principales
 
@@ -39,7 +39,7 @@ Le bouton `✕` ne supprime pas l’équipement Jeedom. Il retire uniquement le 
 
 ## Calque Design
 
-Depuis `v1.0.8`, le post-it passe au-dessus des autres widgets Jeedom sans créer de calque global.
+Le post-it passe au-dessus des autres widgets Jeedom sans créer de calque global.
 
 Le correctif relève seulement le widget post-it et son parent Jeedom direct.
 

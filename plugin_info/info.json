@@ -1,7 +1,9 @@
 {
   "id": "postitdesign",
   "name": "Post-it Design",
-  "description": "Affiche des post-it sur les designs Jeedom.",
+  "description": {
+    "fr_FR": "Post-it Design permet d’afficher, personnaliser et déplacer des post-it directement dans les Designs Jeedom, avec création depuis le Design, styles visuels, rotation et sauvegarde automatique des positions."
+  },
   "licence": "AGPL",
   "author": "Emmanuel",
   "require": "4.4",
@@ -9,8 +11,8 @@
   "hasDependency": false,
   "hasOwnDeamon": false,
   "maxDependancyInstallTime": 0,
-  "changelog": "https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/",
-  "documentation": "https://gruikgroin67.github.io/post-it-design/fr_FR/",
+  "changelog": "https://gruikgroin67.github.io/post-it-design/#language#/changelog/",
+  "documentation": "https://gruikgroin67.github.io/post-it-design/#language#/",
   "language": [
     "fr_FR"
   ],
@@ -21,5 +23,7 @@
     "docker",
     "diy",
     "v4"
-  ]
+  ],
+  "documentation_beta": "https://gruikgroin67.github.io/post-it-design/#language#/",
+  "changelog_beta": "https://gruikgroin67.github.io/post-it-design/#language#/changelog/"
 }
