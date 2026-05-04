@@ -1,5 +1,58 @@
 # Changelog - Post-it Design
 
+## v1.0.28 - 2026-05-04
+
+### Correction documentation publique
+
+- Mise à jour du changelog visible sur GitHub Pages.
+- Correction des fichiers  et .
+- Aucun changement fonctionnel sur le plugin.
+- Version destinée à rendre cohérente la documentation publique avant soumission Market Jeedom.
+
+## v1.0.27 - 2026-05-04
+
+### Préparation Market Jeedom
+
+- Description Market enrichie dans .
+- Liens documentation et changelog normalisés pour GitHub Pages.
+- README et documentation publique mis à jour.
+- Base stable conservée : commande Jeedom , styles Classic/Paper/Tape, rotation 0°/+15°/-15° et persistance après actualisation.
+
+## v1.0.26 - 2026-05-03
+
+### Version stable post-it et commande Design
+
+- Commande Jeedom native  fonctionnelle dans un Design.
+- Commande installable depuis la page plugin via le bloc .
+- Commande affichée sous forme de mini post-it.
+- Bloc  conservé après suppression d’un post-it.
+- Vrais post-it isolés du  natif Jeedom.
+- Déplacer un autre widget du Design ne déplace plus les post-it existants.
+- Styles visuels ,  et  appliqués dans le Design.
+- Aperçu dynamique renforcé.
+- Raccourcis de rotation , , .
+- Bouton rotation Design avec cycle .
+- Rotation  et  conservée après actualisation.
+
+### Limite connue
+
+- Un léger délai visuel peut encore apparaître au clic rotation avant resynchronisation.
+- La rotation sauvegardée reste correcte après actualisation.
+
+## v1.0.25 - 2026-05-03
+
+### Ajout
+
+- Ajout d’une vraie commande Jeedom , installable depuis l’interface du plugin dans le Design choisi.
+- La commande est visible et déplaçable comme une commande Jeedom native.
+- Un clic sur  crée un nouveau vrai post-it dans le Design cible.
+
+### Correction
+
+- Isolation des vrais post-it hors du  natif Jeedom.
+- Les vrais post-it ne portent plus la classe .
+- Les vrais post-it conservent leur classe  et leur logique interne.
+
 ## v1.0.8 - Post-it au-dessus sans casser le Design
 
 ### Corrigé
@@ -12,17 +65,6 @@
 - Les widgets Jeedom autour restent visibles et cliquables.
 - Conservation de la rotation par appui simple.
 - Conservation du décollage sans suppression de l’équipement.
-- Documentation, README, fichiers Market et fichier d’information projet mis à jour.
-
-### Technique
-
-- Utilisation du correctif local `postitdesign-safe-top-layer`.
-- Z-index limité au post-it et à son parent direct.
-- Pas de bloc tactile global `postitdesign-touch-inline-v*`.
-- Pas de z-index extrême.
-- Pas de modification globale du Design.
-- Tag créé depuis l’état DEV courant.
-- PROD non modifiée par ce tag.
 
 ## v1.0.7 - Documentation finale et aperçu visuel
 
@@ -30,27 +72,22 @@
 - Changelog public mis à jour.
 - README mis à jour.
 - Fichiers Market mis à jour.
-- Documentation de l’aperçu dynamique du champ `Visuel`.
-- Conservation des corrections tactiles.
-- Conservation de la rotation par appui simple sur le bouton `⟳`.
+- Documentation de l’aperçu dynamique du champ .
 
 ## v1.0.6 - Documentation et aperçu visuel
 
 - Mise à jour de la documentation.
 - Mise à jour du README.
 - Mise à jour des fichiers Market.
-- Mention de l’aperçu dynamique du champ `Visuel`.
+- Mention de l’aperçu dynamique du champ .
 
 ## v1.0.5 - Correction tactile tablette
 
 - Déplacement tactile plus fluide des post-it sur un Design.
 - Correction du comportement des boutons tactiles sur tablette.
 - Correction de la rotation qui pouvait rester active.
-- Rotation par appui simple sur le bouton `⟳`.
-- Un appui sur `⟳` applique une rotation de 5 degrés.
-- Le bouton `✕` permet de décoller le post-it sans supprimer l’équipement.
-- La gestion tactile principale est intégrée directement dans le rendu HTML du widget.
-- Conservation des actions AJAX internes `savePositionFromDesign` et `saveRotationFromDesign`.
+- Rotation par appui simple sur le bouton .
+- Le bouton  permet de décoller le post-it sans supprimer l’équipement.
 
 ## v1.0.4 - Version stable Market
 
@@ -81,4 +118,4 @@
 
 - Première version publique du plugin Post-it Design.
 
-Dernière mise à jour : 20260501_130525
+Dernière mise à jour : 2026-05-04
