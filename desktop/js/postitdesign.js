@@ -1208,3 +1208,402 @@ $(document).off('click.postitdesignOpenPlacer', '#bt_postitdesign_open_placer').
   document.addEventListener('touchend', handle, true);
 })();
 
+
+/* POSTITDESIGN_TITLE_SIDE_PANEL_JS_ONLY_V1
+ * Surcouche JS uniquement.
+ * Objectif: remplacer l edition inline du titre par un panneau lateral adapte gauche/droite.
+ * Ne modifie pas le rendu natif Jeedom de la commande create_postit.
+ * Ne touche pas MQTT.
+ * Ne redemarre pas Apache.
+ */
+(function () {
+  if (window.__postitdesignTitleSidePanelJsOnlyV1) return;
+  window.__postitdesignTitleSidePanelJsOnlyV1 = true;
+
+  function pdStop(ev) {
+    if (!ev) return;
+    try { ev.preventDefault(); } catch (e) {}
+    try { ev.stopPropagation(); } catch (e) {}
+    try { ev.stopImmediatePropagation(); } catch (e) {}
+  }
+
+  function pdClosest(el, selector) {
+    while (el && el !== document) {
+      try {
+        if (el.matches && el.matches(selector)) return el;
+      } catch (e) {}
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  function pdCleanText(el) {
+    return ((el && (el.innerText || el.textContent)) || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function pdFindWidget(el) {
+    return pdClosest(el, '.postitdesign-widget');
+  }
+
+  function pdFindTitleButton(el) {
+    var btn = pdClosest(el, 'button, a, span, div');
+    if (!btn) return null;
+
+    var txt = pdCleanText(btn);
+    if (txt !== 'Titre' && txt.indexOf('Titre ') !== 0) return null;
+
+    var widget = pdFindWidget(btn);
+    if (!widget) return null;
+
+    return btn;
+  }
+
+  function pdFindDesign(widget) {
+    return pdClosest(widget, '#div_displayObject, .div_displayObject, .planDisplay, .planContainer, .div_plan, .eqLogicZone') ||
+           widget.offsetParent ||
+           document.body;
+  }
+
+  function pdGetEqLogicId(widget) {
+    return widget.getAttribute('data-eqlogic_id') ||
+           widget.getAttribute('data-eqLogic_id') ||
+           widget.getAttribute('data-eqlogic-id') ||
+           widget.getAttribute('data-id') ||
+           '';
+  }
+
+  function pdGetCurrentTitle(widget) {
+    var selectors = [
+      '.postitdesign-title',
+      '.postitdesign-header',
+      '.postit-title',
+      '[data-postit-title]',
+      'strong',
+      'b',
+      'h3',
+      'h4'
+    ];
+
+    for (var i = 0; i < selectors.length; i++) {
+      var el = widget.querySelector(selectors[i]);
+      if (!el) continue;
+      var txt = pdCleanText(el);
+      if (txt && txt !== 'Titre') return txt;
+    }
+
+    return '';
+  }
+
+  function pdSetTitleInDom(widget, title) {
+    var selectors = [
+      '.postitdesign-title',
+      '.postitdesign-header',
+      '.postit-title',
+      '[data-postit-title]',
+      'strong',
+      'b',
+      'h3',
+      'h4'
+    ];
+
+    for (var i = 0; i < selectors.length; i++) {
+      var el = widget.querySelector(selectors[i]);
+      if (!el) continue;
+      el.textContent = title;
+      return;
+    }
+  }
+
+  function pdRemovePanel() {
+    var panels = document.querySelectorAll('.postitdesign-title-side-panel-js-only');
+    for (var i = 0; i < panels.length; i++) {
+      if (panels[i].parentNode) panels[i].parentNode.removeChild(panels[i]);
+    }
+  }
+
+  function pdBindStrong(el, fn) {
+    if (!el) return;
+
+    var lock = false;
+    var handler = function (ev) {
+      pdStop(ev);
+      if (lock) return false;
+      lock = true;
+      setTimeout(function () { lock = false; }, 500);
+      fn(ev);
+      return false;
+    };
+
+    ['touchstart', 'touchend', 'pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click'].forEach(function (name) {
+      el.addEventListener(name, handler, {capture: true, passive: false});
+    });
+  }
+
+  function pdAjaxSetTitle(eqLogicId, title, callback) {
+    if (!eqLogicId) {
+      callback(false, 'eqLogic id absent');
+      return;
+    }
+
+    var data = {
+      action: 'setTitleFromDesign',
+      id: eqLogicId,
+      eqLogic_id: eqLogicId,
+      title: title
+    };
+
+    if (window.jeedom && jeedom.postitdesign && typeof jeedom.postitdesign.setTitleFromDesign === 'function') {
+      try {
+        jeedom.postitdesign.setTitleFromDesign({
+          id: eqLogicId,
+          title: title,
+          success: function () { callback(true, 'ok'); },
+          error: function (err) { callback(false, err && err.message ? err.message : String(err)); }
+        });
+        return;
+      } catch (e) {}
+    }
+
+    if (window.$ && $.ajax) {
+      $.ajax({
+        type: 'POST',
+        url: 'plugins/postitdesign/core/ajax/postitdesign.ajax.php',
+        data: data,
+        dataType: 'json',
+        global: false,
+        success: function () {
+          callback(true, 'ok');
+        },
+        error: function (xhr) {
+          callback(false, xhr && xhr.responseText ? xhr.responseText : 'erreur ajax');
+        }
+      });
+      return;
+    }
+
+    var body = new URLSearchParams();
+    Object.keys(data).forEach(function (k) { body.set(k, data[k]); });
+
+    fetch('plugins/postitdesign/core/ajax/postitdesign.ajax.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+      body: body.toString()
+    })
+    .then(function (r) { return r.text(); })
+    .then(function () { callback(true, 'ok'); })
+    .catch(function (err) { callback(false, err && err.message ? err.message : String(err)); });
+  }
+
+  function pdInstallCss() {
+    if (document.getElementById('postitdesign-title-side-panel-js-only-css')) return;
+
+    var style = document.createElement('style');
+    style.id = 'postitdesign-title-side-panel-js-only-css';
+    style.textContent =
+      '.postitdesign-title-side-panel-js-only{' +
+        'position:absolute;' +
+        'width:270px;' +
+        'z-index:999999;' +
+        'font-family:Arial,sans-serif;' +
+        'box-sizing:border-box;' +
+        'touch-action:manipulation;' +
+      '}' +
+      '.postitdesign-title-side-panel-js-only *{' +
+        'box-sizing:border-box;' +
+      '}' +
+      '.postitdesign-title-side-panel-js-only-card{' +
+        'background:#fff8a8;' +
+        'border:2px solid rgba(0,0,0,.22);' +
+        'border-radius:14px;' +
+        'box-shadow:0 8px 24px rgba(0,0,0,.30);' +
+        'padding:10px;' +
+      '}' +
+      '.postitdesign-title-side-panel-js-only-label{' +
+        'font-size:15px;' +
+        'font-weight:700;' +
+        'color:#333;' +
+        'margin-bottom:8px;' +
+      '}' +
+      '.postitdesign-title-side-panel-js-only-input{' +
+        'width:100%;' +
+        'height:40px;' +
+        'font-size:18px;' +
+        'line-height:40px;' +
+        'border-radius:8px;' +
+        'border:1px solid rgba(0,0,0,.28);' +
+        'background:#fff;' +
+        'color:#111;' +
+        'padding:4px 8px;' +
+      '}' +
+      '.postitdesign-title-side-panel-js-only-actions{' +
+        'display:flex;' +
+        'gap:8px;' +
+        'margin-top:10px;' +
+      '}' +
+      '.postitdesign-title-side-panel-js-only-actions button{' +
+        'flex:1;' +
+        'height:40px;' +
+        'border:0;' +
+        'border-radius:9px;' +
+        'font-size:16px;' +
+        'font-weight:700;' +
+        'cursor:pointer;' +
+        'touch-action:manipulation;' +
+      '}' +
+      '.postitdesign-title-side-panel-js-only-ok{' +
+        'background:#22c55e;' +
+        'color:#fff;' +
+      '}' +
+      '.postitdesign-title-side-panel-js-only-cancel{' +
+        'background:#ef4444;' +
+        'color:#fff;' +
+      '}';
+
+    document.head.appendChild(style);
+  }
+
+  function pdOpenPanel(widget, ev) {
+    pdStop(ev);
+    pdInstallCss();
+    pdRemovePanel();
+
+    var design = pdFindDesign(widget);
+    var designStyle = window.getComputedStyle(design);
+    if (designStyle.position === 'static') {
+      design.style.position = 'relative';
+    }
+
+    var designRect = design.getBoundingClientRect();
+    var widgetRect = widget.getBoundingClientRect();
+
+    var panel = document.createElement('div');
+    panel.className = 'postitdesign-title-side-panel-js-only';
+    panel.innerHTML =
+      '<div class="postitdesign-title-side-panel-js-only-card">' +
+        '<div class="postitdesign-title-side-panel-js-only-label">Modifier le titre</div>' +
+        '<input class="postitdesign-title-side-panel-js-only-input" type="text" autocomplete="off">' +
+        '<div class="postitdesign-title-side-panel-js-only-actions">' +
+          '<button type="button" class="postitdesign-title-side-panel-js-only-ok">OK</button>' +
+          '<button type="button" class="postitdesign-title-side-panel-js-only-cancel">Annuler</button>' +
+        '</div>' +
+      '</div>';
+
+    design.appendChild(panel);
+
+    var input = panel.querySelector('.postitdesign-title-side-panel-js-only-input');
+    var ok = panel.querySelector('.postitdesign-title-side-panel-js-only-ok');
+    var cancel = panel.querySelector('.postitdesign-title-side-panel-js-only-cancel');
+
+    input.value = pdGetCurrentTitle(widget);
+
+    var panelW = 270;
+    var panelH = 142;
+    var gap = 12;
+
+    var designW = design.clientWidth || designRect.width || window.innerWidth;
+    var designH = design.clientHeight || designRect.height || window.innerHeight;
+
+    var leftInDesign = widgetRect.left - designRect.left + (design.scrollLeft || 0);
+    var topInDesign = widgetRect.top - designRect.top + (design.scrollTop || 0);
+    var rightInDesign = leftInDesign + widgetRect.width;
+
+    var roomRight = designW - rightInDesign;
+    var roomLeft = leftInDesign;
+
+    var left = roomRight >= panelW + gap || roomRight >= roomLeft
+      ? rightInDesign + gap
+      : leftInDesign - panelW - gap;
+
+    if (left < 8) left = 8;
+    if (left + panelW > designW - 8) left = Math.max(8, designW - panelW - 8);
+
+    var top = topInDesign;
+    if (top + panelH > designH - 8) top = Math.max(8, designH - panelH - 8);
+    if (top < 8) top = 8;
+
+    panel.style.left = left + 'px';
+    panel.style.top = top + 'px';
+
+    ['touchstart', 'touchend', 'pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click'].forEach(function (name) {
+      panel.addEventListener(name, pdStop, {capture: true, passive: false});
+      input.addEventListener(name, function (e) {
+        try { e.stopPropagation(); } catch (x) {}
+      }, {capture: true, passive: false});
+    });
+
+    function closePanel() {
+      pdRemovePanel();
+    }
+
+    function validateTitle() {
+      var title = (input.value || '').trim();
+      if (!title) title = 'Post-it';
+
+      ok.disabled = true;
+      ok.textContent = '...';
+
+      pdAjaxSetTitle(pdGetEqLogicId(widget), title, function (success, message) {
+        ok.disabled = false;
+        ok.textContent = 'OK';
+
+        if (!success) {
+          alert('Erreur titre: ' + message);
+          return;
+        }
+
+        pdSetTitleInDom(widget, title);
+        closePanel();
+      });
+    }
+
+    pdBindStrong(ok, validateTitle);
+    pdBindStrong(cancel, closePanel);
+
+    input.addEventListener('keydown', function (e) {
+      try { e.stopPropagation(); } catch (x) {}
+      if (e.key === 'Enter') {
+        pdStop(e);
+        validateTitle();
+      }
+      if (e.key === 'Escape') {
+        pdStop(e);
+        closePanel();
+      }
+    }, true);
+
+    setTimeout(function () {
+      try {
+        input.focus({preventScroll: true});
+        input.select();
+      } catch (e) {
+        try {
+          input.focus();
+          input.select();
+        } catch (e2) {}
+      }
+    }, 120);
+  }
+
+  function pdGlobalHandler(ev) {
+    var btn = pdFindTitleButton(ev.target);
+    if (!btn) return;
+
+    var widget = pdFindWidget(btn);
+    if (!widget) return;
+
+    pdStop(ev);
+    pdOpenPanel(widget, ev);
+    return false;
+  }
+
+  ['touchstart', 'touchend', 'pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click'].forEach(function (name) {
+    document.addEventListener(name, pdGlobalHandler, {capture: true, passive: false});
+  });
+
+  document.addEventListener('click', function (ev) {
+    if (pdClosest(ev.target, '.postitdesign-title-side-panel-js-only')) return;
+    if (pdFindTitleButton(ev.target)) return;
+    pdRemovePanel();
+  }, true);
+})();
