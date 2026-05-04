@@ -76,3 +76,7 @@ Sécurité : pas de dépendances, pas de démon, MQTT non utilisé, aucun redém
 ## Préparation Market Jeedom
 
 `v1.0.27` nettoie les métadonnées publiques, la documentation et le changelog pour une publication propre sur le Market Jeedom.
+
+## Dernière évolution
+
+Les pastilles d’action des coins supérieur droit et inférieur droit sont plus discrètes dans les Designs Jeedom.

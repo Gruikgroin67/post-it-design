@@ -1,5 +1,14 @@
 # Changelog
 
+
+## v1.0.29 - 2026-05-04
+
+### Interface Design
+
+- Les pastilles d’action situées dans les coins supérieur droit et inférieur droit des post-it sont rendues plus discrètes.
+- Taille réduite, opacité diminuée et intégration visuelle plus légère.
+- Aucun changement fonctionnel sur la création, le déplacement, les styles ou la rotation.
+
 ## v1.0.27 - 2026-05-04
 
 ### Préparation Market Jeedom
