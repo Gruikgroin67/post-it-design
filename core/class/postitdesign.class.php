@@ -547,6 +547,112 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
       }
     }
 
+
+    var titleBtn=document.createElement('button');
+    titleBtn.type='button';
+    titleBtn.className='postitdesign-title-edit-btn';
+    titleBtn.textContent='Titre';
+    titleBtn.style.cssText='font-size:11px;font-weight:700;line-height:1;padding:7px 8px;border-radius:5px;border:0;cursor:pointer;background:#6f42c1;color:#fff;font-family:Arial,sans-serif;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;';
+
+    function runTitleEditButton(e){
+      if(e){
+        if(e.cancelable !== false){
+          e.preventDefault();
+        }
+        e.stopPropagation();
+        if(e.stopImmediatePropagation){
+          e.stopImmediatePropagation();
+        }
+      }
+
+      var now=Date.now();
+      if(titleBtn.__postitTitleTouchLockUntil && now < titleBtn.__postitTitleTouchLockUntil){
+        return false;
+      }
+      titleBtn.__postitTitleTouchLockUntil = now + 800;
+
+      var eqId=widget.getAttribute('data-eqLogic_id')||'';
+      var titleEl=widget.querySelector('.postitdesign-title-force');
+      var currentTitle=titleEl ? (titleEl.textContent || '').trim() : '';
+
+      var nextTitle=window.prompt('Titre du post-it', currentTitle);
+      if(nextTitle === null){
+        return false;
+      }
+
+      nextTitle=(nextTitle || '').trim();
+      if(nextTitle === ''){
+        return false;
+      }
+
+      if(titleEl){
+        titleEl.textContent=nextTitle;
+        titleEl.setAttribute('title','Titre modifié depuis les options');
+      }
+
+      if(st){
+        st.style.setProperty('display','block','important');
+        st.textContent='Titre enregistré';
+      }
+
+      if(eqId){
+        var body=new URLSearchParams();
+        body.append('action','setTitleFromDesign');
+        body.append('eqLogic_id',eqId);
+        body.append('title',nextTitle);
+
+        fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{
+          method:'POST',
+          credentials:'same-origin',
+          headers:{'Content-Type':'application/x-www-form-urlencoded'},
+          body:body.toString()
+        }).catch(function(){
+          if(st){
+            st.style.setProperty('display','block','important');
+            st.textContent='Erreur sauvegarde titre';
+          }
+        });
+      }
+
+      return false;
+    }
+
+    titleBtn.__postitTitleRun = runTitleEditButton;
+
+    titleBtn.setAttribute('onclick','return this.__postitTitleRun ? this.__postitTitleRun(event) : false;');
+    titleBtn.setAttribute('ontouchend','return this.__postitTitleRun ? this.__postitTitleRun(event) : false;');
+    titleBtn.setAttribute('onpointerup','return this.__postitTitleRun ? this.__postitTitleRun(event) : false;');
+
+    titleBtn.onclick = runTitleEditButton;
+    titleBtn.ontouchend = runTitleEditButton;
+    titleBtn.onpointerup = runTitleEditButton;
+
+    titleBtn.addEventListener('pointerdown',function(e){
+      e.stopPropagation();
+    },true);
+
+    try {
+      titleBtn.addEventListener('touchstart',function(e){
+        e.stopPropagation();
+      },{capture:true,passive:false});
+    } catch(ex) {
+      titleBtn.addEventListener('touchstart',function(e){
+        e.stopPropagation();
+      },true);
+    }
+
+    titleBtn.addEventListener('click',runTitleEditButton,true);
+    titleBtn.addEventListener('pointerup',runTitleEditButton,true);
+
+    try {
+      titleBtn.addEventListener('touchend',runTitleEditButton,{capture:true,passive:false});
+    } catch(ex) {
+      titleBtn.addEventListener('touchend',runTitleEditButton,true);
+    }
+
+    /* POSTITDESIGN_TITLE_EDIT_OPTIONS_BUTTON_V1 */
+    row.appendChild(titleBtn);
+
     [['classic','Classic'],['paper','Paper'],['tape','Tape']].forEach(function(pair){
       var b=document.createElement('button');
       b.type='button';
@@ -884,7 +990,7 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= '<div class="postitdesign-note-force" style="' . $noteStyle . '">';
         $html .= '<div class="postitdesign-drag-handle-force" onpointerdown="' . $dragJsAttr . '" style="' . $dragHandleStyle . '">↕</div>';
         $html .= '<div class="postitdesign-options-handle-force" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="' . $toggleOptionsJsAttr . '" onclick="' . $toggleOptionsJsAttr . '" style="' . $optionsHandleStyle . '">⋯</div>';
-        $html .= '<div class="postitdesign-title-force" ondblclick="' . $titleEditJsAttr . '" title="Double-clic pour modifier le titre" style="' . $titleStyle . 'cursor:text !important;">' . $title . '</div>'; /* POSTITDESIGN_TITLE_EDIT_FROM_DESIGN_V1 */
+        $html .= '<div class="postitdesign-title-force" ondblclick="' . $titleEditJsAttr . '" title="Titre modifiable depuis les options" style="' . $titleStyle . 'cursor:text !important;">' . $title . '</div>'; /* POSTITDESIGN_TITLE_EDIT_FROM_DESIGN_V1 */
         $html .= '<div class="postitdesign-message-force" ontouchend="' . $lineClickJsAttr . '" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
         $html .= '<div class="postitdesign-footer-force" data-open="0" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="event.preventDefault();event.stopPropagation();return false;" style="' . $footerStyle . '">';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
