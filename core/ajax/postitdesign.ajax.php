@@ -136,7 +136,31 @@ try {
         ));
     }
 
-    if (init('action') == 'getStateFromDesign') { /* POSTITDESIGN_SYNC_STATE_AJAX_V1 */ $eqLogic_id = intval(init('eqLogic_id')); if ($eqLogic_id <= 0) { throw new Exception('{{Post-it invalide}}'); } $eqLogic = eqLogic::byId($eqLogic_id); if (!is_object($eqLogic) || $eqLogic->getEqType_name() != 'postitdesign') { throw new Exception('{{Equipement invalide pour Post-it Design}}'); } $title = (string)$eqLogic->getConfiguration('postit_title', $eqLogic->getName()); $message = (string)$eqLogic->getConfiguration('postit_message', ''); $strikes = (string)$eqLogic->getConfiguration('postit_strikes', ''); $rotate = intval($eqLogic->getConfiguration('postit_rotate', -1)); if ($rotate < -15) { $rotate = -15; } /* POSTITDESIGN_ROTATION_15_PERSISTENCE_CLAMP_V1 */ if ($rotate > 15) { $rotate = 15; } $rev = sha1($title . "\n" . $message . "\n" . $strikes . "\n" . $rotate); ajax::success(array('ok' => true, 'eqLogic_id' => $eqLogic->getId(), 'title' => $title, 'message' => $message, 'postit_strikes' => $strikes, 'rotate' => $rotate, 'rev' => $rev)); } if (init('action') == 'setMessageFromDesign') {
+    if (init('action') == 'getStateFromDesign') { /* POSTITDESIGN_SYNC_STATE_AJAX_V1 */ $eqLogic_id = intval(init('eqLogic_id')); if ($eqLogic_id <= 0) { throw new Exception('{{Post-it invalide}}'); } $eqLogic = eqLogic::byId($eqLogic_id); if (!is_object($eqLogic) || $eqLogic->getEqType_name() != 'postitdesign') { throw new Exception('{{Equipement invalide pour Post-it Design}}'); } $title = (string)$eqLogic->getConfiguration('postit_title', $eqLogic->getName()); $message = (string)$eqLogic->getConfiguration('postit_message', ''); $strikes = (string)$eqLogic->getConfiguration('postit_strikes', ''); $rotate = intval($eqLogic->getConfiguration('postit_rotate', -1)); if ($rotate < -15) { $rotate = -15; } /* POSTITDESIGN_ROTATION_15_PERSISTENCE_CLAMP_V1 */ if ($rotate > 15) { $rotate = 15; } $rev = sha1($title . "\n" . $message . "\n" . $strikes . "\n" . $rotate); ajax::success(array('ok' => true, 'eqLogic_id' => $eqLogic->getId(), 'title' => $title, 'message' => $message, 'postit_strikes' => $strikes, 'rotate' => $rotate, 'rev' => $rev)); }     if (init('action') == 'setTitleFromDesign') { /* POSTITDESIGN_TITLE_EDIT_FROM_DESIGN_AJAX_V1 */
+        $eqLogic_id = intval(init('eqLogic_id'));
+        $title = trim((string)init('title'));
+
+        if ($eqLogic_id <= 0) { throw new Exception('{{Post-it invalide}}'); }
+        if ($title === '') { $title = 'Nouveau post-it'; }
+        if (strlen($title) > 120) { $title = substr($title, 0, 120); }
+
+        $eqLogic = eqLogic::byId($eqLogic_id);
+        if (!is_object($eqLogic) || $eqLogic->getEqType_name() != 'postitdesign') {
+            throw new Exception('{{Equipement invalide pour Post-it Design}}');
+        }
+
+        $eqLogic->setConfiguration('postit_title', $title);
+        $eqLogic->setName($title);
+        $eqLogic->save();
+
+        if (method_exists($eqLogic, 'emptyCacheWidget')) {
+            $eqLogic->emptyCacheWidget();
+        }
+
+        ajax::success(array('ok' => true, 'eqLogic_id' => $eqLogic->getId(), 'title' => $title));
+    }
+
+    if (init('action') == 'setMessageFromDesign') {
         $eqLogic_id = intval(init('eqLogic_id'));
         $text = trim((string)init('text'));
 

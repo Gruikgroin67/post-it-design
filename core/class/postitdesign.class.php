@@ -442,6 +442,55 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
             . "document.addEventListener('pointermove',move,true);document.addEventListener('pointerup',up,true);document.addEventListener('touchmove',move,{capture:true,passive:false});document.addEventListener('touchend',up,{capture:true,passive:false});"
             . "return false;";
 
+        $titleEditJs = <<<'POSTITDESIGN_TITLE_EDIT_JS'
+event.preventDefault();
+event.stopPropagation();
+
+var titleEl=this;
+var widget=titleEl.closest('.postitdesign-widget');
+if(!widget){return false;}
+
+var eqId=widget.getAttribute('data-eqLogic_id')||'';
+if(!eqId){return false;}
+
+var oldTitle=(titleEl.textContent||'').trim();
+var newTitle=window.prompt('Titre du post-it', oldTitle || 'Nouveau post-it');
+
+if(newTitle===null){return false;}
+
+newTitle=String(newTitle).trim();
+if(newTitle===''){newTitle='Nouveau post-it';}
+if(newTitle.length>120){newTitle=newTitle.substring(0,120);}
+
+titleEl.textContent=newTitle;
+
+var st=widget.querySelector('.postitdesign-status-force');
+if(st){
+  st.style.setProperty('display','block','important');
+  st.textContent='Titre enregistré';
+}
+
+var body=new URLSearchParams();
+body.append('action','setTitleFromDesign');
+body.append('eqLogic_id',eqId);
+body.append('title',newTitle);
+
+fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{
+  method:'POST',
+  credentials:'same-origin',
+  headers:{'Content-Type':'application/x-www-form-urlencoded'},
+  body:body.toString()
+}).catch(function(){
+  if(st){
+    st.style.setProperty('display','block','important');
+    st.textContent='Erreur sauvegarde titre';
+  }
+});
+
+/* POSTITDESIGN_TITLE_EDIT_FROM_DESIGN_V1 */
+return false;
+POSTITDESIGN_TITLE_EDIT_JS;
+
         $lineClickJs = <<<'POSTITDESIGN_LINE_CLICK_JS'
 event.preventDefault();
 event.stopPropagation();
@@ -597,6 +646,7 @@ POSTITDESIGN_LINE_CLICK_JS;
         $toggleOptionsJsAttr = htmlspecialchars($toggleOptionsJs, ENT_QUOTES, 'UTF-8');
         $dragJsAttr = htmlspecialchars($dragJs, ENT_QUOTES, 'UTF-8');
         $lineClickJsAttr = htmlspecialchars($lineClickJs, ENT_QUOTES, 'UTF-8');
+        $titleEditJsAttr = htmlspecialchars($titleEditJs, ENT_QUOTES, 'UTF-8'); /* POSTITDESIGN_TITLE_EDIT_FROM_DESIGN_V1 */
         $rotateJsAttr = htmlspecialchars($rotateJs, ENT_QUOTES, 'UTF-8');
         $completeJsAttr = htmlspecialchars($completeJs, ENT_QUOTES, 'UTF-8');
         $newJsAttr = htmlspecialchars($newJs, ENT_QUOTES, 'UTF-8');
@@ -614,7 +664,7 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= '<div class="postitdesign-note-force" style="' . $noteStyle . '">';
         $html .= '<div class="postitdesign-drag-handle-force" onpointerdown="' . $dragJsAttr . '" style="' . $dragHandleStyle . '">↕</div>';
         $html .= '<div class="postitdesign-options-handle-force" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" ontouchend="' . $toggleOptionsJsAttr . '" onclick="' . $toggleOptionsJsAttr . '" style="' . $optionsHandleStyle . '">⋯</div>';
-        $html .= '<div class="postitdesign-title-force" style="' . $titleStyle . '">' . $title . '</div>';
+        $html .= '<div class="postitdesign-title-force" ondblclick="' . $titleEditJsAttr . '" title="Double-clic pour modifier le titre" style="' . $titleStyle . 'cursor:text !important;">' . $title . '</div>'; /* POSTITDESIGN_TITLE_EDIT_FROM_DESIGN_V1 */
         $html .= '<div class="postitdesign-message-force" ontouchend="' . $lineClickJsAttr . '" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
         $html .= '<div class="postitdesign-footer-force" data-open="0" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="event.preventDefault();event.stopPropagation();return false;" style="' . $footerStyle . '">';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
