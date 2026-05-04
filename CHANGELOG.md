@@ -6,6 +6,20 @@
 
 
 
+
+## v1.0.35 - 2026-05-04
+
+### Modification du titre depuis les options du post-it
+
+- Ajout d’un bouton `Titre` directement dans les options du post-it.
+- Le titre peut être modifié sans double-clic.
+- Le double-clic reste éventuellement en secours, mais n’est plus la méthode normale.
+- Correction adaptée aux Designs Jeedom, où le double-clic, clic droit, appui long ou tap spécial ne sont pas fiables.
+- Le bouton utilise l’action AJAX existante `setTitleFromDesign`.
+- Le titre est mis à jour immédiatement dans le post-it, puis sauvegardé côté plugin.
+- MQTT non touché.
+- Apache non redémarré.
+
 ## v1.0.34 - 2026-05-04
 
 ### Masquer/réafficher sans rechargement du Design

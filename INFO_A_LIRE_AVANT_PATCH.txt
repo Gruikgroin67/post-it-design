@@ -166,3 +166,23 @@ Derniere mise a jour :
 - PROD uniquement après tag GitHub validé.
 - MQTT non touché.
 - Apache non redémarré.
+
+## Règle validée - modification du titre
+
+- Ne pas utiliser le double-clic comme méthode principale pour modifier le titre.
+- Dans les Designs Jeedom, le double-clic, clic droit, appui long et tap spécial ne sont pas fiables.
+- La méthode validée est un bouton `Titre` visible dans les options du post-it.
+- Le bouton `Titre` utilise `setTitleFromDesign`.
+- Le titre doit être mis à jour immédiatement dans le DOM.
+- Le double-clic peut rester en secours, mais il ne doit pas être présenté comme méthode principale.
+- Remote GitHub obligatoire en SSH : `git@github.com:Gruikgroin67/post-it-design.git`.
+- Marqueur : POSTITDESIGN_TITLE_EDIT_OPTIONS_DIRECT_BUTTON_V2
+
+## v1.0.35 - 2026-05-04
+
+- Version validée DEV pour le bouton `Titre` dans les options du post-it.
+- Modification du titre sans double-clic.
+- Clics spéciaux Jeedom évités.
+- PROD uniquement après tag GitHub validé.
+- MQTT non touché.
+- Apache non redémarré.

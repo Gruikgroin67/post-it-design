@@ -76,3 +76,15 @@ Règles techniques validées :
 - les post-it ne sont pas supprimés du plan ;
 - le rendu ne doit pas utiliser `window.location.reload()` pour masquer/réafficher ;
 - les post-it restent dans le DOM et basculent en `display:none`.
+
+## v1.0.35 - Bouton Titre dans les options
+
+Le titre d’un post-it se modifie désormais depuis les options du post-it via le bouton `Titre`. Le double-clic n’est plus nécessaire.
+
+Règles techniques validées :
+
+- ne pas dépendre du double-clic dans un Design Jeedom ;
+- ne pas dépendre du clic droit, appui long ou tap spécial ;
+- utiliser un bouton visible dans les options ;
+- sauvegarder via l’action AJAX `setTitleFromDesign` ;
+- conserver la mise à jour immédiate dans le DOM.
