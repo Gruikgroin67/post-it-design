@@ -4,7 +4,7 @@ Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Je
 
 ## Version actuelle
 
-`v1.0.35`
+`v1.0.36`
 
 ## Fonctions
 
@@ -79,4 +79,4 @@ Sécurité : pas de dépendances, pas de démon, MQTT non utilisé, aucun redém
 
 ## Dernière évolution
 
-Les options du post-it contiennent maintenant un bouton `Titre` permettant de modifier le titre sans double-clic. Cette méthode est plus fiable dans les Designs Jeedom et sur tablette.
+Le bouton `Titre` des options du post-it est maintenant utilisable au tactile. Il conserve la modification du titre sans double-clic, avec une gestion d’événements renforcée pour les Designs Jeedom.

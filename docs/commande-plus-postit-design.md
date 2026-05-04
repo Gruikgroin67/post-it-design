@@ -88,3 +88,15 @@ Règles techniques validées :
 - utiliser un bouton visible dans les options ;
 - sauvegarder via l’action AJAX `setTitleFromDesign` ;
 - conserver la mise à jour immédiate dans le DOM.
+
+## v1.0.36 - Bouton Titre tactile
+
+Le bouton `Titre` dans les options du post-it fonctionne désormais aussi au tactile. La correction ajoute une couche d’événements capturés pour éviter l’interception par le Design Jeedom.
+
+Règles techniques validées :
+
+- ne pas utiliser le double-clic comme méthode principale ;
+- garder un bouton visible dans les options ;
+- capter `touchend` et `pointerup` en plus du clic classique ;
+- arrêter la propagation pour éviter l’interception par Jeedom ;
+- conserver la sauvegarde via `setTitleFromDesign`.

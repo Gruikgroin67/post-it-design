@@ -7,6 +7,19 @@
 
 
 
+
+## v1.0.36 - 2026-05-04
+
+### Bouton Titre compatible tactile
+
+- Correction du bouton `Titre` dans les options du post-it pour les écrans tactiles.
+- Ajout d’une gestion robuste des événements `touchstart`, `touchend`, `pointerdown`, `pointerup`, `mousedown`, `mouseup` et `click`.
+- Les événements sont capturés avec arrêt de propagation afin d’éviter que le Design Jeedom intercepte l’action.
+- Le titre reste modifiable sans double-clic.
+- La sauvegarde continue d’utiliser l’action AJAX `setTitleFromDesign`.
+- MQTT non touché.
+- Apache non redémarré.
+
 ## v1.0.35 - 2026-05-04
 
 ### Modification du titre depuis les options du post-it

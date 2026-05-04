@@ -186,3 +186,21 @@ Derniere mise a jour :
 - PROD uniquement après tag GitHub validé.
 - MQTT non touché.
 - Apache non redémarré.
+
+## Règle validée - bouton Titre tactile
+
+- Le bouton `Titre` doit rester dans les options du post-it.
+- Ne pas revenir au double-clic comme méthode principale.
+- Pour les boutons dans un Design Jeedom, prévoir `click`, `pointerup`, `touchend`, avec `capture:true` et `passive:false` quand possible.
+- Stopper la propagation des événements afin que le Design Jeedom n’intercepte pas l’action.
+- Sauvegarde du titre via `setTitleFromDesign`.
+- Remote GitHub obligatoire en SSH : `git@github.com:Gruikgroin67/post-it-design.git`.
+- Marqueur : POSTITDESIGN_TITLE_EDIT_OPTIONS_TOUCH_V3
+
+## v1.0.36 - 2026-05-04
+
+- Version validée DEV pour le bouton `Titre` tactile.
+- Correction des événements tactiles dans les options du post-it.
+- PROD uniquement après tag GitHub validé.
+- MQTT non touché.
+- Apache non redémarré.
