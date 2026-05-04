@@ -50,3 +50,16 @@ Le clic rotation peut encore présenter un léger délai visuel avant resynchron
 - Ne pas toucher PROD sans demande explicite.
 - Ne pas réintroduire  sur les vrais post-it.
 - Ne pas masquer le contrôleur  avec le précédent patch qui avait blanchi la page plugin.
+
+## v1.0.33 - Pastille de menu
+
+Le clic principal sur `+ Post-it` crée toujours un nouveau post-it. Une petite pastille intégrée au bouton affiche un menu d’options. Ce menu permet de masquer ou réafficher les post-it du Design sans supprimer les équipements ni les lignes `plan`.
+
+Règles techniques validées :
+
+- ne pas remplacer le rendu natif complet de la commande Jeedom ;
+- ne pas utiliser clic droit, double-clic ou appui long comme déclencheur principal ;
+- ne pas utiliser `position:fixed` pour le menu, car il sort du Design ;
+- garder le menu borné localement au conteneur du bouton ;
+- conserver la création immédiate sur clic principal ;
+- utiliser une pastille visible comme déclencheur fiable.

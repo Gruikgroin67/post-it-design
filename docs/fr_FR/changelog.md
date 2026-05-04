@@ -4,6 +4,21 @@
 
 
 
+
+## v1.0.33 - 2026-05-04
+
+### Bouton + Post-it : pastille de menu cantonnée au Design
+
+- Le bouton `+ Post-it` garde sa fonction principale : un clic sur le bouton crée immédiatement un post-it.
+- Ajout d’une petite pastille intégrée au bouton pour ouvrir un menu d’options.
+- La pastille permet de masquer ou réafficher les post-it du Design.
+- Le masquage est non destructif : aucune ligne `plan` n’est supprimée, les positions restent conservées.
+- Le menu reste cantonné au Design : il n’utilise plus `position:fixed` par rapport à la fenêtre.
+- La solution validée utilise un menu `absolute` dans le conteneur du bouton avec bornage local.
+- Les pistes non retenues sont documentées : clic droit, double-clic, appui long, remplacement complet du rendu commande, menu global hors Design.
+- MQTT non touché.
+- Apache non redémarré.
+
 ## v1.0.32 - 2026-05-04
 
 ### Correction tablette renforcée

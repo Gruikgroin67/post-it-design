@@ -113,3 +113,31 @@ Derniere mise a jour :
 - PROD uniquement après tag GitHub validé.
 - MQTT non touché.
 - Apache non redémarré.
+
+## Règle validée - bouton + Post-it avec menu
+
+- Le clic principal sur `+ Post-it` doit toujours créer un post-it immédiatement.
+- Ne pas transformer le clic principal en ouverture de menu.
+- Ne pas utiliser clic droit, double-clic, appui long ou tap spécial : non fiable dans les Designs Jeedom et sur tablette.
+- Ne pas remplacer complètement le rendu natif Jeedom de la commande `create_postit`, sinon le déplacement du bouton dans le Design peut casser.
+- La solution validée est une petite pastille visible sur le bouton.
+- Clic sur la pastille = ouverture du menu.
+- Le menu doit rester cantonné au Design.
+- Ne pas utiliser `position:fixed` pour le menu : cela le positionne par rapport à la fenêtre du navigateur et le fait sortir du Design.
+- Le menu validé est en `position:absolute`, borné dans le conteneur du bouton.
+- Le masquage des post-it doit être non destructif : ne pas supprimer les lignes `plan`, ne pas déplacer les équipements, conserver les positions.
+- Remote GitHub obligatoire en SSH : `git@github.com:Gruikgroin67/post-it-design.git`.
+- Marqueur classe : POSTITDESIGN_CMD_MENU_INLINE_DOT_DESIGN_BOUND_V6
+- Marqueur AJAX : POSTITDESIGN_CMD_MENU_INLINE_DOT_AJAX_V5
+
+## v1.0.33 - 2026-05-04
+
+- Version validée DEV pour la pastille de menu sur le bouton `+ Post-it`.
+- Clic principal conservé : création immédiate d’un post-it.
+- Clic sur la pastille : menu masquer/réafficher.
+- Menu cantonné au Design, pas à la fenêtre navigateur.
+- Erreurs à ne pas refaire : clic droit, appui long, menu en `position:fixed`, remplacement complet du rendu de commande.
+- Développement et tag sur DEV uniquement.
+- PROD uniquement après tag GitHub validé.
+- MQTT non touché.
+- Apache non redémarré.
