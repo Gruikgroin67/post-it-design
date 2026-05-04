@@ -1,3 +1,10 @@
+## v1.0.38 - 2026-05-04
+
+- Ajout d'un panneau lateral adaptatif pour la modification du titre des post-it.
+- Correction du clic/tactile sur le bouton OK du panneau de titre.
+- Ajout d'un panneau lateral adaptatif pour l'action Remplir, afin d'eviter que le clavier tablette masque les boutons.
+- Conservation des regles de securite : DEV uniquement, aucun impact MQTT, aucun redemarrage Apache.
+
 # Changelog
 
 

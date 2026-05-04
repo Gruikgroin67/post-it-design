@@ -223,3 +223,4 @@ Derniere mise a jour :
 - PROD uniquement après tag GitHub validé.
 - MQTT non touché.
 - Apache non redémarré.
+- v1.0.38 : pour les actions tactiles avec clavier tablette, preferer un panneau lateral adaptatif gauche/droite plutot qu'un champ integre dans le post-it.

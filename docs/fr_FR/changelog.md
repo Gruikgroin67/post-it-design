@@ -1,3 +1,9 @@
+# v1.0.38 - 2026-05-04
+
+- Panneau lateral adaptatif pour Titre.
+- Correction tactile du bouton OK du titre.
+- Panneau lateral adaptatif pour Remplir.
+
 # Changelog - Post-it Design
 
 

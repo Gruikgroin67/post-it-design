@@ -1,3 +1,8 @@
+# v1.0.38 - 2026-05-04
+
+- Panneaux lateraux adaptatifs pour Titre et Remplir.
+- Meilleure ergonomie tablette.
+
 # Changelog - Post-it Design
 
 
