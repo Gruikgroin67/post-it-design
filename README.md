@@ -4,7 +4,7 @@ Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Je
 
 ## Version actuelle
 
-`v1.0.31`
+`v1.0.32`
 
 ## Fonctions
 
@@ -79,4 +79,4 @@ Sécurité : pas de dépendances, pas de démon, MQTT non utilisé, aucun redém
 
 ## Dernière évolution
 
-Les boutons Classic, Paper et Tape dans les options du post-it fonctionnent maintenant aussi sur tablette.
+Correction tablette renforcée pour les boutons Classic, Paper et Tape dans les options du post-it.

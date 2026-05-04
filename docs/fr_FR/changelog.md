@@ -3,6 +3,17 @@
 
 
 
+
+## v1.0.32 - 2026-05-04
+
+### Correction tablette renforcée
+
+- Les boutons Classic, Paper et Tape des options du post-it utilisent maintenant une gestion tactile robuste.
+- La méthode retenue utilise onclick, ontouchend et onpointerup en direct avec return false.
+- Ajout d’un verrou anti double-déclenchement.
+- Cette correction remplace l’approche insuffisante basée principalement sur addEventListener.
+- Aucun changement MQTT ni redémarrage Apache.
+
 ## v1.0.31 - 2026-05-04
 
 ### Correction tablette

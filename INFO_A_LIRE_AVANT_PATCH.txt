@@ -95,8 +95,21 @@ Derniere mise a jour :
 
 ## Règle tactile tablette - boutons dans le Design
 
-- Pour les boutons créés dynamiquement dans un post-it du Design Jeedom, ne pas se limiter à `addEventListener('click')`.
+- Pour les boutons créés dynamiquement dans un post-it du Design Jeedom, ne pas se limiter à addEventListener('click').
 - Sur tablette, le clic synthétique peut être intercepté par la couche tactile du Design Jeedom.
-- La méthode robuste validée est : attribut/propriété directe `onclick`, `ontouchend`, `onpointerup`, avec `return false`.
+- La méthode robuste validée est : attribut/propriété directe onclick, ontouchend, onpointerup, avec return false.
 - Ajouter aussi un verrou court anti double-déclenchement.
 - Cette règle s’applique notamment aux boutons Classic / Paper / Tape dans les options du post-it.
+- Marqueur de référence : POSTITDESIGN_VISUAL_STYLE_TABLET_INLINE_TOUCH_V2.
+- Ne pas revenir à une solution seulement basée sur addEventListener('click') pour les boutons dynamiques du Design.
+
+## v1.0.32 - 2026-05-04
+
+- Correction tablette renforcée pour les boutons Classic, Paper et Tape.
+- Astuce validée ajoutée au fichier info : utiliser onclick, ontouchend, onpointerup en direct avec return false et verrou anti double-déclenchement.
+- Cause : addEventListener('click') seul peut être intercepté sur tablette par la couche tactile du Design Jeedom.
+- Marqueur : POSTITDESIGN_VISUAL_STYLE_TABLET_INLINE_TOUCH_V2.
+- Développement et tag sur DEV uniquement.
+- PROD uniquement après tag GitHub validé.
+- MQTT non touché.
+- Apache non redémarré.
