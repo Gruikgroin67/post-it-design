@@ -8,6 +8,19 @@
 
 
 
+
+## v1.0.37 - 2026-05-04
+
+### Modification du titre par champ intégré
+
+- Remplacement de la boîte navigateur `prompt` par un champ intégré dans les options du post-it.
+- Le bouton `Titre` ouvre maintenant un champ texte avec `OK` et `Annuler`.
+- Cette méthode est plus fiable sur tablette et dans les Designs Jeedom.
+- Le titre est mis à jour immédiatement dans le post-it, puis sauvegardé via l’action AJAX `setTitleFromDesign`.
+- Le double-clic n’est pas utilisé comme méthode principale.
+- MQTT non touché.
+- Apache non redémarré.
+
 ## v1.0.36 - 2026-05-04
 
 ### Bouton Titre compatible tactile

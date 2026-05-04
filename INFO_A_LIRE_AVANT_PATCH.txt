@@ -204,3 +204,22 @@ Derniere mise a jour :
 - PROD uniquement après tag GitHub validé.
 - MQTT non touché.
 - Apache non redémarré.
+
+## Règle validée - titre par champ intégré
+
+- Ne pas utiliser `window.prompt` pour l’action principale de modification du titre.
+- Ne pas dépendre du double-clic dans les Designs Jeedom.
+- Le bouton `Titre` doit ouvrir un champ intégré dans les options du post-it.
+- Le champ doit proposer `OK` et `Annuler`.
+- Sauvegarde via `setTitleFromDesign`.
+- Mise à jour immédiate dans le DOM avant sauvegarde.
+- Remote GitHub obligatoire en SSH : `git@github.com:Gruikgroin67/post-it-design.git`.
+- Marqueur : POSTITDESIGN_TITLE_EDIT_INLINE_FORM_V4
+
+## v1.0.37 - 2026-05-04
+
+- Version validée DEV pour le champ intégré de modification du titre.
+- Remplacement du `prompt` navigateur par un formulaire inline.
+- PROD uniquement après tag GitHub validé.
+- MQTT non touché.
+- Apache non redémarré.

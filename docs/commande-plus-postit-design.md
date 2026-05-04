@@ -100,3 +100,15 @@ Règles techniques validées :
 - capter `touchend` et `pointerup` en plus du clic classique ;
 - arrêter la propagation pour éviter l’interception par Jeedom ;
 - conserver la sauvegarde via `setTitleFromDesign`.
+
+## v1.0.37 - Titre par champ intégré
+
+Le bouton `Titre` des options du post-it n’utilise plus de boîte `prompt`. Il ouvre un champ directement dans le post-it avec `OK` et `Annuler`.
+
+Règles techniques validées :
+
+- ne pas dépendre de `window.prompt` pour modifier le titre ;
+- ne pas dépendre du double-clic, clic droit ou appui long ;
+- utiliser un champ HTML visible et tactile ;
+- sauvegarder via `setTitleFromDesign` ;
+- conserver une mise à jour immédiate dans le DOM.
