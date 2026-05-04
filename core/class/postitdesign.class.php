@@ -156,6 +156,86 @@ class postitdesign extends eqLogic
 
 
 
+
+    /* POSTITDESIGN_CMD_MENU_INLINE_DOT_V5 */
+    public static function planHiddenConfigKey($_planHeaderId)
+    {
+        return 'hidden_plan_' . intval($_planHeaderId);
+    }
+
+    public static function arePostitsHiddenForPlan($_planHeaderId)
+    {
+        $_planHeaderId = intval($_planHeaderId);
+        if ($_planHeaderId <= 0) {
+            return false;
+        }
+        return intval(config::byKey(self::planHiddenConfigKey($_planHeaderId), 'postitdesign', 0)) === 1;
+    }
+
+    public static function setPostitsHiddenForPlan($_planHeaderId, $_hidden)
+    {
+        $_planHeaderId = intval($_planHeaderId);
+        if ($_planHeaderId <= 0) {
+            throw new Exception('{{Design invalide}}');
+        }
+        $hidden = intval($_hidden) === 1 ? 1 : 0;
+        config::save(self::planHiddenConfigKey($_planHeaderId), $hidden, 'postitdesign');
+        return $hidden;
+    }
+
+    public static function countPostitsForPlan($_planHeaderId)
+    {
+        $_planHeaderId = intval($_planHeaderId);
+        if ($_planHeaderId <= 0) {
+            return 0;
+        }
+
+        $count = 0;
+
+        try {
+            $rows = DB::Prepare(
+                'SELECT link_id FROM plan WHERE planHeader_id = :planHeader_id AND link_type = :link_type',
+                array(
+                    'planHeader_id' => $_planHeaderId,
+                    'link_type' => 'eqLogic'
+                ),
+                DB::FETCH_TYPE_ALL
+            );
+
+            if (is_array($rows)) {
+                foreach ($rows as $row) {
+                    $eqId = 0;
+
+                    if (is_array($row) && isset($row['link_id'])) {
+                        $eqId = intval($row['link_id']);
+                    } elseif (is_object($row) && isset($row->link_id)) {
+                        $eqId = intval($row->link_id);
+                    }
+
+                    if ($eqId <= 0) {
+                        continue;
+                    }
+
+                    $eq = eqLogic::byId($eqId);
+                    if (!is_object($eq) || $eq->getEqType_name() != 'postitdesign') {
+                        continue;
+                    }
+
+                    if (intval($eq->getConfiguration('is_create_controller', 0)) === 1) {
+                        continue;
+                    }
+
+                    $count++;
+                }
+            }
+        } catch (Exception $e) {
+            $count = 0;
+        }
+
+        return $count;
+    }
+
+
     public function toHtml($_version = 'dashboard')
     {
         
@@ -205,6 +285,10 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
 
         if ($targetX < 0) { $targetX = 0; }
         if ($targetY < 0) { $targetY = 0; }
+
+        if ($targetPlanHeaderId > 0 && self::arePostitsHiddenForPlan($targetPlanHeaderId)) {
+            return ''; /* POSTITDESIGN_CMD_MENU_INLINE_DOT_V5 */
+        }
 
         $strikeRaw = (string)$this->cfg('postit_strikes', ''); $syncRev = sha1($title . "\n" . $message . "\n" . $strikeRaw . "\n" . $rotate); /* POSTITDESIGN_SYNC_REV_ATTR_V1 */
         $strikeIndexes = array();
@@ -1168,6 +1252,122 @@ return $html; } } class postitdesignCmd extends cmd
         $html .= '<div style="font-size:12px !important;font-weight:700 !important;">Post-it</div>';
         $html .= '<div class="postitdesign-create-mini-status" style="font-size:9px !important;margin-top:5px !important;opacity:.70 !important;white-space:nowrap !important;">Créer</div>';
         $html .= '</div>';
+
+
+        if ($this->getLogicalId() == 'create_postit') { /* POSTITDESIGN_CMD_MENU_INLINE_DOT_V5 */
+            $eqLogic = $this->getEqLogic();
+            if (is_object($eqLogic) && $eqLogic->getEqType_name() == 'postitdesign') {
+                $planHeaderId = intval($eqLogic->getConfiguration('target_planHeader_id', 0));
+                if ($planHeaderId > 0) {
+                    $count = postitdesign::countPostitsForPlan($planHeaderId);
+                    $hidden = postitdesign::arePostitsHiddenForPlan($planHeaderId) ? 1 : 0;
+                    $toggleText = $hidden === 1 ? 'Réafficher les post-it' : 'Masquer les post-it';
+                    $dotText = $count > 0 ? strval($count) : '⋯';
+
+                    $dotId = 'postitdesign_inline_dot_' . intval($this->getId());
+                    $menuId = 'postitdesign_inline_menu_' . intval($this->getId());
+
+                    $stopJs = "var ev=event||window.event;if(ev){if(ev.cancelable!==false){ev.preventDefault();}ev.stopPropagation();if(ev.stopImmediatePropagation){ev.stopImmediatePropagation();}}return false;";
+
+                    $openJs = ""
+                        . "var ev=event||window.event;"
+                        . "if(ev){if(ev.cancelable!==false){ev.preventDefault();}ev.stopPropagation();if(ev.stopImmediatePropagation){ev.stopImmediatePropagation();}}"
+                        . "var b=this;"
+                        . "var now=Date.now();"
+                        . "if(b.__ptDotLock&&now<b.__ptDotLock){return false;}"
+                        . "b.__ptDotLock=now+350;"
+                        . "var m=document.getElementById('" . $menuId . "');"
+                        . "if(!m){return false;}"
+                        . "var r=b.getBoundingClientRect();"
+                        . "var w=180;var h=65;"
+                        . "var l=Math.round(r.right-w+4);"
+                        . "var t=Math.round(r.bottom+6);"
+                        . "if(l<6){l=6;}"
+                        . "if(l+w>window.innerWidth-6){l=Math.max(6,window.innerWidth-w-6);}"
+                        . "if(t+h>window.innerHeight-6){t=Math.max(6,Math.round(r.top-h-8));}"
+                        . "m.style.left=l+'px';"
+                        . "m.style.top=t+'px';"
+                        . "var open=(m.getAttribute('data-open')==='1');"
+                        . "m.setAttribute('data-open',open?'0':'1');"
+                        . "m.style.display=open?'none':'block';"
+                        . "return false;";
+
+                    $toggleJs = ""
+                        . "var ev=event||window.event;"
+                        . "if(ev){if(ev.cancelable!==false){ev.preventDefault();}ev.stopPropagation();if(ev.stopImmediatePropagation){ev.stopImmediatePropagation();}}"
+                        . "var b=this;"
+                        . "var now=Date.now();"
+                        . "if(b.__ptMenuLock&&now<b.__ptMenuLock){return false;}"
+                        . "b.__ptMenuLock=now+900;"
+                        . "var body=new URLSearchParams();"
+                        . "body.append('action','togglePlanPostitsHiddenInlineDot');"
+                        . "body.append('planHeader_id','" . $planHeaderId . "');"
+                        . "body.append('hidden','" . ($hidden === 1 ? "0" : "1") . "');"
+                        . "fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()})"
+                        . ".then(function(){window.location.reload();})"
+                        . ".catch(function(){window.location.reload();});"
+                        . "return false;";
+
+                    $dotStyle = ''
+                        . 'position:absolute;'
+                        . 'right:-9px;'
+                        . 'top:-9px;'
+                        . 'min-width:23px;'
+                        . 'height:23px;'
+                        . 'line-height:22px;'
+                        . 'padding:0 6px;'
+                        . 'border:0;'
+                        . 'border-radius:13px;'
+                        . 'background:' . ($hidden === 1 ? '#3cae45' : 'rgba(0,0,0,.52)') . ';'
+                        . 'color:#fff;'
+                        . 'font-size:12px;'
+                        . 'font-weight:900;'
+                        . 'text-align:center;'
+                        . 'cursor:pointer;'
+                        . 'z-index:2147483000;'
+                        . 'box-shadow:0 2px 8px rgba(0,0,0,.32);'
+                        . 'touch-action:manipulation;'
+                        . '-webkit-tap-highlight-color:transparent;'
+                        . 'pointer-events:auto;';
+
+                    $menuStyle = ''
+                        . 'display:none;'
+                        . 'position:fixed;'
+                        . 'left:0;'
+                        . 'top:0;'
+                        . 'min-width:180px;'
+                        . 'padding:6px;'
+                        . 'border-radius:10px;'
+                        . 'background:rgba(255,255,255,.98);'
+                        . 'border:1px solid rgba(0,0,0,.18);'
+                        . 'box-shadow:0 8px 22px rgba(0,0,0,.28);'
+                        . 'z-index:2147482999;'
+                        . 'font-family:Arial,sans-serif;'
+                        . 'pointer-events:auto;';
+
+                    $btnStyle = ''
+                        . 'display:block;'
+                        . 'width:100%;'
+                        . 'margin:0;'
+                        . 'padding:8px 9px;'
+                        . 'border:0;'
+                        . 'border-radius:7px;'
+                        . 'background:' . ($hidden === 1 ? '#3cae45' : '#f0ad4e') . ';'
+                        . 'color:' . ($hidden === 1 ? '#fff' : '#2b2b2b') . ';'
+                        . 'font-size:12px;'
+                        . 'font-weight:700;'
+                        . 'text-align:left;'
+                        . 'cursor:pointer;'
+                        . 'touch-action:manipulation;'
+                        . '-webkit-tap-highlight-color:transparent;';
+
+                    $html .= '<button id="' . $dotId . '" type="button" title="Options des post-it" style="' . $dotStyle . '" onmousedown="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" onpointerdown="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" ontouchstart="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" onclick="' . htmlspecialchars($openJs, ENT_QUOTES, 'UTF-8') . '" onpointerup="' . htmlspecialchars($openJs, ENT_QUOTES, 'UTF-8') . '" ontouchend="' . htmlspecialchars($openJs, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($dotText, ENT_QUOTES, 'UTF-8') . '</button>';
+                    $html .= '<div id="' . $menuId . '" data-open="0" class="postitdesign-inline-dot-menu" style="' . $menuStyle . '">';
+                    $html .= '<button type="button" style="' . $btnStyle . '" onmousedown="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" onpointerdown="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" ontouchstart="' . htmlspecialchars($stopJs, ENT_QUOTES, 'UTF-8') . '" onclick="' . htmlspecialchars($toggleJs, ENT_QUOTES, 'UTF-8') . '" onpointerup="' . htmlspecialchars($toggleJs, ENT_QUOTES, 'UTF-8') . '" ontouchend="' . htmlspecialchars($toggleJs, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($toggleText, ENT_QUOTES, 'UTF-8') . '</button>';
+                    $html .= '</div>';
+                }
+            }
+        }
 
         return $html;
     }

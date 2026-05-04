@@ -10,6 +10,21 @@ try {
 
     ajax::init();
 
+    if (init('action') == 'togglePlanPostitsHiddenInlineDot') { /* POSTITDESIGN_CMD_MENU_INLINE_DOT_AJAX_V5 */
+        $planHeaderId = intval(init('planHeader_id'));
+        $hidden = intval(init('hidden'));
+
+        if ($planHeaderId <= 0) { throw new Exception('{{Design invalide}}'); }
+
+        postitdesign::setPostitsHiddenForPlan($planHeaderId, $hidden);
+        ajax::success(array(
+            'ok' => true,
+            'planHeader_id' => $planHeaderId,
+            'hidden' => postitdesign::arePostitsHiddenForPlan($planHeaderId) ? 1 : 0,
+            'count' => postitdesign::countPostitsForPlan($planHeaderId)
+        ));
+    }
+
     if (init('action') == 'listPlanHeadersForCreateCommand') { /* POSTITDESIGN_NATIVE_CREATE_CMD_AJAX_V1 */
         $headers = planHeader::all();
         $result = array();
