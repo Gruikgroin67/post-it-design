@@ -396,6 +396,97 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
 
         /* POSTITDESIGN_DISCREET_CORNER_HANDLES_V1 */
 
+        $visualStyleOptionsJs = <<<'POSTITDESIGN_VISUAL_STYLE_OPTIONS_JS'
+(function(){
+  var root=(h.closest&&h.closest('.postitdesign-note-force'))||h;
+  var f=root.querySelector('.postitdesign-footer-force');
+  var widget=(root.closest&&root.closest('.postitdesign-widget'))||null;
+  if(!f||!widget){return;}
+
+  if(!f.querySelector('.postitdesign-visual-style-row')){
+    var row=document.createElement('span');
+    row.className='postitdesign-visual-style-row';
+    row.style.cssText='display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap;margin-left:2px;';
+
+    function applyStyle(style){
+      var eqId=widget.getAttribute('data-eqLogic_id')||'';
+      var note=widget.querySelector('.postitdesign-note-force');
+      var st=widget.querySelector('.postitdesign-status-force');
+      if(['classic','paper','tape'].indexOf(style)===-1){style='classic';}
+
+      widget.setAttribute('data-visual-style',style);
+
+      if(note){
+        var color=window.getComputedStyle(note).backgroundColor || '#fff4a8';
+        note.style.setProperty('background', color, 'important');
+        note.style.setProperty('background-color', color, 'important');
+
+        if(style==='paper'){
+          note.style.setProperty('background-image','repeating-linear-gradient(to bottom, rgba(255,255,255,0) 0px, rgba(255,255,255,0) 22px, rgba(80,70,40,.18) 23px, rgba(80,70,40,.18) 24px)','important');
+          note.style.setProperty('border-top','1px solid rgba(120,95,15,.18)','important');
+          note.style.setProperty('border-radius','2px','important');
+          note.style.setProperty('box-shadow','0 7px 16px rgba(0,0,0,.24)','important');
+        }else if(style==='tape'){
+          note.style.setProperty('background-image','linear-gradient(to bottom, rgba(255,255,255,.58) 0px, rgba(255,255,255,.25) 24px, rgba(255,255,255,0) 25px), linear-gradient(135deg, rgba(255,255,255,.22), rgba(0,0,0,.04))','important');
+          note.style.setProperty('border-top','8px solid rgba(245,230,140,.70)','important');
+          note.style.setProperty('border-radius','3px','important');
+          note.style.setProperty('box-shadow','0 9px 18px rgba(0,0,0,.28)','important');
+        }else{
+          note.style.setProperty('background-image','radial-gradient(rgba(255,255,255,.28) .7px, transparent .9px), linear-gradient(160deg, rgba(255,255,255,.30), rgba(0,0,0,.04))','important');
+          note.style.setProperty('background-size','7px 7px, 100% 100%','important');
+          note.style.setProperty('border-top','1px solid rgba(120,95,15,.18)','important');
+          note.style.setProperty('border-radius','4px','important');
+          note.style.setProperty('box-shadow','0 6px 14px rgba(0,0,0,.22)','important');
+        }
+      }
+
+      if(st){
+        st.style.setProperty('display','block','important');
+        st.textContent='Visuel '+style+' enregistré';
+      }
+
+      if(eqId){
+        var body=new URLSearchParams();
+        body.append('action','setVisualStyleFromDesign');
+        body.append('eqLogic_id',eqId);
+        body.append('visual_style',style);
+
+        fetch('/plugins/postitdesign/core/ajax/postitdesign.ajax.php',{
+          method:'POST',
+          credentials:'same-origin',
+          headers:{'Content-Type':'application/x-www-form-urlencoded'},
+          body:body.toString()
+        }).catch(function(){
+          if(st){
+            st.style.setProperty('display','block','important');
+            st.textContent='Erreur sauvegarde visuel';
+          }
+        });
+      }
+    }
+
+    [['classic','Classic'],['paper','Paper'],['tape','Tape']].forEach(function(pair){
+      var b=document.createElement('button');
+      b.type='button';
+      b.className='postitdesign-visual-style-btn';
+      b.textContent=pair[1];
+      b.setAttribute('data-visual-style',pair[0]);
+      b.style.cssText='font-size:11px;font-weight:700;line-height:1;padding:5px 6px;border-radius:4px;border:0;cursor:pointer;background:rgba(35,35,35,.46);color:#fff;font-family:Arial,sans-serif;white-space:nowrap;';
+      b.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        applyStyle(pair[0]);
+        return false;
+      },true);
+      row.appendChild(b);
+    });
+
+    f.appendChild(row);
+  }
+})();
+/* POSTITDESIGN_VISUAL_STYLE_OPTIONS_FROM_DESIGN_V1 */
+POSTITDESIGN_VISUAL_STYLE_OPTIONS_JS;
+
         $toggleOptionsJs = "var ev=event||window.event;"
             . "ev.preventDefault();ev.stopPropagation();"
             . "var h=this;"
@@ -419,6 +510,7 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
             . "f.style.setProperty('visibility','visible','important');"
             . "f.style.setProperty('opacity','1','important');"
             . "if(st){st.style.setProperty('display','block','important');st.textContent='Options du post-it';}"
+            . $visualStyleOptionsJs
             . "}"
             . "/* POSTITDESIGN_OPTIONS_NO_DOUBLE_CLOSE_V2 */"
             . "return false;";
