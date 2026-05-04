@@ -1074,8 +1074,331 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= '<div class="postitdesign-title-force" ondblclick="' . $titleEditJsAttr . '" title="Titre modifiable depuis les options" style="' . $titleStyle . 'cursor:text !important;">' . $title . '</div>'; /* POSTITDESIGN_TITLE_EDIT_FROM_DESIGN_V1 */
         $html .= '<div class="postitdesign-message-force" ontouchend="' . $lineClickJsAttr . '" onclick="' . $lineClickJsAttr . '" style="' . $messageStyle . '">' . $messageHtml . '</div>';
         $html .= '<div class="postitdesign-footer-force" data-open="0" onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="event.preventDefault();event.stopPropagation();return false;" style="' . $footerStyle . '">';
-        $html .= '<button type="button" class="postitdesign-title-edit-btn" onclick="' . $titleButtonJsAttr . '" ontouchend="' . $titleButtonJsAttr . '" onpointerup="' . $titleButtonJsAttr . '" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" ontouchstart="event.stopPropagation();" style="' . $titleBtnStyle . '">Titre</button>'; /* POSTITDESIGN_TITLE_EDIT_INLINE_FORM_V4 */
-        $html .= '<script>(function(){var s=document.currentScript;var b=s?s.previousElementSibling:null;if(!b||!b.classList||!b.classList.contains("postitdesign-title-edit-btn")){return;}if(b.getAttribute("data-postit-title-inline-v4")==="1"){return;}b.setAttribute("data-postit-title-inline-v4","1");function stop(e){if(e){if(e.cancelable!==false){e.preventDefault();}e.stopPropagation();if(e.stopImmediatePropagation){e.stopImmediatePropagation();}}}function run(e){stop(e);var now=Date.now();if(b.__postitTitleInlineLockUntil&&now<b.__postitTitleInlineLockUntil){return false;}b.__postitTitleInlineLockUntil=now+900;if(typeof b.onclick==="function"){return b.onclick(e||window.event);}return false;}b.addEventListener("pointerdown",stop,true);b.addEventListener("mousedown",stop,true);try{b.addEventListener("touchstart",stop,{capture:true,passive:false});}catch(ex){b.addEventListener("touchstart",stop,true);}b.addEventListener("click",run,true);b.addEventListener("pointerup",run,true);b.addEventListener("mouseup",run,true);try{b.addEventListener("touchend",run,{capture:true,passive:false});}catch(ex){b.addEventListener("touchend",run,true);}})();</script>'; /* POSTITDESIGN_TITLE_EDIT_INLINE_FORM_V4 */
+        $titleSidePanelJs = <<<'POSTITDESIGN_TITLE_SIDE_PANEL_INLINE_JS'
+<script>
+(function(){
+  var script = document.currentScript;
+  var btn = script ? script.previousElementSibling : null;
+  if (!btn || !btn.classList || !btn.classList.contains("postitdesign-title-edit-btn")) return;
+  if (btn.getAttribute("data-postit-title-side-panel-v3") === "ready") return;
+  btn.setAttribute("data-postit-title-side-panel-v3", "ready");
+
+  function stop(e){
+    if (!e) return;
+    try { if (e.cancelable !== false) e.preventDefault(); } catch(ex) {}
+    try { e.stopPropagation(); } catch(ex) {}
+    try { if (e.stopImmediatePropagation) e.stopImmediatePropagation(); } catch(ex) {}
+  }
+
+  function closest(el, selector){
+    while (el && el !== document) {
+      try { if (el.matches && el.matches(selector)) return el; } catch(ex) {}
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  function cleanText(el){
+    return ((el && (el.innerText || el.textContent)) || "").replace(/\\s+/g, " ").trim();
+  }
+
+  function getWidget(){
+    return closest(btn, ".postitdesign-widget") ||
+           closest(btn, "[data-eqlogic_id]") ||
+           closest(btn, "[data-eqLogic_id]") ||
+           closest(btn, "[data-eqlogic-id]") ||
+           btn.parentNode;
+  }
+
+  function getEqId(widget){
+    return btn.getAttribute("data-eqlogic-id") ||
+           (widget && (
+             widget.getAttribute("data-eqlogic_id") ||
+             widget.getAttribute("data-eqLogic_id") ||
+             widget.getAttribute("data-eqlogic-id") ||
+             widget.getAttribute("data-id")
+           )) ||
+           "";
+  }
+
+  function getDesign(widget){
+    return closest(widget, "#div_displayObject") ||
+           closest(widget, ".div_displayObject") ||
+           closest(widget, ".planDisplay") ||
+           closest(widget, ".planContainer") ||
+           closest(widget, ".div_plan") ||
+           closest(widget, ".eqLogicZone") ||
+           widget.offsetParent ||
+           document.body;
+  }
+
+  function getTitle(widget){
+    var selectors = [
+      ".postitdesign-title-force",
+      ".postitdesign-title",
+      ".postitdesign-header",
+      ".postit-title",
+      "[data-postit-title]",
+      "strong",
+      "b",
+      "h3",
+      "h4"
+    ];
+
+    for (var i = 0; i < selectors.length; i++) {
+      var el = widget.querySelector(selectors[i]);
+      if (!el) continue;
+      var t = cleanText(el);
+      if (t && t !== "Titre") return t;
+    }
+
+    return "";
+  }
+
+  function setTitleDom(widget, title){
+    var selectors = [
+      ".postitdesign-title-force",
+      ".postitdesign-title",
+      ".postitdesign-header",
+      ".postit-title",
+      "[data-postit-title]",
+      "strong",
+      "b",
+      "h3",
+      "h4"
+    ];
+
+    for (var i = 0; i < selectors.length; i++) {
+      var el = widget.querySelector(selectors[i]);
+      if (!el) continue;
+      el.textContent = title;
+      return;
+    }
+  }
+
+  function removePanels(){
+    var panels = document.querySelectorAll(".postitdesign-title-side-panel-v3");
+    for (var i = 0; i < panels.length; i++) {
+      if (panels[i].parentNode) panels[i].parentNode.removeChild(panels[i]);
+    }
+  }
+
+  function installCss(){
+    if (document.getElementById("postitdesign-title-side-panel-v3-css")) return;
+
+    var st = document.createElement("style");
+    st.id = "postitdesign-title-side-panel-v3-css";
+    st.textContent =
+      ".postitdesign-title-side-panel-v3{position:absolute;width:280px;z-index:999999;font-family:Arial,sans-serif;box-sizing:border-box;touch-action:manipulation;}" +
+      ".postitdesign-title-side-panel-v3 *{box-sizing:border-box;}" +
+      ".postitdesign-title-side-panel-v3-card{background:#fff8a8;border:2px solid rgba(0,0,0,.25);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.32);padding:10px;}" +
+      ".postitdesign-title-side-panel-v3-label{font-size:15px;font-weight:800;color:#333;margin-bottom:8px;}" +
+      ".postitdesign-title-side-panel-v3-input{width:100%;height:42px;font-size:18px;border-radius:9px;border:1px solid rgba(0,0,0,.30);background:#fff;color:#111;padding:4px 8px;}" +
+      ".postitdesign-title-side-panel-v3-actions{display:flex;gap:8px;margin-top:10px;}" +
+      ".postitdesign-title-side-panel-v3-actions button{flex:1;height:42px;border:0;border-radius:9px;font-size:16px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}" +
+      ".postitdesign-title-side-panel-v3-ok{background:#22c55e;color:#fff;}" +
+      ".postitdesign-title-side-panel-v3-cancel{background:#ef4444;color:#fff;}";
+
+    document.head.appendChild(st);
+  }
+
+  function bindStrong(el, fn){
+    var lock = false;
+    var h = function(e){
+      stop(e);
+      if (lock) return false;
+      lock = true;
+      setTimeout(function(){ lock = false; }, 450);
+      fn(e);
+      return false;
+    };
+
+    ["touchstart","touchend","pointerdown","pointerup","mousedown","mouseup","click"].forEach(function(name){
+      try { el.addEventListener(name, h, {capture:true, passive:false}); }
+      catch(ex) { el.addEventListener(name, h, true); }
+    });
+  }
+
+  function ajaxSetTitle(eqId, title, done){
+    if (!eqId) {
+      done(false, "eqLogic id absent");
+      return;
+    }
+
+    if (window.$ && $.ajax) {
+      $.ajax({
+        type: "POST",
+        url: "plugins/postitdesign/core/ajax/postitdesign.ajax.php",
+        dataType: "json",
+        global: false,
+        data: {
+          action: "setTitleFromDesign",
+          id: eqId,
+          eqLogic_id: eqId,
+          title: title
+        },
+        success: function(){ done(true, "ok"); },
+        error: function(xhr){
+          done(false, xhr && xhr.responseText ? xhr.responseText : "erreur ajax");
+        }
+      });
+      return;
+    }
+
+    var body = new URLSearchParams();
+    body.set("action", "setTitleFromDesign");
+    body.set("id", eqId);
+    body.set("eqLogic_id", eqId);
+    body.set("title", title);
+
+    fetch("plugins/postitdesign/core/ajax/postitdesign.ajax.php", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"},
+      body: body.toString()
+    }).then(function(){ done(true, "ok"); }).catch(function(err){
+      done(false, err && err.message ? err.message : String(err));
+    });
+  }
+
+  function openPanel(e){
+    stop(e);
+    installCss();
+    removePanels();
+
+    var widget = getWidget();
+    if (!widget) return false;
+
+    var design = getDesign(widget);
+    if (!design) design = document.body;
+
+    var cs = window.getComputedStyle(design);
+    if (cs.position === "static") design.style.position = "relative";
+
+    var designRect = design.getBoundingClientRect();
+    var widgetRect = widget.getBoundingClientRect();
+
+    var panel = document.createElement("div");
+    panel.className = "postitdesign-title-side-panel-v3";
+    panel.innerHTML =
+      "<div class=\"postitdesign-title-side-panel-v3-card\">" +
+        "<div class=\"postitdesign-title-side-panel-v3-label\">Modifier le titre</div>" +
+        "<input class=\"postitdesign-title-side-panel-v3-input\" type=\"text\" autocomplete=\"off\">" +
+        "<div class=\"postitdesign-title-side-panel-v3-actions\">" +
+          "<button type=\"button\" class=\"postitdesign-title-side-panel-v3-ok\">OK</button>" +
+          "<button type=\"button\" class=\"postitdesign-title-side-panel-v3-cancel\">Annuler</button>" +
+        "</div>" +
+      "</div>";
+
+    design.appendChild(panel);
+
+    var input = panel.querySelector(".postitdesign-title-side-panel-v3-input");
+    var ok = panel.querySelector(".postitdesign-title-side-panel-v3-ok");
+    var cancel = panel.querySelector(".postitdesign-title-side-panel-v3-cancel");
+
+    input.value = getTitle(widget);
+
+    var panelW = 280;
+    var panelH = 148;
+    var gap = 12;
+
+    var designW = design.clientWidth || designRect.width || window.innerWidth;
+    var designH = design.clientHeight || designRect.height || window.innerHeight;
+
+    var leftInDesign = widgetRect.left - designRect.left + (design.scrollLeft || 0);
+    var topInDesign = widgetRect.top - designRect.top + (design.scrollTop || 0);
+    var rightInDesign = leftInDesign + widgetRect.width;
+
+    var roomRight = designW - rightInDesign;
+    var roomLeft = leftInDesign;
+
+    var left = (roomRight >= panelW + gap || roomRight >= roomLeft)
+      ? rightInDesign + gap
+      : leftInDesign - panelW - gap;
+
+    if (left < 8) left = 8;
+    if (left + panelW > designW - 8) left = Math.max(8, designW - panelW - 8);
+
+    var top = topInDesign;
+    if (top + panelH > designH - 8) top = Math.max(8, designH - panelH - 8);
+    if (top < 8) top = 8;
+
+    panel.style.left = left + "px";
+    panel.style.top = top + "px";
+
+    ["touchstart","touchend","pointerdown","pointerup","mousedown","mouseup","click"].forEach(function(name){
+      try { panel.addEventListener(name, stop, {capture:true, passive:false}); }
+      catch(ex) { panel.addEventListener(name, stop, true); }
+
+      try {
+        input.addEventListener(name, function(ev){
+          try { ev.stopPropagation(); } catch(x) {}
+        }, {capture:true, passive:false});
+      } catch(ex2) {}
+    });
+
+    function close(){
+      removePanels();
+    }
+
+    function save(){
+      var title = (input.value || "").trim();
+      if (!title) title = "Post-it";
+
+      ok.disabled = true;
+      ok.textContent = "...";
+
+      ajaxSetTitle(getEqId(widget), title, function(success, msg){
+        ok.disabled = false;
+        ok.textContent = "OK";
+
+        if (!success) {
+          alert("Erreur titre: " + msg);
+          return;
+        }
+
+        setTitleDom(widget, title);
+        close();
+      });
+    }
+
+    bindStrong(ok, save);
+    bindStrong(cancel, close);
+
+    input.addEventListener("keydown", function(ev){
+      try { ev.stopPropagation(); } catch(x) {}
+      if (ev.key === "Enter") {
+        stop(ev);
+        save();
+      }
+      if (ev.key === "Escape") {
+        stop(ev);
+        close();
+      }
+    }, true);
+
+    setTimeout(function(){
+      try {
+        input.focus({preventScroll:true});
+        input.select();
+      } catch(ex) {
+        try { input.focus(); input.select(); } catch(ex2) {}
+      }
+    }, 120);
+
+    return false;
+  }
+
+  ["touchstart","touchend","pointerdown","pointerup","mousedown","mouseup","click"].forEach(function(name){
+    try { btn.addEventListener(name, openPanel, {capture:true, passive:false}); }
+    catch(ex) { btn.addEventListener(name, openPanel, true); }
+  });
+})();
+</script>
+POSTITDESIGN_TITLE_SIDE_PANEL_INLINE_JS;
+
+        $html .= '<button type="button" class="postitdesign-title-edit-btn" data-eqlogic-id="' . intval($this->getId()) . '" data-postit-title-side-panel-v3="1" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" ontouchstart="event.stopPropagation();" style="' . $titleBtnStyle . '">Titre</button>'; /* POSTITDESIGN_TITLE_SIDE_PANEL_INLINE_PHP_V3 */
+        $html .= $titleSidePanelJs; /* POSTITDESIGN_TITLE_SIDE_PANEL_INLINE_PHP_V3 */
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎</button>';
         $html .= '<button type="button" class="postitdesign-rotate-btn-force" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '">⟳</button>'; /* POSTITDESIGN_ROTATE_BUTTON_IMMEDIATE_CAPTURE_CLASS_V1 */
