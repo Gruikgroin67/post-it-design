@@ -92,3 +92,11 @@ Derniere mise a jour :
 - PROD uniquement après tag GitHub validé.
 - MQTT non touché.
 - Apache non redémarré.
+
+## Règle tactile tablette - boutons dans le Design
+
+- Pour les boutons créés dynamiquement dans un post-it du Design Jeedom, ne pas se limiter à `addEventListener('click')`.
+- Sur tablette, le clic synthétique peut être intercepté par la couche tactile du Design Jeedom.
+- La méthode robuste validée est : attribut/propriété directe `onclick`, `ontouchend`, `onpointerup`, avec `return false`.
+- Ajouter aussi un verrou court anti double-déclenchement.
+- Cette règle s’applique notamment aux boutons Classic / Paper / Tape dans les options du post-it.
