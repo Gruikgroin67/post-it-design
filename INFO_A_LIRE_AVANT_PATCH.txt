@@ -55,3 +55,29 @@ Derniere mise a jour :
 - Aucun changement fonctionnel sur les post-it.
 - MQTT non utilisé.
 - Apache non redémarré.
+
+## Règles tag et déploiement postitdesign
+
+- Développer et taguer uniquement sur DEV : .
+- Répertoire DEV : .
+- Branche obligatoire : .
+- Remote GitHub obligatoire en SSH : .
+- Ne jamais remettre  en HTTPS.
+- Calculer automatiquement le tag suivant depuis le dernier tag.
+- Mettre à jour README, CHANGELOG et docs avant le tag.
+- Vérifier PHP lint sur , , .
+- Pousser  puis le tag sur GitHub.
+- Déployer la PROD uniquement après tag GitHub validé, depuis GitHub, avec le tag exact.
+- Ne pas toucher MQTT.
+- Ne pas redémarrer Apache.
+- Ne pas supprimer ou réécrire des tags sans audit préalable.
+
+## v1.0.30 - 2026-05-04
+
+- Ajout du choix du visuel directement depuis les options du post-it dans le Design.
+- Boutons disponibles : Classic, Paper, Tape.
+- Sauvegarde AJAX du choix .
+- Conservation du titre modifiable depuis le Design.
+- Conservation des pastilles de coin plus discrètes.
+- Aucun changement MQTT.
+- Aucun redémarrage Apache.

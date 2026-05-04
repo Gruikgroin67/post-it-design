@@ -1,6 +1,16 @@
 # Changelog
 
 
+
+## v1.0.30 - 2026-05-04
+
+### Options depuis le Design
+
+- Ajout du choix du visuel directement depuis les options du post-it.
+- Les boutons ,  et  sont disponibles dans le panneau d’options du post-it.
+- Le choix est sauvegardé et conservé après actualisation.
+- Aucun changement MQTT ni redémarrage Apache.
+
 ## v1.0.29 - 2026-05-04
 
 ### Interface Design

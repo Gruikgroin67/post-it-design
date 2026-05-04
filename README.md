@@ -79,4 +79,4 @@ Sécurité : pas de dépendances, pas de démon, MQTT non utilisé, aucun redém
 
 ## Dernière évolution
 
-Les pastilles d’action des coins supérieur droit et inférieur droit sont plus discrètes dans les Designs Jeedom.
+Les options du post-it dans le Design permettent maintenant de choisir directement le visuel ,  ou .
