@@ -1407,6 +1407,185 @@ POSTITDESIGN_TITLE_SIDE_PANEL_INLINE_JS;
 
         $html .= '<button type="button" class="postitdesign-title-edit-btn" data-eqlogic-id="' . intval($this->getId()) . '" data-postit-title-side-panel-v3="1" onmousedown="event.stopPropagation();" onpointerdown="event.stopPropagation();" ontouchstart="event.stopPropagation();" style="' . $titleBtnStyle . '">Titre</button>'; /* POSTITDESIGN_TITLE_SIDE_PANEL_INLINE_PHP_V3 */
         $html .= $titleSidePanelJs; /* POSTITDESIGN_TITLE_SIDE_PANEL_INLINE_PHP_V3 */
+        $remplirSidePanelJs = <<<'POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS'
+<script>
+(function(){
+  /* POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_SCRIPT_V1 */
+  var script = document.currentScript;
+  var root = script ? script.parentNode : null;
+  if (!root) return;
+
+  var widget = root;
+  while (widget && widget !== document && !(widget.classList && widget.classList.contains("postitdesign-widget"))) {
+    widget = widget.parentNode;
+  }
+  if (!widget || widget === document) return;
+  if (widget.getAttribute("data-postit-remplir-side-panel-widget-v1") === "ready") return;
+  widget.setAttribute("data-postit-remplir-side-panel-widget-v1", "ready");
+
+  function closest(el, selector){
+    while (el && el !== document) {
+      try { if (el.matches && el.matches(selector)) return el; } catch(e) {}
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  function stopBubble(e){
+    try { e.stopPropagation(); } catch(x) {}
+  }
+
+  function designOf(w){
+    return closest(w, "#div_displayObject") ||
+           closest(w, ".div_displayObject") ||
+           closest(w, ".planDisplay") ||
+           closest(w, ".planContainer") ||
+           closest(w, ".div_plan") ||
+           closest(w, ".eqLogicZone") ||
+           w.offsetParent ||
+           document.body;
+  }
+
+  function installCss(){
+    if (document.getElementById("postitdesign-remplir-side-panel-widget-v1-css")) return;
+    var st = document.createElement("style");
+    st.id = "postitdesign-remplir-side-panel-widget-v1-css";
+    st.textContent =
+      ".postitdesign-remplir-side-panel-widget-v1{position:absolute;width:330px;z-index:999998;font-family:Arial,sans-serif;box-sizing:border-box;touch-action:manipulation;}" +
+      ".postitdesign-remplir-side-panel-widget-v1 *{box-sizing:border-box;}" +
+      ".postitdesign-remplir-side-panel-widget-v1-card{background:#fff8a8;border:2px solid rgba(0,0,0,.25);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.32);padding:10px;}" +
+      ".postitdesign-remplir-side-panel-widget-v1-label{font-size:15px;font-weight:800;color:#333;margin-bottom:8px;}" +
+      ".postitdesign-remplir-side-panel-widget-v1 .postitdesign-inline-edit-v2{display:block!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;transform:none!important;position:relative!important;left:auto!important;top:auto!important;}" +
+      ".postitdesign-remplir-side-panel-widget-v1 textarea,.postitdesign-remplir-side-panel-widget-v1 input[type=text]{width:100%!important;min-height:155px!important;font-size:17px!important;line-height:1.25!important;border-radius:9px!important;border:1px solid rgba(0,0,0,.30)!important;background:#fff!important;color:#111!important;padding:8px!important;resize:vertical!important;}" +
+      ".postitdesign-remplir-side-panel-widget-v1 button{min-height:40px!important;font-size:15px!important;font-weight:800!important;border-radius:9px!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important;}";
+    document.head.appendChild(st);
+  }
+
+  function removeEmptyPanels(){
+    var panels = document.querySelectorAll(".postitdesign-remplir-side-panel-widget-v1");
+    for (var i = 0; i < panels.length; i++) {
+      if (!panels[i].querySelector(".postitdesign-inline-edit-v2")) {
+        if (panels[i].parentNode) panels[i].parentNode.removeChild(panels[i]);
+      }
+    }
+  }
+
+  function removeOtherPanels(keep){
+    var panels = document.querySelectorAll(".postitdesign-remplir-side-panel-widget-v1");
+    for (var i = 0; i < panels.length; i++) {
+      if (panels[i] !== keep && panels[i].parentNode) panels[i].parentNode.removeChild(panels[i]);
+    }
+  }
+
+  function positionPanel(panel, w, d){
+    var dr = d.getBoundingClientRect();
+    var wr = w.getBoundingClientRect();
+
+    if (window.getComputedStyle(d).position === "static") {
+      d.style.position = "relative";
+    }
+
+    var pw = 330;
+    var ph = 300;
+    var gap = 12;
+
+    var dw = d.clientWidth || dr.width || window.innerWidth;
+    var dh = d.clientHeight || dr.height || window.innerHeight;
+
+    var leftInDesign = wr.left - dr.left + (d.scrollLeft || 0);
+    var topInDesign = wr.top - dr.top + (d.scrollTop || 0);
+    var rightInDesign = leftInDesign + wr.width;
+
+    var roomRight = dw - rightInDesign;
+    var roomLeft = leftInDesign;
+
+    var left = (roomRight >= pw + gap || roomRight >= roomLeft)
+      ? rightInDesign + gap
+      : leftInDesign - pw - gap;
+
+    if (left < 8) left = 8;
+    if (left + pw > dw - 8) left = Math.max(8, dw - pw - 8);
+
+    var top = topInDesign;
+    if (top + ph > dh - 8) top = Math.max(8, dh - ph - 8);
+    if (top < 8) top = 8;
+
+    panel.style.left = left + "px";
+    panel.style.top = top + "px";
+  }
+
+  function moveEditor(){
+    var editor = widget.querySelector(".postitdesign-inline-edit-v2");
+    if (!editor) {
+      removeEmptyPanels();
+      return;
+    }
+
+    if (editor.getAttribute("data-postit-remplir-side-panel-widget-v1") === "moved") return;
+
+    installCss();
+
+    var d = designOf(widget);
+    if (!d) d = document.body;
+
+    var panel = document.createElement("div");
+    panel.className = "postitdesign-remplir-side-panel-widget-v1";
+    panel.innerHTML =
+      "<div class=\"postitdesign-remplir-side-panel-widget-v1-card\">" +
+        "<div class=\"postitdesign-remplir-side-panel-widget-v1-label\">Remplir le post-it</div>" +
+      "</div>";
+
+    d.appendChild(panel);
+    removeOtherPanels(panel);
+
+    var card = panel.querySelector(".postitdesign-remplir-side-panel-widget-v1-card");
+    editor.setAttribute("data-postit-remplir-side-panel-widget-v1", "moved");
+    card.appendChild(editor);
+
+    ["touchstart","touchend","pointerdown","pointerup","mousedown","mouseup","click"].forEach(function(name){
+      panel.addEventListener(name, stopBubble, false);
+    });
+
+    positionPanel(panel, widget, d);
+
+    setTimeout(function(){
+      var field = panel.querySelector("textarea, input[type=text]");
+      if (field) {
+        try {
+          field.focus({preventScroll:true});
+          field.select();
+        } catch(e) {
+          try { field.focus(); } catch(e2) {}
+        }
+      }
+    }, 120);
+  }
+
+  var obs = new MutationObserver(function(){
+    setTimeout(moveEditor, 20);
+  });
+
+  obs.observe(widget, {
+    childList: true,
+    subtree: true
+  });
+
+  widget.addEventListener("click", function(){
+    setTimeout(moveEditor, 20);
+    setTimeout(moveEditor, 120);
+  }, true);
+
+  widget.addEventListener("touchend", function(){
+    setTimeout(moveEditor, 20);
+    setTimeout(moveEditor, 120);
+  }, true);
+
+  setInterval(removeEmptyPanels, 1500);
+})();
+</script>
+POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
+
+        $html .= $remplirSidePanelJs; /* POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_SCRIPT_V1 */
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎</button>';
         $html .= '<button type="button" class="postitdesign-rotate-btn-force" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '">⟳</button>'; /* POSTITDESIGN_ROTATE_BUTTON_IMMEDIATE_CAPTURE_CLASS_V1 */
