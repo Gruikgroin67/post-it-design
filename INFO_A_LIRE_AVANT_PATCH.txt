@@ -277,3 +277,28 @@ Marqueurs :
 - POSTITDESIGN_PRIORITY_OUTLINE_OPTIONS_V1
 - POSTITDESIGN_PRIORITY_OUTLINE_TOUCH_V1
 - POSTITDESIGN_PRIORITY_OUTLINE_AJAX_V1
+
+## v1.0.40 - 2026-05-05 - Priorite par contour
+
+Fonction ajoutee :
+- Priorite attribuable directement depuis les options du post-it.
+- Valeurs : normal, important, urgent.
+- Normal : aucun contour supplementaire.
+- Important : contour orange.
+- Urgent : contour rouge.
+- Le contour utilise box-shadow et non border, pour ne pas modifier la taille du post-it dans le Design.
+- Sauvegarde via AJAX setPriorityFromDesign.
+- Application immediate au DOM avant reponse AJAX.
+
+Regle tactile :
+- Les boutons Priorite suivent la meme regle que Couleur rapide.
+- Utiliser touchstart/pointerdown pour declencher l'action principale sur tablette iOS/Android.
+- Garder click/touchend/pointerup pour PC et compatibilite.
+- Utiliser un verrou anti double-execution.
+- Ne pas bloquer les boutons enfants par stopPropagation en capture sur leur conteneur parent.
+
+Marqueurs :
+- POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1
+- POSTITDESIGN_PRIORITY_OUTLINE_OPTIONS_V1
+- POSTITDESIGN_PRIORITY_OUTLINE_TOUCH_V1
+- POSTITDESIGN_PRIORITY_OUTLINE_AJAX_V1

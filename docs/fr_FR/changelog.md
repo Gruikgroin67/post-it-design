@@ -1,3 +1,9 @@
+# v1.0.40 - 2026-05-05
+
+- Ajout de la priorite des post-it : Normal, Important, Urgent.
+- Contour orange ou rouge selon priorite.
+- Support tactile renforce depuis les options du post-it.
+
 # v1.0.39 - 2026-05-05
 
 - Couleurs rapides depuis les options du post-it.

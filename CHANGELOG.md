@@ -1,3 +1,13 @@
+## v1.0.40 - 2026-05-05
+
+- Ajout de la priorite des post-it depuis les options.
+- Normal : aucun contour.
+- Important : contour orange.
+- Urgent : contour rouge.
+- Sauvegarde AJAX setPriorityFromDesign.
+- Support tactile renforce avec touchstart/pointerdown et verrou anti double-execution.
+- DEV validee, PROD non touchee a ce stade.
+
 ## v1.0.39 - 2026-05-05
 
 - Ajout des couleurs rapides dans les options du post-it.
