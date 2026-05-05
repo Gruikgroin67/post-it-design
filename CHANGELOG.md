@@ -1,3 +1,11 @@
+## v1.0.39 - 2026-05-05
+
+- Ajout des couleurs rapides dans les options du post-it.
+- Ajout de la sauvegarde AJAX setColorFromDesign.
+- Correction tactile iOS/Android : les pastilles declenchent aussi sur touchstart/pointerdown avec verrou anti double-execution.
+- Correction des artefacts visuels : suppression des rectangles parasites et bande Tape rendue neutre.
+- DEV validee, PROD non touchee a ce stade.
+
 ## v1.0.38 - 2026-05-04
 
 - Ajout d'un panneau lateral adaptatif pour la modification du titre des post-it.

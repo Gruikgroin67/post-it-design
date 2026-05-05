@@ -227,3 +227,35 @@ Derniere mise a jour :
 - Couleur rapide : les pastilles tactiles doivent gérer click, pointerup et touchend avec verrou anti double-exécution ; sauvegarde via setColorFromDesign ; ne pas utiliser de menu position:fixed.
 - Style Tape : ne plus utiliser de bande haute jaune fixe ; utiliser une bande neutre/translucide pour rester compatible avec la couleur rapide.
 - Couleur rapide tactile : appliquer aussi sur touchstart/pointerdown, pas seulement touchend/click, car Jeedom peut intercepter la fin du geste sur tablette.
+
+## v1.0.39 - 2026-05-05 - Couleur rapide tactile
+
+Fonction ajoutee :
+- Pastilles de couleur rapide directement dans les options du post-it.
+- Couleurs sauvegardees via l'action AJAX setColorFromDesign.
+- Couleur appliquee immediatement au DOM avant meme la reponse AJAX.
+- Correction du style Tape : la bande haute jaune fixe est remplacee par une bande neutre/translucide compatible avec toutes les couleurs.
+
+Regle tactile importante :
+- Pour les boutons utilisables dans le Design Jeedom sur tablette, ne pas se limiter a click ou touchend.
+- Jeedom peut intercepter touchend/click sur tablette iOS ou Android.
+- Pour les boutons critiques, utiliser aussi touchstart et pointerdown avec capture:true, passive:false si possible.
+- Ajouter un verrou anti double-execution, par exemple lockUntil = Date.now() + 650/750 ms.
+- Garder click/pointerup/touchend pour PC et compatibilite, mais declencher l'action tactile principale des touchstart/pointerdown quand l'action est simple et sans saisie clavier.
+- Ne pas mettre de stopPropagation global en capture sur le conteneur parent d'une rangee de boutons : cela peut empecher les boutons enfants de recevoir l'evenement.
+- Le parent doit seulement stopper la propagation en phase bubble si besoin, pour eviter que Jeedom recupere l'evenement apres le bouton.
+
+Marqueurs associes :
+- POSTITDESIGN_QUICK_COLOR_OPTIONS_V1
+- POSTITDESIGN_QUICK_COLOR_OPTIONS_AJAX_V1
+- POSTITDESIGN_QUICK_COLOR_TOUCH_APPLY_FIX_V1
+- POSTITDESIGN_QUICK_COLOR_RECTANGLE_FIX_V1
+- POSTITDESIGN_QUICK_COLOR_TOP_BAND_FIX_V1
+- POSTITDESIGN_TAPE_TOP_BAND_NEUTRAL_V1
+- POSTITDESIGN_QUICK_COLOR_TOUCHSTART_FIX_V1
+
+A ne pas refaire :
+- Ne pas appliquer la couleur sur title/message/footer, car cela cree des rectangles parasites.
+- Ne pas garder une bordure tape jaune fixe du type rgba(245,230,140,.70).
+- Ne pas utiliser position:fixed pour les menus ou panneaux du Design.
+- Ne pas utiliser seulement touchend pour les pastilles tactiles.

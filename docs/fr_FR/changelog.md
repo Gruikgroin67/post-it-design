@@ -1,3 +1,9 @@
+# v1.0.39 - 2026-05-05
+
+- Couleurs rapides depuis les options du post-it.
+- Support tactile renforce pour tablette iOS/Android.
+- Correction visuelle du style Tape avec les couleurs rapides.
+
 # v1.0.38 - 2026-05-04
 
 - Panneau lateral adaptatif pour Titre.
