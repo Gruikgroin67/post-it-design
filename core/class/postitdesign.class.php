@@ -1679,8 +1679,31 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
     }
 
     try {
+      /* POSTITDESIGN_QUICK_COLOR_TOP_BAND_FIX_V1
+       * Le style paper/tape peut utiliser background/gradient ou une bande decorative.
+       * On force le fond principal et on nettoie les restes jaunes internes.
+       */
+      note.style.setProperty("background", color, "important");
       note.style.setProperty("background-color", color, "important");
     } catch(e2) {}
+
+    var bandSelectors = [
+      ".postitdesign-tape-force",
+      ".postitdesign-paper-tape",
+      ".postitdesign-tape",
+      ".postitdesign-top-band",
+      ".postitdesign-top-force",
+      ".postitdesign-corner-force"
+    ];
+
+    for (var j = 0; j < bandSelectors.length; j++) {
+      var band = widget.querySelector(bandSelectors[j]);
+      if (!band) continue;
+      try {
+        band.style.setProperty("background", color, "important");
+        band.style.setProperty("background-color", color, "important");
+      } catch(e4) {}
+    }
 
     try {
       widget.style.removeProperty("background-color");
