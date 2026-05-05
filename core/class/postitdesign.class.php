@@ -258,6 +258,10 @@ $title = htmlspecialchars((string)$this->cfg('postit_title', $this->getName()), 
         }
         if ($rotate < -9) { $rotate = -9; }
         if ($rotate > 9) { $rotate = 9; }
+        $priority = strtolower(trim(strval($this->cfg('postit_priority', 'normal')))); /* POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1 */
+        if (!in_array($priority, array('normal', 'important', 'urgent'), true)) {
+            $priority = 'normal';
+        }
 
         $targetPlanHeaderId = intval($this->cfg('target_planHeader_id', 0));
         if (function_exists('init')) {
@@ -623,6 +627,22 @@ POSTITDESIGN_TITLE_DIRECT_BUTTON_JS;
             $noteStyle .= 'box-shadow:0 6px 14px rgba(0,0,0,.22) !important;';
         }
 
+
+        if ($visualStyle === 'paper') { /* POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1 */
+            $priorityBaseShadow = '0 7px 16px rgba(0,0,0,.24)';
+        } elseif ($visualStyle === 'tape') {
+            $priorityBaseShadow = '0 9px 18px rgba(0,0,0,.28)';
+        } else {
+            $priorityBaseShadow = '0 6px 14px rgba(0,0,0,.22)';
+        }
+
+        if ($priority === 'important') {
+            $noteStyle .= 'box-shadow:0 0 0 3px rgba(245,158,11,.95),' . $priorityBaseShadow . ' !important;'; /* POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1 */
+        } elseif ($priority === 'urgent') {
+            $noteStyle .= 'box-shadow:0 0 0 3px rgba(220,38,38,.95),' . $priorityBaseShadow . ' !important;'; /* POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1 */
+        } else {
+            $noteStyle .= 'box-shadow:' . $priorityBaseShadow . ' !important;'; /* POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1 */
+        }
 
         $dragHandleStyle = ''
             . 'position:absolute !important;'
@@ -1064,6 +1084,8 @@ POSTITDESIGN_LINE_CLICK_JS;
         $html .= 'data-eqLogic_id="' . $this->getId() . '" ';
         $html .= 'data-target-planheader="' . $targetPlanHeaderId . '" ';
         $html .= 'data-rotate="' . $rotate . '" ';$html .= 'data-sync-rev="' . htmlspecialchars($syncRev, ENT_QUOTES, 'UTF-8') . '" ';
+        $html .= 'data-postit-priority="' . htmlspecialchars($priority, ENT_QUOTES, 'UTF-8') . '" '; /* POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1 */
+        $html .= 'data-visual-style="' . htmlspecialchars($visualStyle, ENT_QUOTES, 'UTF-8') . '" '; /* POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1 */
         $html .= 'data-eqLogic_uid="#uid#" ';
         $html .= 'data-version="' . $_version . '" ';
         $html .= 'style="' . $outerStyle . '">';
@@ -1901,6 +1923,256 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
 POSTITDESIGN_QUICK_COLOR_OPTIONS_JS;
 
         $html .= $quickColorJs; /* POSTITDESIGN_QUICK_COLOR_OPTIONS_V1 */
+        $priorityJs = <<<'POSTITDESIGN_PRIORITY_OUTLINE_OPTIONS_JS'
+<script>
+(function(){
+  /* POSTITDESIGN_PRIORITY_OUTLINE_OPTIONS_V1 */
+  var script = document.currentScript;
+  var root = script ? script.parentNode : null;
+  if (!root) return;
+
+  var widget = root;
+  while (widget && widget !== document && !(widget.classList && widget.classList.contains("postitdesign-widget"))) {
+    widget = widget.parentNode;
+  }
+  if (!widget || widget === document) return;
+  if (widget.getAttribute("data-postit-priority-outline-v1") === "ready") return;
+  widget.setAttribute("data-postit-priority-outline-v1", "ready");
+
+  function closest(el, selector){
+    while (el && el !== document) {
+      try { if (el.matches && el.matches(selector)) return el; } catch(e) {}
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  function stopSoft(e){
+    if (!e) return;
+    try { e.stopPropagation(); } catch(x) {}
+  }
+
+  function stopHard(e){
+    if (!e) return;
+    try { if (e.cancelable !== false) e.preventDefault(); } catch(x) {}
+    try { e.stopPropagation(); } catch(x) {}
+    try { if (e.stopImmediatePropagation) e.stopImmediatePropagation(); } catch(x) {}
+  }
+
+  function getEqId(){
+    return widget.getAttribute("data-eqLogic_id") ||
+           widget.getAttribute("data-eqlogic_id") ||
+           widget.getAttribute("data-eqlogic-id") ||
+           widget.getAttribute("data-id") ||
+           "";
+  }
+
+  function getVisualStyle(){
+    return (widget.getAttribute("data-visual-style") || "classic").toLowerCase();
+  }
+
+  function baseShadow(){
+    var style = getVisualStyle();
+    if (style === "paper") return "0 7px 16px rgba(0,0,0,.24)";
+    if (style === "tape") return "0 9px 18px rgba(0,0,0,.28)";
+    return "0 6px 14px rgba(0,0,0,.22)";
+  }
+
+  function noteEl(){
+    return widget.querySelector(".postitdesign-note-force") || widget;
+  }
+
+  function status(text){
+    var st = widget.querySelector(".postitdesign-status-force");
+    if (st) {
+      st.style.setProperty("display", "block", "important");
+      st.textContent = text;
+    }
+  }
+
+  function priorityLabel(priority){
+    if (priority === "important") return "Important";
+    if (priority === "urgent") return "Urgent";
+    return "Normal";
+  }
+
+  function applyPriorityToDom(priority){
+    var note = noteEl();
+    var shadow = baseShadow();
+
+    if (priority === "important") {
+      note.style.setProperty("box-shadow", "0 0 0 3px rgba(245,158,11,.95)," + shadow, "important");
+    } else if (priority === "urgent") {
+      note.style.setProperty("box-shadow", "0 0 0 3px rgba(220,38,38,.95)," + shadow, "important");
+    } else {
+      note.style.setProperty("box-shadow", shadow, "important");
+    }
+
+    widget.setAttribute("data-postit-priority", priority);
+  }
+
+  function savePriority(priority, btn){
+    var eqId = getEqId();
+    if (!eqId) {
+      status("Priorité non disponible");
+      return false;
+    }
+
+    if (["normal", "important", "urgent"].indexOf(priority) === -1) {
+      priority = "normal";
+    }
+
+    applyPriorityToDom(priority);
+    status("Priorité " + priorityLabel(priority).toLowerCase() + " enregistrée");
+
+    var body = new URLSearchParams();
+    body.append("action", "setPriorityFromDesign");
+    body.append("eqLogic_id", eqId);
+    body.append("priority", priority);
+
+    fetch("plugins/postitdesign/core/ajax/postitdesign.ajax.php", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: body.toString()
+    }).catch(function(){
+      status("Erreur sauvegarde priorité");
+    });
+
+    var row = closest(btn, ".postitdesign-priority-row");
+    if (row) {
+      var buttons = row.querySelectorAll(".postitdesign-priority-btn");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].style.outline = "0";
+        buttons[i].style.transform = "scale(1)";
+      }
+      btn.style.outline = "2px solid rgba(0,0,0,.55)";
+      btn.style.transform = "scale(1.04)";
+    }
+
+    return false;
+  }
+
+  function bindPriorityButton(btn, priority){
+    /* POSTITDESIGN_PRIORITY_OUTLINE_TOUCH_V1
+     * Meme principe valide pour couleur rapide : touchstart/pointerdown + verrou.
+     */
+    var lockUntil = 0;
+
+    function run(e){
+      stopHard(e);
+      var now = Date.now();
+      if (now < lockUntil) return false;
+      lockUntil = now + 750;
+      return savePriority(priority, btn);
+    }
+
+    btn.onclick = run;
+    btn.ontouchstart = run;
+    btn.onpointerdown = run;
+    btn.ontouchend = run;
+    btn.onpointerup = run;
+
+    ["touchstart", "pointerdown"].forEach(function(name){
+      try {
+        btn.addEventListener(name, run, {capture:true, passive:false});
+      } catch(ex) {
+        btn.addEventListener(name, run, true);
+      }
+    });
+
+    ["click", "touchend", "pointerup", "mouseup"].forEach(function(name){
+      try {
+        btn.addEventListener(name, run, {capture:true, passive:false});
+      } catch(ex) {
+        btn.addEventListener(name, run, true);
+      }
+    });
+
+    ["mousedown"].forEach(function(name){
+      try {
+        btn.addEventListener(name, stopSoft, {capture:true, passive:false});
+      } catch(ex) {
+        btn.addEventListener(name, stopSoft, true);
+      }
+    });
+  }
+
+  function ensurePriorityOptions(){
+    var footer = widget.querySelector(".postitdesign-footer-force");
+    if (!footer) return;
+    if (footer.querySelector(".postitdesign-priority-row")) return;
+
+    var row = document.createElement("span");
+    row.className = "postitdesign-priority-row";
+    row.setAttribute("data-postit-priority-row-v1", "1");
+    row.style.cssText =
+      "display:inline-flex;gap:5px;align-items:center;flex-wrap:wrap;margin-left:2px;margin-top:3px;padding:4px;border-radius:6px;background:rgba(255,255,255,.42);touch-action:manipulation;";
+
+    var label = document.createElement("span");
+    label.textContent = "Priorité";
+    label.style.cssText =
+      "font-size:11px;font-weight:800;color:#333;margin-right:1px;line-height:1;";
+    row.appendChild(label);
+
+    var items = [
+      ["normal", "Normal", "#777"],
+      ["important", "Important", "rgba(245,158,11,.95)"],
+      ["urgent", "Urgent", "rgba(220,38,38,.95)"]
+    ];
+
+    var current = (widget.getAttribute("data-postit-priority") || "normal").toLowerCase();
+
+    items.forEach(function(item){
+      var priority = item[0];
+      var labelText = item[1];
+      var color = item[2];
+
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "postitdesign-priority-btn";
+      b.setAttribute("data-postit-priority", priority);
+      b.setAttribute("title", "Priorité " + labelText);
+      b.setAttribute("aria-label", "Priorité " + labelText);
+      b.textContent = labelText;
+      b.style.cssText =
+        "min-height:30px;border-radius:8px;border:2px solid " + color + ";background:rgba(255,255,255,.82);color:#222;font-size:11px;font-weight:800;cursor:pointer;padding:5px 8px;margin:0;line-height:1;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:0 1px 3px rgba(0,0,0,.20);";
+
+      if (priority === current) {
+        b.style.outline = "2px solid rgba(0,0,0,.55)";
+        b.style.transform = "scale(1.04)";
+      }
+
+      bindPriorityButton(b, priority);
+      row.appendChild(b);
+    });
+
+    ["touchstart","touchend","pointerdown","pointerup","mousedown","mouseup","click"].forEach(function(name){
+      try {
+        row.addEventListener(name, stopSoft, false);
+      } catch(ex) {
+        row.addEventListener(name, stopSoft);
+      }
+    });
+
+    footer.appendChild(row);
+  }
+
+  ensurePriorityOptions();
+
+  var obs = new MutationObserver(function(){
+    setTimeout(ensurePriorityOptions, 20);
+  });
+
+  obs.observe(widget, {
+    childList: true,
+    subtree: true
+  });
+})();
+</script>
+POSTITDESIGN_PRIORITY_OUTLINE_OPTIONS_JS;
+
+        $html .= $priorityJs; /* POSTITDESIGN_PRIORITY_OUTLINE_OPTIONS_V1 */
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎</button>';
         $html .= '<button type="button" class="postitdesign-rotate-btn-force" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '">⟳</button>'; /* POSTITDESIGN_ROTATE_BUTTON_IMMEDIATE_CAPTURE_CLASS_V1 */

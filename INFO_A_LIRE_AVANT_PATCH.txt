@@ -259,3 +259,21 @@ A ne pas refaire :
 - Ne pas garder une bordure tape jaune fixe du type rgba(245,230,140,.70).
 - Ne pas utiliser position:fixed pour les menus ou panneaux du Design.
 - Ne pas utiliser seulement touchend pour les pastilles tactiles.
+
+## Priorite post-it - contour orange/rouge
+
+Fonction :
+- postit_priority = normal | important | urgent.
+- Normal : pas de contour supplementaire.
+- Important : contour orange via box-shadow, pas via border.
+- Urgent : contour rouge via box-shadow, pas via border.
+- Ne pas utiliser border pour la priorite : cela peut changer la taille du post-it et perturber le Design Jeedom.
+- Attribution depuis les options du post-it directement dans le Design.
+- Sauvegarde via AJAX setPriorityFromDesign.
+- Tactile : utiliser touchstart/pointerdown + click/touchend/pointerup avec verrou anti double-execution, comme pour couleur rapide.
+
+Marqueurs :
+- POSTITDESIGN_PRIORITY_OUTLINE_RENDER_V1
+- POSTITDESIGN_PRIORITY_OUTLINE_OPTIONS_V1
+- POSTITDESIGN_PRIORITY_OUTLINE_TOUCH_V1
+- POSTITDESIGN_PRIORITY_OUTLINE_AJAX_V1
