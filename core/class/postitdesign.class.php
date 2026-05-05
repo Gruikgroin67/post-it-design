@@ -1586,6 +1586,213 @@ POSTITDESIGN_TITLE_SIDE_PANEL_INLINE_JS;
 POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
 
         $html .= $remplirSidePanelJs; /* POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_SCRIPT_V1 */
+        $quickColorJs = <<<'POSTITDESIGN_QUICK_COLOR_OPTIONS_JS'
+<script>
+(function(){
+  /* POSTITDESIGN_QUICK_COLOR_OPTIONS_V1 */
+  var script = document.currentScript;
+  var root = script ? script.parentNode : null;
+  if (!root) return;
+
+  var widget = root;
+  while (widget && widget !== document && !(widget.classList && widget.classList.contains("postitdesign-widget"))) {
+    widget = widget.parentNode;
+  }
+  if (!widget || widget === document) return;
+  if (widget.getAttribute("data-postit-quick-color-v1") === "ready") return;
+  widget.setAttribute("data-postit-quick-color-v1", "ready");
+
+  function closest(el, selector){
+    while (el && el !== document) {
+      try { if (el.matches && el.matches(selector)) return el; } catch(e) {}
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  function stopSoft(e){
+    if (!e) return;
+    try { e.stopPropagation(); } catch(x) {}
+  }
+
+  function stopHard(e){
+    if (!e) return;
+    try { if (e.cancelable !== false) e.preventDefault(); } catch(x) {}
+    try { e.stopPropagation(); } catch(x) {}
+    try { if (e.stopImmediatePropagation) e.stopImmediatePropagation(); } catch(x) {}
+  }
+
+  function getEqId(){
+    return widget.getAttribute("data-eqLogic_id") ||
+           widget.getAttribute("data-eqlogic_id") ||
+           widget.getAttribute("data-eqlogic-id") ||
+           widget.getAttribute("data-id") ||
+           "";
+  }
+
+  function status(text){
+    var st = widget.querySelector(".postitdesign-status-force");
+    if (st) {
+      st.style.setProperty("display", "block", "important");
+      st.textContent = text;
+    }
+  }
+
+  function findFooter(){
+    return widget.querySelector(".postitdesign-footer-force");
+  }
+
+  function noteEl(){
+    return widget.querySelector(".postitdesign-note-force") || widget;
+  }
+
+  function saveColor(color, btn){
+    var eqId = getEqId();
+    if (!eqId) {
+      status("Couleur non disponible");
+      return false;
+    }
+
+    var note = noteEl();
+    if (note) {
+      note.style.setProperty("background-color", color, "important");
+    }
+
+    status("Couleur enregistrée");
+
+    var body = new URLSearchParams();
+    body.append("action", "setColorFromDesign");
+    body.append("eqLogic_id", eqId);
+    body.append("color", color);
+
+    fetch("/plugins/postitdesign/core/ajax/postitdesign.ajax.php", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: body.toString()
+    }).then(function(r){
+      if (!r.ok) throw new Error("HTTP " + r.status);
+    }).catch(function(){
+      status("Erreur sauvegarde couleur");
+    });
+
+    var row = closest(btn, ".postitdesign-quick-color-row");
+    if (row) {
+      var buttons = row.querySelectorAll(".postitdesign-quick-color-btn");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].style.outline = "0";
+        buttons[i].style.transform = "scale(1)";
+      }
+      btn.style.outline = "2px solid rgba(0,0,0,.55)";
+      btn.style.transform = "scale(1.08)";
+    }
+
+    return false;
+  }
+
+  function bindTouchButton(btn, color){
+    var lockUntil = 0;
+
+    function run(e){
+      stopHard(e);
+      var now = Date.now();
+      if (now < lockUntil) return false;
+      lockUntil = now + 650;
+      return saveColor(color, btn);
+    }
+
+    btn.onclick = run;
+    btn.onpointerup = run;
+    btn.ontouchend = run;
+
+    ["pointerdown", "mousedown", "touchstart"].forEach(function(name){
+      try {
+        btn.addEventListener(name, stopSoft, {capture:true, passive:false});
+      } catch(ex) {
+        btn.addEventListener(name, stopSoft, true);
+      }
+    });
+
+    ["click", "pointerup", "touchend"].forEach(function(name){
+      try {
+        btn.addEventListener(name, run, {capture:true, passive:false});
+      } catch(ex) {
+        btn.addEventListener(name, run, true);
+      }
+    });
+  }
+
+  function ensureQuickColors(){
+    var footer = findFooter();
+    if (!footer) return;
+    if (footer.querySelector(".postitdesign-quick-color-row")) return;
+
+    var row = document.createElement("span");
+    row.className = "postitdesign-quick-color-row";
+    row.setAttribute("data-postit-quick-color-row-v1", "1");
+    row.style.cssText =
+      "display:inline-flex;gap:5px;align-items:center;flex-wrap:wrap;margin-left:2px;margin-top:3px;padding:4px;border-radius:6px;background:rgba(255,255,255,.42);touch-action:manipulation;";
+
+    var label = document.createElement("span");
+    label.textContent = "Couleur";
+    label.style.cssText =
+      "font-size:11px;font-weight:800;color:#333;margin-right:1px;line-height:1;";
+    row.appendChild(label);
+
+    var colors = [
+      ["#fff4a8", "Jaune"],
+      ["#ffd6e7", "Rose"],
+      ["#dbeafe", "Bleu"],
+      ["#dcfce7", "Vert"],
+      ["#ffffff", "Blanc"],
+      ["#fed7aa", "Orange"],
+      ["#e9d5ff", "Violet"],
+      ["#e5e7eb", "Gris"]
+    ];
+
+    colors.forEach(function(pair){
+      var color = pair[0];
+      var name = pair[1];
+
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "postitdesign-quick-color-btn";
+      b.setAttribute("data-postit-color", color);
+      b.setAttribute("title", name);
+      b.setAttribute("aria-label", "Couleur " + name);
+      b.style.cssText =
+        "width:28px;height:28px;min-width:28px;min-height:28px;border-radius:50%;border:2px solid rgba(0,0,0,.22);background:" + color + ";cursor:pointer;padding:0;margin:0;line-height:1;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:0 1px 3px rgba(0,0,0,.25);";
+
+      bindTouchButton(b, color);
+      row.appendChild(b);
+    });
+
+    ["touchstart","touchend","pointerdown","pointerup","mousedown","mouseup","click"].forEach(function(name){
+      try {
+        row.addEventListener(name, stopSoft, {capture:true, passive:false});
+      } catch(ex) {
+        row.addEventListener(name, stopSoft, true);
+      }
+    });
+
+    footer.appendChild(row);
+  }
+
+  ensureQuickColors();
+
+  var obs = new MutationObserver(function(){
+    setTimeout(ensureQuickColors, 20);
+  });
+
+  obs.observe(widget, {
+    childList: true,
+    subtree: true
+  });
+})();
+</script>
+POSTITDESIGN_QUICK_COLOR_OPTIONS_JS;
+
+        $html .= $quickColorJs; /* POSTITDESIGN_QUICK_COLOR_OPTIONS_V1 */
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $newJsAttr . '" onclick="' . $newJsAttr . '" style="' . $newBtnStyle . '">+</button>';
         $html .= '<button type="button" ontouchstart="event.stopPropagation();" ontouchend="' . $completeJsAttr . '" onclick="' . $completeJsAttr . '" style="' . $btnStyle . '">✎</button>';
         $html .= '<button type="button" class="postitdesign-rotate-btn-force" ontouchend="' . $rotateJsAttr . '" onclick="' . $rotateJsAttr . '" style="' . $rotateBtnStyle . '">⟳</button>'; /* POSTITDESIGN_ROTATE_BUTTON_IMMEDIATE_CAPTURE_CLASS_V1 */

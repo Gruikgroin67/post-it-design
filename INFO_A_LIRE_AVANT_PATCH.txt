@@ -224,3 +224,4 @@ Derniere mise a jour :
 - MQTT non touché.
 - Apache non redémarré.
 - v1.0.38 : pour les actions tactiles avec clavier tablette, preferer un panneau lateral adaptatif gauche/droite plutot qu'un champ integre dans le post-it.
+- Couleur rapide : les pastilles tactiles doivent gérer click, pointerup et touchend avec verrou anti double-exécution ; sauvegarde via setColorFromDesign ; ne pas utiliser de menu position:fixed.
