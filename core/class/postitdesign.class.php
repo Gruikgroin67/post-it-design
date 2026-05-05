@@ -1758,33 +1758,51 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
   }
 
   function bindTouchButton(btn, color){
+    /* POSTITDESIGN_QUICK_COLOR_TOUCHSTART_FIX_V1
+     * Sur tablette Jeedom peut intercepter touchend/click.
+     * On applique donc la couleur des touchstart/pointerdown, avec verrou anti double execution.
+     */
     var lockUntil = 0;
 
     function run(e){
       stopHard(e);
       var now = Date.now();
       if (now < lockUntil) return false;
-      lockUntil = now + 650;
+      lockUntil = now + 750;
       return saveColor(color, btn);
+    }
+
+    function arm(e){
+      return run(e);
     }
 
     btn.onclick = run;
     btn.onpointerup = run;
     btn.ontouchend = run;
+    btn.onpointerdown = arm;
+    btn.ontouchstart = arm;
 
-    ["pointerdown", "mousedown", "touchstart"].forEach(function(name){
+    ["touchstart", "pointerdown"].forEach(function(name){
       try {
-        btn.addEventListener(name, stopSoft, {capture:true, passive:false});
+        btn.addEventListener(name, arm, {capture:true, passive:false});
       } catch(ex) {
-        btn.addEventListener(name, stopSoft, true);
+        btn.addEventListener(name, arm, true);
       }
     });
 
-    ["click", "pointerup", "touchend"].forEach(function(name){
+    ["click", "pointerup", "touchend", "mouseup"].forEach(function(name){
       try {
         btn.addEventListener(name, run, {capture:true, passive:false});
       } catch(ex) {
         btn.addEventListener(name, run, true);
+      }
+    });
+
+    ["mousedown"].forEach(function(name){
+      try {
+        btn.addEventListener(name, stopSoft, {capture:true, passive:false});
+      } catch(ex) {
+        btn.addEventListener(name, stopSoft, true);
       }
     });
   }
