@@ -612,7 +612,7 @@ POSTITDESIGN_TITLE_DIRECT_BUTTON_JS;
         } elseif ($visualStyle === 'tape') {
             $noteStyle .= 'background:' . $color . ' !important;';
             $noteStyle .= 'background-image:linear-gradient(to bottom, rgba(255,255,255,.58) 0px, rgba(255,255,255,.25) 24px, rgba(255,255,255,0) 25px), linear-gradient(135deg, rgba(255,255,255,.22), rgba(0,0,0,.04)) !important;';
-            $noteStyle .= 'border-top:8px solid rgba(245,230,140,.70) !important;';
+            $noteStyle .= 'border-top:8px solid rgba(255,255,255,.38) !important;'; /* POSTITDESIGN_TAPE_TOP_BAND_NEUTRAL_V1 */
             $noteStyle .= 'border-radius:3px !important;';
             $noteStyle .= 'box-shadow:0 9px 18px rgba(0,0,0,.28) !important;';
         } else {
@@ -696,7 +696,7 @@ POSTITDESIGN_TITLE_DIRECT_BUTTON_JS;
           note.style.setProperty('box-shadow','0 7px 16px rgba(0,0,0,.24)','important');
         }else if(style==='tape'){
           note.style.setProperty('background-image','linear-gradient(to bottom, rgba(255,255,255,.58) 0px, rgba(255,255,255,.25) 24px, rgba(255,255,255,0) 25px), linear-gradient(135deg, rgba(255,255,255,.22), rgba(0,0,0,.04))','important');
-          note.style.setProperty('border-top','8px solid rgba(245,230,140,.70)','important');
+          note.style.setProperty('border-top','8px solid rgba(255,255,255,.38)','important');/* POSTITDESIGN_TAPE_TOP_BAND_NEUTRAL_V1 */
           note.style.setProperty('border-radius','3px','important');
           note.style.setProperty('box-shadow','0 9px 18px rgba(0,0,0,.28)','important');
         }else{
@@ -1685,6 +1685,9 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
        */
       note.style.setProperty("background", color, "important");
       note.style.setProperty("background-color", color, "important");
+      if ((widget.getAttribute("data-visual-style") || "").toLowerCase() === "tape") {
+        note.style.setProperty("border-top", "8px solid rgba(255,255,255,.38)", "important");
+      }
     } catch(e2) {}
 
     var bandSelectors = [
