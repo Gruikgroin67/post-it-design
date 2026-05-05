@@ -1643,7 +1643,43 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
   }
 
   function noteEl(){
-    return widget.querySelector(".postitdesign-note-force") || widget;
+    return widget.querySelector(".postitdesign-note-force") ||
+           widget.querySelector(".postitdesign-paper-force") ||
+           widget.querySelector(".postitdesign-card-force") ||
+           widget.querySelector(".postitdesign-content-force") ||
+           widget.querySelector(".postitdesign-title-force") ||
+           widget;
+  }
+
+  function applyColorToDom(color){
+    /* POSTITDESIGN_QUICK_COLOR_TOUCH_APPLY_FIX_V1 */
+    var selectors = [
+      ".postitdesign-note-force",
+      ".postitdesign-paper-force",
+      ".postitdesign-card-force",
+      ".postitdesign-content-force",
+      ".postitdesign-title-force",
+      ".postitdesign-message-force",
+      ".postitdesign-footer-force"
+    ];
+
+    var applied = false;
+
+    for (var i = 0; i < selectors.length; i++) {
+      var el = widget.querySelector(selectors[i]);
+      if (!el) continue;
+      try {
+        el.style.setProperty("background-color", color, "important");
+        applied = true;
+      } catch(e) {}
+    }
+
+    try {
+      widget.style.setProperty("background-color", color, "important");
+      applied = true;
+    } catch(e2) {}
+
+    return applied;
   }
 
   function saveColor(color, btn){
@@ -1653,10 +1689,7 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
       return false;
     }
 
-    var note = noteEl();
-    if (note) {
-      note.style.setProperty("background-color", color, "important");
-    }
+    applyColorToDom(color);
 
     status("Couleur enregistrée");
 
@@ -1665,7 +1698,7 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
     body.append("eqLogic_id", eqId);
     body.append("color", color);
 
-    fetch("/plugins/postitdesign/core/ajax/postitdesign.ajax.php", {
+    fetch("plugins/postitdesign/core/ajax/postitdesign.ajax.php", {
       method: "POST",
       credentials: "same-origin",
       headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -1767,11 +1800,15 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
       row.appendChild(b);
     });
 
+    /* POSTITDESIGN_QUICK_COLOR_TOUCH_APPLY_FIX_V1
+     * Ne pas stopper la propagation en capture sur la ligne, sinon les pastilles ne reçoivent pas le touch/click.
+     * On stoppe seulement en phase bubble pour éviter que Jeedom récupère l'évènement après le bouton.
+     */
     ["touchstart","touchend","pointerdown","pointerup","mousedown","mouseup","click"].forEach(function(name){
       try {
-        row.addEventListener(name, stopSoft, {capture:true, passive:false});
+        row.addEventListener(name, stopSoft, false);
       } catch(ex) {
-        row.addEventListener(name, stopSoft, true);
+        row.addEventListener(name, stopSoft);
       }
     });
 
