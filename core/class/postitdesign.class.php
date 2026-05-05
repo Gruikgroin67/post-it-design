@@ -1653,33 +1653,41 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
 
   function applyColorToDom(color){
     /* POSTITDESIGN_QUICK_COLOR_TOUCH_APPLY_FIX_V1 */
-    var selectors = [
-      ".postitdesign-note-force",
-      ".postitdesign-paper-force",
-      ".postitdesign-card-force",
-      ".postitdesign-content-force",
+    /* POSTITDESIGN_QUICK_COLOR_RECTANGLE_FIX_V1
+     * Ne pas colorer title/message/footer : cela cree des rectangles parasites
+     * sur les styles paper/tape et avec rotation.
+     */
+    var note = widget.querySelector(".postitdesign-note-force") ||
+               widget.querySelector(".postitdesign-paper-force") ||
+               widget.querySelector(".postitdesign-card-force") ||
+               widget.querySelector(".postitdesign-content-force") ||
+               widget;
+
+    var cleanupSelectors = [
       ".postitdesign-title-force",
       ".postitdesign-message-force",
       ".postitdesign-footer-force"
     ];
 
-    var applied = false;
-
-    for (var i = 0; i < selectors.length; i++) {
-      var el = widget.querySelector(selectors[i]);
-      if (!el) continue;
+    for (var i = 0; i < cleanupSelectors.length; i++) {
+      var sub = widget.querySelector(cleanupSelectors[i]);
+      if (!sub) continue;
       try {
-        el.style.setProperty("background-color", color, "important");
-        applied = true;
+        sub.style.removeProperty("background-color");
+        sub.style.removeProperty("background");
       } catch(e) {}
     }
 
     try {
-      widget.style.setProperty("background-color", color, "important");
-      applied = true;
+      note.style.setProperty("background-color", color, "important");
     } catch(e2) {}
 
-    return applied;
+    try {
+      widget.style.removeProperty("background-color");
+      widget.style.removeProperty("background");
+    } catch(e3) {}
+
+    return true;
   }
 
   function saveColor(color, btn){
@@ -1815,6 +1823,25 @@ POSTITDESIGN_REMPLIR_SIDE_PANEL_WIDGET_JS;
     footer.appendChild(row);
   }
 
+  function cleanQuickColorRectanglesOnLoad(){
+    /* POSTITDESIGN_QUICK_COLOR_RECTANGLE_FIX_V1 */
+    var cleanupSelectors = [
+      ".postitdesign-title-force",
+      ".postitdesign-message-force",
+      ".postitdesign-footer-force"
+    ];
+
+    for (var i = 0; i < cleanupSelectors.length; i++) {
+      var sub = widget.querySelector(cleanupSelectors[i]);
+      if (!sub) continue;
+      try {
+        sub.style.removeProperty("background-color");
+        sub.style.removeProperty("background");
+      } catch(e) {}
+    }
+  }
+
+  cleanQuickColorRectanglesOnLoad();
   ensureQuickColors();
 
   var obs = new MutationObserver(function(){
