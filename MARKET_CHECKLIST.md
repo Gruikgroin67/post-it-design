@@ -1,21 +1,31 @@
-# Market Checklist - Post-it Design
+# Checklist Market Jeedom
 
-## Version
+Version contrôlée : **v1.0.40**  
+Date : 2026-05-06
 
-v1.0.8
+## Structure
 
-## Vérifications
+- [x] `plugin_info/info.json` présent
+- [x] `core/` présent
+- [x] `desktop/` présent
+- [x] `docs/` présent
+- [x] `README.md` présent
+- [x] `CHANGELOG.md` présent
 
-- [x] Le plugin s’installe dans Jeedom.
-- [x] Le post-it peut être affiché sur un Design.
-- [x] Le post-it passe au-dessus des widgets Jeedom.
-- [x] Le déplacement reste disponible.
-- [x] La position X/Y est sauvegardée.
-- [x] La rotation fonctionne par appui simple.
-- [x] Les boutons du post-it restent accessibles.
-- [x] Le décollage du Design ne supprime pas l’équipement.
-- [x] Le correctif de calque reste local au post-it.
-- [x] Documentation principale mise à jour.
-- [x] Changelog public mis à jour.
-- [x] README mis à jour.
-- [x] PROD non modifiée par ce tag.
+## Conformité
+
+- [x] ID plugin stable : `postitdesign`
+- [x] Pas de dépendances système déclarées
+- [x] Pas de démon
+- [x] Documentation utilisateur disponible
+- [x] Changelog disponible
+- [x] Version Git taguée
+
+## Avant soumission
+
+- [x] README aligné sur la dernière version
+- [x] Informations Market mises à jour
+- [x] Fichiers obsolètes remplacés
+- [ ] Compte développeur Market Jeedom validé
+- [ ] Prix défini dans le Market
+- [ ] Plugin soumis au Market

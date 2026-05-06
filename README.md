@@ -4,7 +4,7 @@ Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Je
 
 ## Version actuelle
 
-`v1.0.37`
+`v1.0.40`
 
 ## Fonctions
 
@@ -80,3 +80,20 @@ Sécurité : pas de dépendances, pas de démon, MQTT non utilisé, aucun redém
 ## Dernière évolution
 
 Le bouton `Titre` ouvre maintenant un champ intégré dans les options du post-it, avec `OK` et `Annuler`. Cette méthode remplace l’usage du `prompt` navigateur et fiabilise la modification du titre sur tablette.
+
+
+## Publication Market Jeedom
+
+Version préparée pour publication : **v1.0.40**.
+
+État du plugin :
+- Plugin ID : `postitdesign`
+- Nom : `Post-it Design`
+- Jeedom requis : `4.4`
+- Licence : `AGPL`
+- Démon : non
+- Dépendances : non
+- Documentation : présente
+- Changelog : présent
+
+Le plugin est prévu pour une publication Market Jeedom après validation du compte développeur.

@@ -1,29 +1,35 @@
-# Market Release Info - Post-it Design
+# Informations de publication Market Jeedom
 
-## Version
+Date de préparation : 2026-05-06
 
-v1.0.8
+## Plugin
 
-## Date
+- Nom : Post-it Design
+- ID Jeedom : `postitdesign`
+- Version candidate : `v1.0.40`
+- Jeedom requis : `4.4`
+- Licence : AGPL
+- Démon : non
+- Dépendances système : non
 
-2026-05-01 13:05:27
+## Description courte
 
-## Résumé
+Post-it Design permet d'ajouter, modifier, déplacer, masquer et organiser des post-it directement dans les Designs Jeedom.
 
-Version de correction du calque d’affichage sur les Designs Jeedom.
+## Description longue
 
-## Changements principaux
+Le plugin ajoute une gestion visuelle de post-it dans les Designs Jeedom. Il permet de créer des notes depuis une commande dédiée, de modifier leur contenu, leur titre, leur couleur, leur priorité visuelle et leur affichage sans perturber le déplacement natif des widgets Jeedom.
 
-- Le post-it passe au-dessus des widgets Jeedom.
-- Le correctif est local au widget post-it.
-- Le Design complet n’est pas modifié.
-- Le déplacement reste disponible.
-- Les boutons restent accessibles.
-- Suppression des anciens mécanismes dangereux.
-- Documentation et changelog mis à jour.
+## Points validés
 
-## État
+- Structure plugin Jeedom présente.
+- Fichier `plugin_info/info.json` valide.
+- Documentation présente dans `docs/`.
+- Changelog présent.
+- Pas de démon.
+- Pas de dépendances externes.
+- Fonctionnement prévu sur Jeedom 4.4+.
 
-- Travail fait sur DEV.
-- PROD non modifiée par ce tag.
-- Tag : v1.0.8
+## Notes pour validation
+
+Le plugin est prêt à être présenté à Jeedom pour activation du compte développeur Market et publication payante.
