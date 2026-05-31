@@ -1,5 +1,11 @@
 # Changelog - Post-it Design
 
+## v1.0.45 - 2026-05-31
+
+- Ajout de l’icône Market du plugin.
+- Documentation publique alignée avec le nouveau tag.
+- Aucun changement fonctionnel du plugin.
+
 ## v1.0.44 - 2026-05-31
 
 - Version finale Market avec documentation publique en HTML statique.
