@@ -1,9 +1,7 @@
 {
   "id": "postitdesign",
   "name": "Post-it Design",
-  "description": {
-    "fr_FR": "Post-it Design permet d’afficher, personnaliser, déplacer et organiser des post-it directement dans les Designs Jeedom, avec création depuis le Design, couleurs rapides, styles visuels, priorités et sauvegarde automatique des positions."
-  },
+  "description": "Post-it Design permet d’ajouter des post-it interactifs directement dans les Designs Jeedom. Le plugin permet de créer, afficher, déplacer, modifier, personnaliser, masquer et organiser des notes visuelles depuis un Design, avec couleurs rapides, styles visuels, priorités et commande + Post-it.",
   "licence": "AGPL",
   "author": "Emmanuel",
   "require": "4.4",
@@ -13,6 +11,11 @@
   "maxDependancyInstallTime": 0,
   "changelog": "https://gruikgroin67.github.io/post-it-design/#language#/changelog/",
   "documentation": "https://gruikgroin67.github.io/post-it-design/#language#/",
+  "link": {
+    "forum": "https://community.jeedom.com/",
+    "video": "",
+    "github": "https://github.com/Gruikgroin67/post-it-design"
+  },
   "language": [
     "fr_FR"
   ],
@@ -23,7 +26,5 @@
     "docker",
     "diy",
     "v4"
-  ],
-  "documentation_beta": "https://gruikgroin67.github.io/post-it-design/#language#/",
-  "changelog_beta": "https://gruikgroin67.github.io/post-it-design/#language#/changelog/"
+  ]
 }

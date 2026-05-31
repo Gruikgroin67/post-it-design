@@ -6,7 +6,7 @@ Il sert à afficher des notes visuelles, rappels, consignes ou informations rapi
 
 ## Version actuelle
 
-`v1.0.45`
+`v1.0.46`
 
 ## Présentation
 

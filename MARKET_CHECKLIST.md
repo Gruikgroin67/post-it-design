@@ -1,6 +1,6 @@
 # Checklist Market Jeedom
 
-Version contrôlée : **v1.0.45**
+Version contrôlée : **v1.0.46**
 Date : 2026-05-31
 
 ## Structure
@@ -24,7 +24,7 @@ Date : 2026-05-31
 - [x] Documentation utilisateur disponible
 - [x] Changelog disponible
 - [x] Liens documentation/changelog configurés avec `#language#`
-- [x] Version Git préparée : `v1.0.45`
+- [x] Version Git préparée : `v1.0.46`
 - [x] Compte développeur Market Jeedom validé
 
 ## Avant soumission

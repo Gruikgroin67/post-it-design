@@ -1,5 +1,12 @@
 # Changelog - Post-it Design
 
+## v1.0.46 - 2026-05-31
+
+- Correction complète des métadonnées Market dans `plugin_info/info.json`.
+- Description Market rendue compatible avec l’affichage Jeedom.
+- Documentation et changelog alignés avec le nouveau tag.
+- Aucun changement fonctionnel du plugin.
+
 ## v1.0.45 - 2026-05-31
 
 - Ajout de l’icône Market du plugin.

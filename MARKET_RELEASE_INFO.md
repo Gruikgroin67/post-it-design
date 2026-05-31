@@ -6,7 +6,7 @@ Date de préparation : 2026-05-31
 
 - Nom : Post-it Design
 - ID Jeedom : `postitdesign`
-- Version candidate : `v1.0.45`
+- Version candidate : `v1.0.46`
 - Jeedom requis : `4.4`
 - Catégorie : `communication`
 - Licence : `AGPL`
