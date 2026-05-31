@@ -6,7 +6,7 @@ Le plugin permet de créer, afficher, déplacer, personnaliser et organiser des 
 
 ## Version actuelle
 
-`v1.0.42`
+`v1.0.43`
 
 ## Fonctions principales
 
@@ -54,7 +54,7 @@ https://github.com/Gruikgroin67/post-it-design
 
 ## Publication Market Jeedom
 
-Version préparée pour publication : **v1.0.42**.
+Version préparée pour publication : **v1.0.43**.
 
 État du plugin :
 

@@ -44,8 +44,8 @@ jobs:
 
           test -f _site/fr_FR/index.md
           test -f _site/fr_FR/changelog/index.md
-          grep -q 'v1.0.42' _site/fr_FR/index.md
-          grep -q 'v1.0.42' _site/fr_FR/changelog/index.md
+          grep -q 'v1.0.43' _site/fr_FR/index.md
+          grep -q 'v1.0.43' _site/fr_FR/changelog/index.md
 
           if grep -R -i -E 'MQTT|Apache|PROD|DEV valid|DEV validée|DEV validee|non touch|redémarr|redemarr' _site; then
             echo "Internal words found in public documentation"
