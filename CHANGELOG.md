@@ -1,5 +1,13 @@
 # Changelog - Post-it Design
 
+## v1.0.42 - 2026-05-31
+
+- Alignement de la documentation publique avec la version candidate Market.
+- Nettoyage des textes publics pour une présentation plus claire du plugin.
+- Mise à jour des informations de publication Market.
+- Changelog public harmonisé.
+- Aucun changement fonctionnel du plugin.
+
 ## v1.0.40 - 2026-05-05
 
 - Ajout de la priorité des post-it.

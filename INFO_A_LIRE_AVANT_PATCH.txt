@@ -1,7 +1,7 @@
 POST-IT DESIGN — INFO À LIRE AVANT PATCH
 
 Dernière préparation Market : 2026-05-31
-Version de référence : v1.0.40
+Version de référence : v1.0.42
 
 RÈGLES IMPORTANTES
 
@@ -18,7 +18,7 @@ RÈGLES IMPORTANTES
 PUBLICATION MARKET
 
 - Le plugin est préparé pour publication Market Jeedom.
-- Version candidate actuelle : v1.0.40.
+- Version candidate actuelle : v1.0.42.
 - Fichiers publics utiles : README.md, CHANGELOG.md, docs/fr_FR/index.md, docs/fr_FR/changelog.md, docs/fr_FR/changelog/index.md.
 - Fichiers de suivi Market : MARKET_CHECKLIST.md, MARKET_RELEASE_INFO.md.
 - La documentation publique ne doit pas contenir de notes internes de développement ou d’infrastructure.
