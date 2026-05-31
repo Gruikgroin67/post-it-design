@@ -1,33 +1,46 @@
 # Post-it Design
 
-Plugin Jeedom permettant d’afficher des post-it directement sur les Designs Jeedom.
+Post-it Design est un plugin Jeedom permettant d’ajouter des notes visuelles directement dans les Designs Jeedom.
+
+Le plugin permet de créer, afficher, déplacer, personnaliser et organiser des post-it dans une interface de Design, avec une utilisation adaptée au poste fixe comme à la tablette.
 
 ## Version actuelle
 
 `v1.0.40`
 
-## Fonctions
+## Fonctions principales
 
-- Post-it affichable sur un Design Jeedom.
-- Déplacement visuel.
-- Sauvegarde de la position X/Y.
-- Rotation par appui simple.
-- Modification depuis le Design.
-- Décollage du Design sans suppression de l’équipement.
-- Options masquées par défaut.
-- Styles visuels : Classic, Paper, Tape.
-- Aperçu dynamique du style visuel.
-- Passage du post-it au-dessus des widgets Jeedom sans calque global.
+- Création de post-it depuis Jeedom.
+- Affichage des post-it dans les Designs Jeedom.
+- Commande `+ Post-it` installable dans un Design pour créer rapidement une nouvelle note.
+- Déplacement visuel des post-it.
+- Sauvegarde automatique de la position.
+- Modification du titre et du contenu depuis le Design.
+- Choix de couleurs rapides depuis les options.
+- Styles visuels : `Classic`, `Paper`, `Tape`.
+- Priorités visuelles : `Normal`, `Important`, `Urgent`.
+- Rotation du post-it.
+- Masquage et réaffichage des post-it d’un Design.
+- Décollage d’un post-it du Design sans supprimer l’équipement Jeedom.
+- Interface pensée pour les usages tactiles.
 
-## Note technique
+## Principe
 
-Le post-it doit rester isolé dans son propre widget.
+Chaque post-it reste isolé dans son propre rendu afin de ne pas perturber les autres widgets du Design.
 
-Le plugin conserve une logique d’affichage isolée : seul le post-it et son parent Jeedom direct sont relevés dans l’ordre d’affichage.
+La commande `+ Post-it` est une commande Jeedom séparée. Elle permet de créer un nouveau post-it depuis le Design sans modifier le comportement des post-it déjà présents.
+
+## Compatibilité
+
+- Jeedom requis : `4.4`
+- Langue disponible : `fr_FR`
+- Démon : non
+- Dépendances système : non
+- Licence : `AGPL`
 
 ## Documentation
 
-Documentation GitHub Pages :
+Documentation utilisateur :
 
 https://gruikgroin67.github.io/post-it-design/fr_FR/
 
@@ -39,61 +52,20 @@ https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/
 
 https://github.com/Gruikgroin67/post-it-design
 
-Dernière mise à jour : 20260501_130525
-
-## Commande  dans un Design
-
-Depuis v1.0.25, le plugin peut installer une vraie commande Jeedom  dans un Design depuis l'interface du plugin.
-
-Principe retenu :
-
-- les vrais post-it sont isolés du  natif Jeedom ;
-- les vrais post-it ne portent pas la classe  ;
-- la commande  est une commande Jeedom séparée ;
-- déplacer un autre widget du Design ne doit pas déplacer les post-it existants.
-
-Documentation détaillée : voir la documentation GitHub Pages du plugin.
-
-## État v1.0.26
-
-Version stable préparée pour publication sur le Market Jeedom.
-
-Fonctions principales :
-
-- vrais post-it isolés du  Jeedom ;
-- commande Jeedom native  installable depuis l’interface plugin ;
-- commande visible et déplaçable dans un Design ;
-- création de nouveau post-it depuis le Design ;
-- rendu de commande en mini post-it ;
-- styles , ,  ;
-- rotation  ;
-- rotation conservée après actualisation.
-
-Documentation détaillée : voir la documentation GitHub Pages du plugin.
-
-Sécurité : pas de dépendances, pas de démon, MQTT non utilisé, aucun redémarrage Apache requis.
-
-## Préparation Market Jeedom
-
-`v1.0.27` nettoie les métadonnées publiques, la documentation et le changelog pour une publication propre sur le Market Jeedom.
-
-## Dernière évolution
-
-Le bouton `Titre` ouvre maintenant un champ intégré dans les options du post-it, avec `OK` et `Annuler`. Cette méthode remplace l’usage du `prompt` navigateur et fiabilise la modification du titre sur tablette.
-
-
 ## Publication Market Jeedom
 
 Version préparée pour publication : **v1.0.40**.
 
 État du plugin :
+
 - Plugin ID : `postitdesign`
 - Nom : `Post-it Design`
+- Catégorie : `communication`
 - Jeedom requis : `4.4`
 - Licence : `AGPL`
-- Démon : non
-- Dépendances : non
 - Documentation : présente
 - Changelog : présent
+- Démon : non
+- Dépendances : non
 
-Le plugin est prévu pour une publication Market Jeedom après validation du compte développeur.
+Dernière mise à jour documentation : 2026-05-31.

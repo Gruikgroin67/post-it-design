@@ -1,21 +1,41 @@
 POST-IT DESIGN — INFO À LIRE AVANT PATCH
 
-Dernière préparation Market : 2026-05-06
+Dernière préparation Market : 2026-05-31
 Version de référence : v1.0.40
 
 RÈGLES IMPORTANTES
-- Travailler uniquement sur DEV : /var/www/html/plugins/postitdesign
-- Ne pas modifier PROD sauf demande explicite.
-- Ne pas toucher MQTT.
-- Ne pas redémarrer Apache.
+
+- Travailler uniquement sur DEV : /var/www/html/plugins/postitdesign.
+- Ne pas modifier une installation de production sans demande explicite.
 - Ne pas casser le déplacement natif Jeedom des widgets.
-- Le bouton + Post-it est une vraie commande Jeedom.
-- Les vrais post-it ne doivent pas redevenir des widgets Jeedom gérés par savePlan().
+- Le bouton + Post-it est une vraie commande Jeedom séparée.
+- Les vrais post-it ne doivent pas redevenir des widgets gérés globalement par savePlan().
 - Toujours analyser le code réel avant patch.
 - Toujours faire un backup et un commit avant modification.
-- Toujours vérifier JSON/PHP/docs avant push.
+- Toujours vérifier JSON, PHP, documentation et changelog avant push.
+- Ne jamais publier une modification Market sans relecture des fichiers publics.
 
 PUBLICATION MARKET
-- Le plugin est préparé pour validation développeur Jeedom.
-- Fichiers utiles : README.md, CHANGELOG.md, MARKET_CHECKLIST.md, MARKET_RELEASE_INFO.md.
+
+- Le plugin est préparé pour publication Market Jeedom.
 - Version candidate actuelle : v1.0.40.
+- Fichiers publics utiles : README.md, CHANGELOG.md, docs/fr_FR/index.md, docs/fr_FR/changelog.md, docs/fr_FR/changelog/index.md.
+- Fichiers de suivi Market : MARKET_CHECKLIST.md, MARKET_RELEASE_INFO.md.
+- La documentation publique ne doit pas contenir de notes internes de développement ou d’infrastructure.
+
+POINTS FONCTIONNELS À PRÉSERVER
+
+- Création de post-it.
+- Affichage sur Design.
+- Commande + Post-it.
+- Déplacement des post-it.
+- Cantonnement dans le Design.
+- Options visibles depuis le post-it.
+- Modification du titre.
+- Modification du contenu.
+- Couleurs rapides.
+- Styles Classic, Paper, Tape.
+- Priorités Normal, Important, Urgent.
+- Rotation.
+- Masquage et réaffichage.
+- Décollage sans suppression de l’équipement.

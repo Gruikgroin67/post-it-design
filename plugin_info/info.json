@@ -2,7 +2,7 @@
   "id": "postitdesign",
   "name": "Post-it Design",
   "description": {
-    "fr_FR": "Post-it Design permet d’afficher, personnaliser et déplacer des post-it directement dans les Designs Jeedom, avec création depuis le Design, styles visuels, rotation et sauvegarde automatique des positions."
+    "fr_FR": "Post-it Design permet d’afficher, personnaliser, déplacer et organiser des post-it directement dans les Designs Jeedom, avec création depuis le Design, couleurs rapides, styles visuels, priorités et sauvegarde automatique des positions."
   },
   "licence": "AGPL",
   "author": "Emmanuel",

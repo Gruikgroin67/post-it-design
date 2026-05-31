@@ -1,196 +1,165 @@
+# Changelog - Post-it Design
+
 ## v1.0.40 - 2026-05-05
 
-- Ajout de la priorite des post-it depuis les options.
-- Normal : aucun contour.
-- Important : contour orange.
-- Urgent : contour rouge.
-- Sauvegarde AJAX setPriorityFromDesign.
-- Support tactile renforce avec touchstart/pointerdown et verrou anti double-execution.
-- DEV validee, PROD non touchee a ce stade.
+- Ajout de la priorité des post-it.
+- Priorités disponibles : `Normal`, `Important`, `Urgent`.
+- Ajout d’un contour orange pour les post-it importants.
+- Ajout d’un contour rouge pour les post-it urgents.
+- Sauvegarde de la priorité depuis les options du post-it.
+- Amélioration de l’utilisation tactile dans les options.
 
 ## v1.0.39 - 2026-05-05
 
-- Ajout des couleurs rapides dans les options du post-it.
-- Ajout de la sauvegarde AJAX setColorFromDesign.
-- Correction tactile iOS/Android : les pastilles declenchent aussi sur touchstart/pointerdown avec verrou anti double-execution.
-- Correction des artefacts visuels : suppression des rectangles parasites et bande Tape rendue neutre.
-- DEV validee, PROD non touchee a ce stade.
+- Ajout des couleurs rapides depuis les options du post-it.
+- Application immédiate de la couleur dans le Design.
+- Sauvegarde de la couleur du post-it.
+- Correction du rendu du style `Tape` avec les couleurs personnalisées.
+- Amélioration de la compatibilité tablette.
 
 ## v1.0.38 - 2026-05-04
 
-- Ajout d'un panneau lateral adaptatif pour la modification du titre des post-it.
-- Correction du clic/tactile sur le bouton OK du panneau de titre.
-- Ajout d'un panneau lateral adaptatif pour l'action Remplir, afin d'eviter que le clavier tablette masque les boutons.
-- Conservation des regles de securite : DEV uniquement, aucun impact MQTT, aucun redemarrage Apache.
-
-# Changelog
-
-
-
-
-
-
-
-
-
+- Ajout d’un panneau latéral pour modifier le titre.
+- Ajout d’un panneau latéral pour compléter ou modifier le contenu.
+- Amélioration de l’ergonomie lorsque le clavier tactile est affiché.
+- Meilleure lisibilité des actions sur tablette.
 
 ## v1.0.37 - 2026-05-04
 
-### Modification du titre par champ intégré
-
-- Remplacement de la boîte navigateur `prompt` par un champ intégré dans les options du post-it.
-- Le bouton `Titre` ouvre maintenant un champ texte avec `OK` et `Annuler`.
-- Cette méthode est plus fiable sur tablette et dans les Designs Jeedom.
-- Le titre est mis à jour immédiatement dans le post-it, puis sauvegardé via l’action AJAX `setTitleFromDesign`.
-- Le double-clic n’est pas utilisé comme méthode principale.
-- MQTT non touché.
-- Apache non redémarré.
+- Remplacement de la boîte de dialogue navigateur par un champ intégré.
+- Le bouton `Titre` ouvre maintenant un formulaire avec `OK` et `Annuler`.
+- Le titre est mis à jour directement dans le post-it.
+- Méthode plus fiable dans les Designs Jeedom.
 
 ## v1.0.36 - 2026-05-04
 
-### Bouton Titre compatible tactile
-
-- Correction du bouton `Titre` dans les options du post-it pour les écrans tactiles.
-- Ajout d’une gestion robuste des événements `touchstart`, `touchend`, `pointerdown`, `pointerup`, `mousedown`, `mouseup` et `click`.
-- Les événements sont capturés avec arrêt de propagation afin d’éviter que le Design Jeedom intercepte l’action.
-- Le titre reste modifiable sans double-clic.
-- La sauvegarde continue d’utiliser l’action AJAX `setTitleFromDesign`.
-- MQTT non touché.
-- Apache non redémarré.
+- Correction du bouton `Titre` pour les écrans tactiles.
+- Gestion renforcée des actions tactiles.
+- Réduction des interceptions de clic par le Design Jeedom.
 
 ## v1.0.35 - 2026-05-04
 
-### Modification du titre depuis les options du post-it
-
-- Ajout d’un bouton `Titre` directement dans les options du post-it.
-- Le titre peut être modifié sans double-clic.
-- Le double-clic reste éventuellement en secours, mais n’est plus la méthode normale.
-- Correction adaptée aux Designs Jeedom, où le double-clic, clic droit, appui long ou tap spécial ne sont pas fiables.
-- Le bouton utilise l’action AJAX existante `setTitleFromDesign`.
-- Le titre est mis à jour immédiatement dans le post-it, puis sauvegardé côté plugin.
-- MQTT non touché.
-- Apache non redémarré.
+- Ajout du bouton `Titre` dans les options du post-it.
+- Modification du titre sans double-clic.
+- Mise à jour immédiate du titre dans l’affichage.
 
 ## v1.0.34 - 2026-05-04
 
-### Masquer/réafficher sans rechargement du Design
-
-- Le bouton `+ Post-it` conserve son clic principal : il crée immédiatement un post-it.
-- La pastille du bouton ouvre le menu `Masquer/Réafficher`.
-- Le masquage/réaffichage est maintenant immédiat côté navigateur, sans `window.location.reload()` pour cette action.
-- Les post-it restent dans le DOM et sont masqués/réaffichés via `display:none`, ce qui évite de recharger tout le Design.
-- L’état reste sauvegardé côté plugin via AJAX, afin de conserver le choix après rechargement manuel.
-- Le menu reste cantonné au Design.
-- Le masquage reste non destructif : aucune ligne `plan` n’est supprimée.
-- MQTT non touché.
-- Apache non redémarré.
+- Ajout du masquage et du réaffichage sans rechargement complet du Design.
+- Les post-it peuvent être masqués visuellement puis réaffichés.
+- Les positions et réglages restent conservés.
 
 ## v1.0.33 - 2026-05-04
 
-### Bouton + Post-it : pastille de menu cantonnée au Design
-
-- Le bouton `+ Post-it` garde sa fonction principale : un clic sur le bouton crée immédiatement un post-it.
-- Ajout d’une petite pastille intégrée au bouton pour ouvrir un menu d’options.
-- La pastille permet de masquer ou réafficher les post-it du Design.
-- Le masquage est non destructif : aucune ligne `plan` n’est supprimée, les positions restent conservées.
-- Le menu reste cantonné au Design : il n’utilise plus `position:fixed` par rapport à la fenêtre.
-- La solution validée utilise un menu `absolute` dans le conteneur du bouton avec bornage local.
-- Les pistes non retenues sont documentées : clic droit, double-clic, appui long, remplacement complet du rendu commande, menu global hors Design.
-- MQTT non touché.
-- Apache non redémarré.
+- Ajout d’une pastille de menu sur la commande `+ Post-it`.
+- Le clic principal sur `+ Post-it` conserve la création immédiate d’un post-it.
+- Le menu permet d’accéder aux actions de masquage et réaffichage.
+- Le menu reste contenu dans la zone du Design.
 
 ## v1.0.32 - 2026-05-04
 
-### Correction tablette renforcée
-
-- Les boutons Classic, Paper et Tape des options du post-it utilisent maintenant une gestion tactile robuste.
-- La méthode retenue utilise onclick, ontouchend et onpointerup en direct avec return false.
-- Ajout d’un verrou anti double-déclenchement.
-- Cette correction remplace l’approche insuffisante basée principalement sur addEventListener.
-- Aucun changement MQTT ni redémarrage Apache.
+- Correction renforcée des boutons de style sur tablette.
+- Amélioration des actions `Classic`, `Paper` et `Tape`.
+- Ajout d’une protection contre les doubles déclenchements.
 
 ## v1.0.31 - 2026-05-04
 
-### Correction tablette
-
-- Correction des boutons de choix visuel dans les options du post-it sur tablette.
-- Les boutons Classic, Paper et Tape réagissent maintenant aussi aux événements touchend et pointerup.
-- Ajout d’un verrou anti double-déclenchement pour éviter les actions doublées sur écran tactile.
-- Cause : le clic souris fonctionnait sur PC, mais le clic synthétique tablette pouvait être intercepté par la couche tactile du Design Jeedom.
-- Aucun changement MQTT ni redémarrage Apache.
+- Correction tactile des boutons de choix visuel.
+- Amélioration de la compatibilité avec les tablettes.
+- Meilleure fiabilité des actions dans les Designs.
 
 ## v1.0.30 - 2026-05-04
 
-### Options depuis le Design
-
-- Ajout du choix du visuel directement depuis les options du post-it.
-- Les boutons ,  et  sont disponibles dans le panneau d’options du post-it.
-- Le choix est sauvegardé et conservé après actualisation.
-- Aucun changement MQTT ni redémarrage Apache.
+- Ajout du choix du style visuel depuis les options du post-it.
+- Styles disponibles dans le Design : `Classic`, `Paper`, `Tape`.
+- Sauvegarde du style choisi.
 
 ## v1.0.29 - 2026-05-04
 
-### Interface Design
+- Amélioration des repères d’action dans les coins du post-it.
+- Interface plus discrète dans le Design.
+- Conservation du fonctionnement existant.
 
-- Les pastilles d’action situées dans les coins supérieur droit et inférieur droit des post-it sont rendues plus discrètes.
-- Taille réduite, opacité diminuée et intégration visuelle plus légère.
-- Aucun changement fonctionnel sur la création, le déplacement, les styles ou la rotation.
+## v1.0.28 - 2026-05-04
+
+- Correction de la documentation publique.
+- Mise à jour du changelog visible.
+- Harmonisation des fichiers de documentation.
 
 ## v1.0.27 - 2026-05-04
 
-### Préparation Market Jeedom
-
-- Description Market enrichie dans `plugin_info/info.json`.
-- Liens documentation et changelog normalisés pour GitHub Pages avec `#language#`.
-- README et documentation publique mis à jour.
-- Base stable conservée : commande Jeedom `+ Post-it`, styles Classic/Paper/Tape, rotation 0°/+15°/-15° et persistance après actualisation.
+- Préparation des métadonnées pour le Market Jeedom.
+- Description publique enrichie.
+- Liens documentation et changelog normalisés.
+- Documentation utilisateur mise à jour.
 
 ## v1.0.26 - 2026-05-03
 
-### État validé avant publication stable
-
-- Base DEV actuelle :  ().
-- Commande Jeedom native  fonctionnelle dans un Design.
-- La commande peut être installée depuis la page plugin via le bloc .
-- La commande est affichée sous forme de mini post-it plutôt qu’un bouton gris.
-- Le bloc  reste disponible après suppression d’un post-it sur la page plugin.
-- Les vrais post-it restent isolés du  natif Jeedom : déplacer  ne déplace plus .
-
-### Visuels et rotation
-
-- Les styles , ,  sont présents côté interface.
-- Le rendu Design applique maintenant les visuels.
-- L’aperçu dynamique a été renforcé côté CSS/JS.
-- Les raccourcis de rotation sont passés à , , .
-- Le bouton rotation du post-it suit le cycle .
-- La rotation  et  est conservée après actualisation du Design.
-
-### Limite assumée à ce stade
-
-- Un léger délai visuel peut encore apparaître au clic rotation avant resynchronisation.
-- Le comportement est laissé tel quel à la demande utilisateur, car la rotation sauvegardée est correcte après actualisation.
-
-### Sécurité
-
-- Version validée avant publication stable.
-- MQTT non touché.
-- Apache non redémarré.
-- Aucun déploiement PROD effectué.
+- Version stable avec commande `+ Post-it`.
+- Commande installable depuis la page du plugin.
+- Commande visible et déplaçable dans un Design.
+- Création d’un nouveau post-it depuis le Design.
+- Styles visuels appliqués dans le Design.
+- Rotation conservée après actualisation.
 
 ## v1.0.25 - 2026-05-03
 
-### Ajout
-- Ajout d'une vraie commande Jeedom , installable depuis l'interface du plugin dans le Design choisi.
-- La commande est visible et déplaçable comme une commande Jeedom native.
-- Un clic sur  crée un nouveau vrai post-it dans le Design cible.
+- Ajout de la commande Jeedom `+ Post-it`.
+- Création d’un post-it depuis le Design.
+- Séparation entre la commande de création et les vrais post-it.
+- Amélioration de la stabilité du positionnement.
 
-### Correction
-- Isolation des vrais post-it hors du  natif de Jeedom.
-- Les vrais post-it ne portent plus la classe , afin d'éviter qu'un déplacement d'un autre widget du Design, par exemple , ne déplace ou ne resauvegarde les post-it.
-- Les vrais post-it conservent leur classe  et leur logique interne : déplacement par poignée, cantonnement, options, édition, rotation et lignes barrées.
+## v1.0.8
 
-### Validation DEV
-- Test validé : déplacement de  puis sauvegarde et Ctrl+F5, le post-it  ne bouge plus.
-- Test validé : installation de la commande  depuis la page plugin.
-- Test validé : commande  visible, déplaçable et fonctionnelle dans le Design.
-- MQTT non utilisé, aucun redémarrage Apache requis.
+- Correction de l’affichage du post-it au-dessus des widgets voisins.
+- Le calque est limité au post-it.
+- Les autres widgets du Design restent utilisables.
+
+## v1.0.7
+
+- Mise à jour de la documentation principale.
+- Mise à jour du changelog public.
+- Mise à jour du README.
+- Amélioration de la documentation de l’aperçu visuel.
+
+## v1.0.6
+
+- Mise à jour de la documentation.
+- Mise à jour du README.
+- Mention de l’aperçu dynamique du style visuel.
+
+## v1.0.5
+
+- Correction tactile sur tablette.
+- Déplacement plus fluide des post-it.
+- Correction du comportement des boutons tactiles.
+- Correction de la rotation.
+
+## v1.0.4
+
+- Version stable préparée pour publication.
+- Documentation française publiée.
+- Changelog publié.
+
+## v1.0.3
+
+- Amélioration de l’aperçu du style visuel.
+- Conservation de la couleur choisie avec les différents styles.
+- Suppression du double aperçu.
+
+## v1.0.2
+
+- Ajout des styles visuels `Classic`, `Paper` et `Tape`.
+- Amélioration du rendu dans les Designs.
+
+## v1.0.1
+
+- Correction du placement sur Design.
+- Sauvegarde de la position X/Y.
+- Ajout des options de modification depuis le Design.
+
+## v1.0.0
+
+- Première version publique du plugin Post-it Design.
+
+Dernière mise à jour changelog : 2026-05-31.
