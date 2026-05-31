@@ -1,7 +1,10 @@
 {
   "id": "postitdesign",
   "name": "Post-it Design",
-  "description": "Post-it Design permet d’ajouter des post-it interactifs directement dans les Designs Jeedom. Le plugin permet de créer, afficher, déplacer, modifier, personnaliser, masquer et organiser des notes visuelles depuis un Design, avec couleurs rapides, styles visuels, priorités et commande + Post-it.",
+  "pluginVersion": "1.0.47",
+  "description": {
+    "fr_FR": "Post-it Design permet d’ajouter des post-it interactifs directement dans les Designs Jeedom. Le plugin permet de créer, afficher, déplacer, modifier, personnaliser, masquer et organiser des notes visuelles depuis un Design, avec couleurs rapides, styles visuels, priorités et commande + Post-it."
+  },
   "licence": "AGPL",
   "author": "Emmanuel",
   "require": "4.4",
@@ -9,8 +12,10 @@
   "hasDependency": false,
   "hasOwnDeamon": false,
   "maxDependancyInstallTime": 0,
-  "changelog": "https://gruikgroin67.github.io/post-it-design/#language#/changelog/",
-  "documentation": "https://gruikgroin67.github.io/post-it-design/#language#/",
+  "changelog": "https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/",
+  "documentation": "https://gruikgroin67.github.io/post-it-design/fr_FR/",
+  "changelog_beta": "https://gruikgroin67.github.io/post-it-design/fr_FR/changelog/",
+  "documentation_beta": "https://gruikgroin67.github.io/post-it-design/fr_FR/",
   "link": {
     "forum": "https://community.jeedom.com/",
     "video": "",
@@ -25,6 +30,9 @@
     "rpi",
     "docker",
     "diy",
-    "v4"
+    "mobile",
+    "v4",
+    "atlas",
+    "luna"
   ]
 }
