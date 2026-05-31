@@ -8,6 +8,7 @@ on:
       - "docs/**"
       - "fr_FR/**"
       - "index.md"
+      - "index.html"
       - "_config.yml"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
@@ -32,21 +33,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare site
+      - name: Prepare static site
         run: |
           set -euo pipefail
           rm -rf _site
           mkdir -p _site
-
+          cp -a index.html _site/index.html
           cp -a fr_FR _site/fr_FR
-          cp -a index.md _site/index.md
-          cp -a _config.yml _site/_config.yml
-
-          test -f _site/fr_FR/index.md
-          test -f _site/fr_FR/changelog/index.md
-          grep -q 'v1.0.43' _site/fr_FR/index.md
-          grep -q 'v1.0.43' _site/fr_FR/changelog/index.md
-
+          test -f _site/fr_FR/index.html
+          test -f _site/fr_FR/changelog/index.html
+          grep -q 'v1.0.44' _site/fr_FR/index.html
+          grep -q 'v1.0.44' _site/fr_FR/changelog/index.html
           if grep -R -i -E 'MQTT|Apache|PROD|DEV valid|DEV validée|DEV validee|non touch|redémarr|redemarr' _site; then
             echo "Internal words found in public documentation"
             exit 1

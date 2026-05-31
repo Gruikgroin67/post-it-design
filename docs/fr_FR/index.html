@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Post-it Design - Documentation</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 980px; margin: 0 auto; padding: 32px 18px; line-height: 1.58; color: #222; }
+    h1 { border-bottom: 1px solid #ddd; padding-bottom: 12px; }
+    code { background: #f3f3f3; padding: 2px 5px; border-radius: 4px; }
+    a { color: #0969da; }
+  </style>
+</head>
+<body>
+<h1>Post-it Design</h1>
+<p>Post-it Design est un plugin Jeedom permettant d’ajouter des post-it directement dans les Designs Jeedom.</p>
+<p>Il sert à afficher des notes visuelles, rappels, consignes ou informations rapides sur un Design, avec une présentation proche d’un post-it physique.</p>
+<h2>Version actuelle</h2>
+<p><code>v1.0.44</code></p>
+<h2>Présentation</h2>
+<p>Le plugin permet de créer des post-it personnalisables puis de les placer dans un Design Jeedom.</p>
+<p>Chaque post-it peut avoir un titre, un contenu, une couleur, un style visuel, une rotation et une priorité. Les actions principales sont disponibles directement depuis le Design.</p>
+<h2>Fonctions principales</h2>
+<ul>
+<li>Création d’un post-it depuis Jeedom.</li>
+<li>Ajout d’un post-it sur un Design.</li>
+<li>Commande <code>+ Post-it</code> installable dans un Design.</li>
+<li>Création rapide d’un nouveau post-it depuis le Design.</li>
+<li>Déplacement visuel du post-it.</li>
+<li>Sauvegarde de la position.</li>
+<li>Modification du titre depuis le Design.</li>
+<li>Modification du contenu depuis le Design.</li>
+<li>Choix rapide de la couleur.</li>
+<li>Choix du style visuel : <code>Classic</code>, <code>Paper</code>, <code>Tape</code>.</li>
+<li>Priorité visuelle : <code>Normal</code>, <code>Important</code>, <code>Urgent</code>.</li>
+<li>Rotation du post-it.</li>
+<li>Masquage et réaffichage des post-it d’un Design.</li>
+<li>Décollage du Design sans suppression de l’équipement.</li>
+<li>Utilisation adaptée aux écrans tactiles.</li>
+</ul>
+<h2>Création d’un post-it</h2>
+<p>Depuis la page du plugin, créez un équipement Post-it Design.</p>
+<p>Renseignez au minimum :</p>
+<ul>
+<li>le titre ;</li>
+<li>le message ;</li>
+<li>la couleur ;</li>
+<li>les dimensions souhaitées.</li>
+</ul>
+<p>Le post-it peut ensuite être affiché dans un Design Jeedom.</p>
+<h2>Utilisation dans un Design</h2>
+<p>Une fois affiché sur le Design, le post-it peut être déplacé et modifié.</p>
+<p>Les repères discrets placés dans les coins du post-it permettent d’accéder aux actions sans surcharger l’affichage.</p>
+<p>Actions disponibles :</p>
+<ul>
+<li>déplacer le post-it ;</li>
+<li>ouvrir les options ;</li>
+<li>modifier le titre ;</li>
+<li>modifier le contenu ;</li>
+<li>changer la couleur ;</li>
+<li>changer le style visuel ;</li>
+<li>changer la priorité ;</li>
+<li>tourner le post-it ;</li>
+<li>décoller le post-it du Design.</li>
+</ul>
+<p>Le décollage retire uniquement le post-it du Design. L’équipement Jeedom n’est pas supprimé.</p>
+<h2>Commande <code>+ Post-it</code></h2>
+<p>Le plugin peut installer une commande <code>+ Post-it</code> dans un Design.</p>
+<p>Cette commande sert à créer rapidement un nouveau post-it depuis le Design.</p>
+<p>La commande est séparée des vrais post-it. Elle peut être déplacée comme un élément Jeedom du Design et ne modifie pas les post-it existants.</p>
+<h2>Couleurs rapides</h2>
+<p>Depuis les options du post-it, il est possible de choisir rapidement une couleur.</p>
+<p>La couleur est appliquée immédiatement à l’affichage du post-it puis sauvegardée.</p>
+<h2>Styles visuels</h2>
+<p>Trois styles sont disponibles :</p>
+<ul>
+<li><code>Classic</code> : rendu simple et lisible ;</li>
+<li><code>Paper</code> : rendu papier ;</li>
+<li><code>Tape</code> : rendu avec effet visuel de note collée.</li>
+</ul>
+<p>Le style peut être changé depuis les options du post-it.</p>
+<h2>Priorités</h2>
+<p>Chaque post-it peut recevoir une priorité :</p>
+<ul>
+<li><code>Normal</code> : affichage standard ;</li>
+<li><code>Important</code> : contour orange ;</li>
+<li><code>Urgent</code> : contour rouge.</li>
+</ul>
+<p>La priorité permet de rendre certaines notes plus visibles dans le Design.</p>
+<h2>Masquer ou réafficher les post-it</h2>
+<p>Depuis la commande <code>+ Post-it</code>, un menu permet de masquer ou réafficher les post-it du Design.</p>
+<p>Le masquage est visuel et non destructif. Les post-it restent conservés avec leurs positions et leurs réglages.</p>
+<h2>Utilisation tactile</h2>
+<p>Le plugin est prévu pour être utilisé sur ordinateur, tablette ou écran tactile.</p>
+<p>Les boutons principaux des options utilisent une gestion adaptée aux événements tactiles afin de limiter les doubles déclenchements et les pertes de clic dans les Designs Jeedom.</p>
+<h2>Bonnes pratiques</h2>
+<p>Pour une utilisation confortable :</p>
+<ul>
+<li>éviter les post-it trop petits si l’écran est tactile ;</li>
+<li>conserver un espace libre autour des notes importantes ;</li>
+<li>utiliser les priorités pour distinguer les informations critiques ;</li>
+<li>utiliser le masquage lorsque le Design doit rester plus lisible.</li>
+</ul>
+<h2>Changelog</h2>
+<p><a href="./changelog/">Changelog Post-it Design</a></p>
+<p>Dernière mise à jour documentation : 2026-05-31.</p>
+</body>
+</html>

@@ -1,5 +1,12 @@
 # Changelog - Post-it Design
 
+## v1.0.44 - 2026-05-31
+
+- Version finale Market avec documentation publique en HTML statique.
+- Correction de la publication GitHub Pages.
+- Documentation et changelog alignés avec le tag final.
+- Aucun changement fonctionnel du plugin.
+
 ## v1.0.43 - 2026-05-31
 
 - Version finale de présentation Market Jeedom.
