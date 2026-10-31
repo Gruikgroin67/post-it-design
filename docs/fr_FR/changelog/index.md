@@ -1,5 +1,15 @@
 # Changelog - Post-it Design
 
+## v1.0.48 - 2026-10-31 (candidate)
+
+- Harmonisation des versions affichées dans la documentation et les métadonnées.
+- Ajout de la validation de cohérence documentaire dans GitHub Pages.
+- Aucun changement fonctionnel du plugin.
+
+## v1.0.47 - 2026-05-31
+
+- Alignement des métadonnées `plugin_info/info.json` avec le modèle Jeedom.
+
 ## v1.0.46 - 2026-05-31
 
 - Correction complète des métadonnées Market dans `plugin_info/info.json`.
