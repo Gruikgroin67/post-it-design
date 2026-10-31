@@ -1,14 +1,14 @@
 {
   "id": "postitdesign",
   "name": "Post-it Design",
-  "pluginVersion": "1.0.47",
+  "pluginVersion": "1.0.48",
   "description": {
     "fr_FR": "Post-it Design permet d’ajouter des post-it interactifs directement dans les Designs Jeedom. Le plugin permet de créer, afficher, déplacer, modifier, personnaliser, masquer et organiser des notes visuelles depuis un Design, avec couleurs rapides, styles visuels, priorités et commande + Post-it."
   },
   "licence": "AGPL",
   "author": "Emmanuel",
   "require": "4.4",
-  "category": "communication",
+  "category": "organization",
   "hasDependency": false,
   "hasOwnDeamon": false,
   "maxDependancyInstallTime": 0,
@@ -30,7 +30,6 @@
     "rpi",
     "docker",
     "diy",
-    "mobile",
     "v4",
     "atlas",
     "luna"
