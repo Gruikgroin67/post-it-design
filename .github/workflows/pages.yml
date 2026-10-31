@@ -42,8 +42,9 @@ jobs:
           cp -a fr_FR _site/fr_FR
           test -f _site/fr_FR/index.html
           test -f _site/fr_FR/changelog/index.html
-          grep -q 'v1.0.44' _site/fr_FR/index.html
-          grep -q 'v1.0.44' _site/fr_FR/changelog/index.html
+          VERSION="$(python3 -c 'import json; print(json.load(open("plugin_info/info.json", encoding="utf-8"))["pluginVersion"])')"
+          grep -Fq "v${VERSION}" _site/fr_FR/index.html
+          grep -Fq "v${VERSION}" _site/fr_FR/changelog/index.html
           if grep -R -i -E 'MQTT|Apache|PROD|DEV valid|DEV validée|DEV validee|non touch|redémarr|redemarr' _site; then
             echo "Internal words found in public documentation"
             exit 1
