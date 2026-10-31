@@ -8,7 +8,7 @@
   "licence": "AGPL",
   "author": "Emmanuel",
   "require": "4.4",
-  "category": "organization",
+  "category": "communication",
   "hasDependency": false,
   "hasOwnDeamon": false,
   "maxDependancyInstallTime": 0,
@@ -32,6 +32,7 @@
     "diy",
     "v4",
     "atlas",
-    "luna"
+    "luna",
+    "mobile"
   ]
 }
