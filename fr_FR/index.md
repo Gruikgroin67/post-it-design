@@ -6,7 +6,7 @@ Il sert à afficher des notes visuelles, rappels, consignes ou informations rapi
 
 ## Version actuelle
 
-`v1.0.46`
+`v1.0.48`
 
 ## Présentation
 
@@ -124,4 +124,4 @@ Pour une utilisation confortable :
 
 [Changelog Post-it Design](./changelog/)
 
-Dernière mise à jour documentation : 2026-05-31.
+Dernière mise à jour documentation : 2026-10-31.
